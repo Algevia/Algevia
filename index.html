@@ -87,5 +87,53 @@
 
   <button type="submit">Find My Tutors</button>
 </form>
+  <script>
+const form = document.querySelector("form");
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const level = form.querySelectorAll("select")[0].value;
+  const currentGrade = form.querySelectorAll("input")[0].value;
+  const targetGrade = form.querySelectorAll("input")[1].value;
+  const examBoard = form.querySelectorAll("select")[1].value;
+  const topics = form.querySelectorAll("input")[2].value;
+  const preference = form.querySelectorAll("select")[2].value;
+
+  const results = document.createElement("div");
+
+  results.innerHTML = `
+    <h2>Your Algevia Matches</h2>
+    <p>
+      We are matching you with independent tutors for
+      <strong>${level}</strong>.
+    </p>
+
+    <h3>Top Tutor Matches</h3>
+
+    <p><strong>Match 1 — Experienced Maths Tutor</strong><br>
+    Strong GCSE and A-Level experience. Suitable for your target grade and ${examBoard}.
+    </p>
+
+    <p><strong>Match 2 — Exam Specialist</strong><br>
+    Experienced with exam preparation and improving weak topics such as ${topics || "your selected topics"}.
+    </p>
+
+    <p><strong>Match 3 — Personalised Maths Tutor</strong><br>
+    Suitable for ${preference.toLowerCase()} learning and focused one-to-one support.
+    </p>
+
+    <p>
+      <strong>Your requirements:</strong><br>
+      Current grade: ${currentGrade || "Not provided"}<br>
+      Target grade: ${targetGrade || "Not provided"}<br>
+      Exam board: ${examBoard}<br>
+      Learning preference: ${preference}
+    </p>
+  `;
+
+  form.after(results);
+});
+</script>
 </body>
 </html>
