@@ -87,56 +87,179 @@
 
   <button type="submit">Find My Tutors</button>
 </form>
-  <script>
+<script>
 const form = document.querySelector("form");
 
-form.addEventListener("submit", function(event) {
+form.addEventListener("submit", async function(event) {
   event.preventDefault();
 
-  const level = form.querySelectorAll("select")[0].value;
-  const currentGrade = form.querySelectorAll("input")[0].value;
-  const targetGrade = form.querySelectorAll("input")[1].value;
-  const examBoard = form.querySelectorAll("select")[1].value;
-  const topics = form.querySelectorAll("input")[2].value;
-  const preference = form.querySelectorAll("select")[2].value;
-const oldResults = document.querySelector(".algevia-results");
-if (oldResults) {
-  oldResults.remove();
-}
+  const selects = form.querySelectorAll("select");
+  const inputs = form.querySelectorAll("input");
+
+  const level = selects[0].value;
+  const currentGrade = inputs[0].value;
+  const targetGrade = inputs[1].value;
+  const examBoard = selects[1].value;
+  const topics = inputs[2].value.toLowerCase();
+  const preference = selects[2].value;
+
+  const oldResults = document.querySelector(".algevia-results");
+  if (oldResults) oldResults.remove();
+
   const results = document.createElement("div");
-results.className = "algevia-results";
-
-  results.innerHTML = `
-    <h2>Your Algevia Matches</h2>
-    <p>
-      We are matching you with independent tutors for
-      <strong>${level}</strong>.
-    </p>
-
-    <h3>Top Tutor Matches</h3>
-
-    <p><strong>Match 1 — Experienced Maths Tutor</strong><br>
-    Strong GCSE and A-Level experience. Suitable for your target grade and ${examBoard}.
-    </p>
-
-    <p><strong>Match 2 — Exam Specialist</strong><br>
-    Experienced with exam preparation and improving weak topics such as ${topics || "your selected topics"}.
-    </p>
-
-    <p><strong>Match 3 — Personalised Maths Tutor</strong><br>
-    Suitable for ${preference.toLowerCase()} learning and focused one-to-one support.
-    </p>
-
-    <p>
-      <strong>Your requirements:</strong><br>
-      Current grade: ${currentGrade || "Not provided"}<br>
-      Target grade: ${targetGrade || "Not provided"}<br>
-      Exam board: ${examBoard}<br>
-      Learning preference: ${preference}
-    </p>
-  `;
-
+  results.className = "algevia-results";
+  results.innerHTML = "<h2>Finding your best tutor matches...</h2>";
   form.after(results);
+
+  try {
+    const response = await fetch("Algevia_Tutor_Database_Clean_50.csv");
+    const csv = await response.text();
+
+    const rows = csv.trim().split(/\r?\n/);
+
+    function parseCSVLine(line) {
+      const values = [];
+      let value = "";
+      let insideQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+
+        if (char === '"') {
+          insideQuotes = !insideQuotes;
+        } else if (char === "," && !insideQuotes) {
+          values.push(value.trim());
+          value = "";
+        } else {
+          value += char;
+        }
+      }
+
+      values.push(value.trim());
+      return values;
+    }
+
+    const headers = parseCSVLine(rows[0]);
+
+    const tutors = rows.slice(1).map(row => {
+      const values = parseCSVLine(row);
+      const tutor = {};
+
+      headers.forEach((header, index) => {
+        tutor[header] = values[index] || "";
+      });
+
+      return tutor;
+    });
+
+    const matches = tutors.map(tutor => {
+      let score = 0;
+
+      const tutorLevel = (tutor["Level"] || "").toLowerCase();
+      const teaching = (tutor["Relevant teaching"] || "").toLowerCase();
+      const boards = (tutor["Exam Boards"] || "").toLowerCase();
+      const online = (tutor["Online"] || "").toLowerCase();
+      const priority = (tutor["Algevia priority"] || "").toLowerCase();
+      const tutorTopics =
+        (tutor["Qualifications / Experience"] || "").toLowerCase() +
+        " " +
+        teaching;
+
+      if (tutorLevel.includes("both")) score += 30;
+      if (level.toLowerCase().includes("gcse") && tutorLevel.includes("gcse"))
+        score += 30;
+      if (level.toLowerCase().includes("a-level") && tutorLevel.includes("a-level"))
+        score += 30;
+
+      if (
+        examBoard !== "Other" &&
+        boards.includes(examBoard.toLowerCase())
+      ) {
+        score += 25;
+      }
+
+      if (preference === "Online" && online.includes("yes"))
+        score += 15;
+
+      if (topics && tutorTopics.includes(topics))
+        score += 10;
+
+      if (priority.includes("high"))
+        score += 10;
+      else if (priority.includes("medium"))
+        score += 5;
+
+      return {
+        tutor,
+        score
+      };
+    });
+
+    matches.sort((a, b) => b.score - a.score);
+
+    const topMatches = matches.slice(0, 3);
+
+    results.innerHTML = `
+      <h2>Your Algevia Tutor Matches</h2>
+      <p>
+        We found the strongest matches for
+        <strong>${level}</strong>.
+      </p>
+    `;
+
+    topMatches.forEach((match, index) => {
+      const tutor = match.tutor;
+
+      results.innerHTML += `
+        <div>
+          <h3>${index + 1}. ${tutor["Tutor/Prospect"]}</h3>
+
+          <p>
+            <strong>Level:</strong>
+            ${tutor["Level"] || "Not specified"}
+          </p>
+
+          <p>
+            <strong>Rate:</strong>
+            ${tutor["Public rate"] || "Not specified"}
+          </p>
+
+          <p>
+            <strong>Location:</strong>
+            ${tutor["Location"] || "Not specified"}
+          </p>
+
+          <p>
+            <strong>Why this may be a good match:</strong>
+            ${tutor["Qualifications / Experience"] || "Experience not specified"}
+          </p>
+
+          <p>
+            <strong>Verification:</strong>
+            ${tutor["Verified"] || "Not specified"}
+          </p>
+
+          <p>
+            <strong>Match score:</strong>
+            ${match.score}
+          </p>
+
+          <hr>
+        </div>
+      `;
+    });
+
+  } catch (error) {
+    results.innerHTML = `
+      <h2>We're sorry</h2>
+      <p>
+        We couldn't load the tutor database right now.
+        Please try again.
+      </p>
+    `;
+
+    console.error(error);
+  }
 });
 </script>
 </body>
