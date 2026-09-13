@@ -99,8 +99,12 @@ form.addEventListener("submit", function(event) {
   const examBoard = form.querySelectorAll("select")[1].value;
   const topics = form.querySelectorAll("input")[2].value;
   const preference = form.querySelectorAll("select")[2].value;
-
+const oldResults = document.querySelector(".algevia-results");
+if (oldResults) {
+  oldResults.remove();
+}
   const results = document.createElement("div");
+results.className = "algevia-results";
 
   results.innerHTML = `
     <h2>Your Algevia Matches</h2>
