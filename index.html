@@ -96,19 +96,19 @@ form.addEventListener("submit", async function(event) {
   const selects = form.querySelectorAll("select");
   const inputs = form.querySelectorAll("input");
 
-  const level = selects[0].value;
+  const level = selects[0].value.toLowerCase();
   const currentGrade = inputs[0].value;
   const targetGrade = inputs[1].value;
-  const examBoard = selects[1].value;
+  const examBoard = selects[1].value.toLowerCase();
   const topics = inputs[2].value.toLowerCase();
-  const preference = selects[2].value;
+  const preference = selects[2].value.toLowerCase();
 
   const oldResults = document.querySelector(".algevia-results");
   if (oldResults) oldResults.remove();
 
   const results = document.createElement("div");
   results.className = "algevia-results";
-  results.innerHTML = "<h2>Finding your best tutor matches...</h2>";
+  results.innerHTML = "<h2>Finding your best Algevia matches...</h2>";
   form.after(results);
 
   try {
@@ -152,58 +152,146 @@ form.addEventListener("submit", async function(event) {
       return tutor;
     });
 
-    const matches = tutors.map(tutor => {
+    function calculateMatch(tutor) {
       let score = 0;
+      const reasons = [];
 
       const tutorLevel = (tutor["Level"] || "").toLowerCase();
       const teaching = (tutor["Relevant teaching"] || "").toLowerCase();
       const boards = (tutor["Exam Boards"] || "").toLowerCase();
       const online = (tutor["Online"] || "").toLowerCase();
+      const location = (tutor["Location"] || "").toLowerCase();
+      const experience = (tutor["Qualifications / Experience"] || "").toLowerCase();
       const priority = (tutor["Algevia priority"] || "").toLowerCase();
-      const tutorTopics =
-        (tutor["Qualifications / Experience"] || "").toLowerCase() +
-        " " +
-        teaching;
 
-      if (tutorLevel.includes("both")) score += 30;
-      if (level.toLowerCase().includes("gcse") && tutorLevel.includes("gcse"))
+      /* 30% — Level */
+      if (tutorLevel.includes(level)) {
         score += 30;
-      if (level.toLowerCase().includes("a-level") && tutorLevel.includes("a-level"))
+        reasons.push("Level matches");
+      } else if (tutorLevel.includes("both")) {
         score += 30;
-
-      if (
-        examBoard !== "Other" &&
-        boards.includes(examBoard.toLowerCase())
-      ) {
-        score += 25;
+        reasons.push("Teaches both GCSE and A-Level");
+      } else if (teaching.includes(level)) {
+        score += 30;
+        reasons.push("Relevant teaching experience");
       }
 
-      if (preference === "Online" && online.includes("yes"))
-        score += 15;
+      /* 25% — Exam board */
+      if (
+        examBoard !== "other" &&
+        examBoard !== "" &&
+        (
+          boards.includes(examBoard) ||
+          boards.includes("all exam boards")
+        )
+      ) {
+        score += 25;
+        reasons.push("Exam board matches");
+      } else if (examBoard === "other" || examBoard === "") {
+        score += 12;
+      }
 
-      if (topics && tutorTopics.includes(topics))
-        score += 10;
+      /* 15% — Topic */
+      if (topics !== "") {
+        const topicWords = topics
+          .split(/[,\s]+/)
+          .filter(word => word.length > 3);
 
-      if (priority.includes("high"))
+        const topicMatch = topicWords.some(word =>
+          teaching.includes(word) ||
+          experience.includes(word)
+        );
+
+        if (topicMatch) {
+          score += 15;
+          reasons.push("Topic experience may match");
+        }
+      } else {
+        score += 8;
+      }
+
+      /* 10% — Online / in-person */
+      if (
+        preference === "online" &&
+        online.includes("yes")
+      ) {
         score += 10;
-      else if (priority.includes("medium"))
+        reasons.push("Offers online tutoring");
+      } else if (preference === "either") {
         score += 5;
+      }
+
+      /* 10% — Price */
+      const rateText =
+        tutor["Public rate"] ||
+        tutor["Rate / hr"] ||
+        "";
+
+      const numbers = rateText.match(/\d+/g);
+
+      if (numbers && numbers.length > 0) {
+        const rates = numbers.map(Number);
+        const averageRate =
+          rates.reduce((a, b) => a + b, 0) / rates.length;
+
+        if (averageRate <= 50) {
+          score += 10;
+          reasons.push("Competitive rate");
+        } else if (averageRate <= 75) {
+          score += 7;
+        } else {
+          score += 4;
+        }
+      } else {
+        score += 5;
+      }
+
+      /* 5% — Experience / qualifications */
+      if (
+        experience.includes("qualified") ||
+        experience.includes("pgce") ||
+        experience.includes("qts") ||
+        experience.includes("teacher") ||
+        experience.includes("examiner") ||
+        experience.includes("years")
+      ) {
+        score += 5;
+        reasons.push("Relevant qualifications/experience");
+      }
+
+      /* 5% — Algevia priority */
+      if (priority.includes("high")) {
+        score += 5;
+        reasons.push("High Algevia priority");
+      } else if (priority.includes("medium")) {
+        score += 3;
+      } else {
+        score += 1;
+      }
 
       return {
         tutor,
-        score
+        score: Math.min(score, 100),
+        reasons
       };
-    });
+    }
 
-    matches.sort((a, b) => b.score - a.score);
+    const matches = tutors
+      .map(calculateMatch)
+      .sort((a, b) => b.score - a.score);
 
     const topMatches = matches.slice(0, 3);
 
     results.innerHTML = `
-      <h2>Your Algevia Tutor Matches</h2>
+      <h2>Your Top Algevia Matches</h2>
       <p>
-        We found the strongest matches for
+        We matched your requirements for
         <strong>${level}</strong>.
+      </p>
+      <p>
+        Current grade: ${currentGrade || "Not provided"}<br>
+        Target grade: ${targetGrade || "Not provided"}<br>
+        Exam board: ${examBoard || "Not provided"}
       </p>
     `;
 
@@ -211,8 +299,12 @@ form.addEventListener("submit", async function(event) {
       const tutor = match.tutor;
 
       results.innerHTML += `
-        <div>
+        <div class="tutor-match">
           <h3>${index + 1}. ${tutor["Tutor/Prospect"]}</h3>
+
+          <p>
+            <strong>Algevia Match Score: ${match.score}%</strong>
+          </p>
 
           <p>
             <strong>Level:</strong>
@@ -230,18 +322,25 @@ form.addEventListener("submit", async function(event) {
           </p>
 
           <p>
-            <strong>Why this may be a good match:</strong>
-            ${tutor["Qualifications / Experience"] || "Experience not specified"}
+            <strong>Why this tutor matched:</strong>
+          </p>
+
+          <ul>
+            ${
+              match.reasons.length
+                ? match.reasons.map(reason => `<li>${reason}</li>`).join("")
+                : "<li>Relevant tutor profile found</li>"
+            }
+          </ul>
+
+          <p>
+            <strong>Experience:</strong>
+            ${tutor["Qualifications / Experience"] || "Not specified"}
           </p>
 
           <p>
             <strong>Verification:</strong>
             ${tutor["Verified"] || "Not specified"}
-          </p>
-
-          <p>
-            <strong>Match score:</strong>
-            ${match.score}
           </p>
 
           <hr>
@@ -253,7 +352,7 @@ form.addEventListener("submit", async function(event) {
     results.innerHTML = `
       <h2>We're sorry</h2>
       <p>
-        We couldn't load the tutor database right now.
+        We couldn't load the tutor database.
         Please try again.
       </p>
     `;
