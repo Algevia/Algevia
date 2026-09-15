@@ -3,363 +3,487 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Algevia — Connect. Learn. Get things done.</title>
+
+  <title>Algevia — The right person. The right solution.</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f7f9fc;
+      color: #172033;
+      line-height: 1.6;
+    }
+
+    header {
+      background: white;
+      padding: 20px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e9f0;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #172033;
+      font-size: 14px;
+    }
+
+    .hero {
+      background: white;
+      text-align: center;
+      padding: 70px 8%;
+    }
+
+    .hero h1 {
+      font-size: 46px;
+      margin-bottom: 15px;
+    }
+
+    .hero h2 {
+      font-size: 27px;
+      margin-top: 0;
+    }
+
+    .hero p {
+      max-width: 800px;
+      margin: 20px auto;
+      font-size: 18px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 25px;
+      margin: 10px 5px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      background: #172033;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    .button.secondary {
+      background: #e9eef7;
+      color: #172033;
+    }
+
+    section {
+      padding: 60px 8%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 35px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid #e2e7ef;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+
+    .step {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #e2e7ef;
+    }
+
+    .education-box {
+      background: white;
+      padding: 35px;
+      border-radius: 14px;
+      border: 1px solid #dfe5ee;
+    }
+
+    .practice-box {
+      background: #eef3fa;
+      padding: 30px;
+      border-radius: 12px;
+      margin-top: 25px;
+    }
+
+    .cta {
+      text-align: center;
+      background: white;
+      padding: 60px 8%;
+    }
+
+    footer {
+      background: #172033;
+      color: white;
+      padding: 35px 8%;
+      text-align: center;
+    }
+
+    footer a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    @media (max-width: 700px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      nav {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
+<header>
+  <div class="logo">ALGEVIA</div>
+
+  <nav>
+    <a href="#education">Education</a>
+    <a href="#trades">Trades</a>
+    <a href="#wellness">Wellness</a>
+    <a href="#how-it-works">How it works</a>
+    <a href="#providers">Become a Provider</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+
+<div class="hero">
+
   <h1>ALGEVIA</h1>
 
-  <h2>Connect. Learn. Get things done.</h2>
+  <h2>The right person. The right solution. No more guesswork.</h2>
 
   <p>
-    An AI-powered marketplace connecting people with trusted independent providers.
+    Tell us what you need. Algevia understands your requirements,
+    finds the right people and recommends the best matches —
+    so you spend less time searching and more time getting the right solution.
   </p>
 
-  <h2>What do you need help with?</h2>
+  <p>
+    From 11+ and A-Level education to trades, wellness and more,
+    Algevia brings the right people and the right solutions together
+    in one trusted platform.
+  </p>
 
-  <button>Education</button>
-  <button>Trades</button>
-  <button>Wellness</button>
-  <button>Jobs</button>
+  <a href="#education" class="button">Find what you need</a>
 
-  <h2>How Algevia Works</h2>
+</div>
 
-  <ol>
-    <li>Tell us what you need</li>
-    <li>Algevia understands your requirements</li>
-    <li>AI finds suitable providers</li>
-    <li>Choose your provider</li>
-    <li>Book your service</li>
-    <li>Leave a review</li>
-  </ol>
+
+<!-- WHY ALGEVIA -->
+
+<section>
+
+  <h2>Why Algevia is different</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>Understand</h3>
+      <p>
+        Tell us what you need. Algevia asks the right questions
+        and understands your requirements.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Match</h3>
+      <p>
+        Our intelligent matching system considers expertise,
+        budget, availability, location and your preferences.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Trust</h3>
+      <p>
+        See relevant experience, qualifications, verification
+        and customer feedback before making your decision.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Improve</h3>
+      <p>
+        Feedback and outcomes help Algevia continuously improve
+        future recommendations.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- HOW ALGEVIA WORKS -->
+
+<section id="how-it-works">
+
+  <h2>How Algevia works</h2>
+
+  <div class="steps">
+
+    <div class="step">
+      <strong>1</strong>
+      <p>Tell us what you need</p>
+    </div>
+
+    <div class="step">
+      <strong>2</strong>
+      <p>Algevia understands your requirements</p>
+    </div>
+
+    <div class="step">
+      <strong>3</strong>
+      <p>AI identifies suitable matches</p>
+    </div>
+
+    <div class="step">
+      <strong>4</strong>
+      <p>You choose the right person</p>
+    </div>
+
+    <div class="step">
+      <strong>5</strong>
+      <p>Book and pay securely</p>
+    </div>
+
+    <div class="step">
+      <strong>6</strong>
+      <p>Get the service or support you need</p>
+    </div>
+
+    <div class="step">
+      <strong>7</strong>
+      <p>Give feedback</p>
+    </div>
+
+    <div class="step">
+      <strong>8</strong>
+      <p>Algevia learns and improves</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- EDUCATION -->
+
+<section id="education">
 
   <h2>Algevia Education</h2>
 
-<h3>GCSE Maths & A-Level Maths</h3>
+  <div class="education-box">
 
-<p>
-  Find trusted independent tutors matched to your learning needs,
-  target grade, exam board and availability.
-</p>
+    <h3>From 11+ to A-Level</h3>
 
-<button>Find a GCSE Maths Tutor</button>
-<button>Find an A-Level Maths Tutor</button>
-<h2>Find Your Maths Tutor</h2>
+    <p>
+      Personalised learning, intelligent tutor matching
+      and adaptive practice.
+    </p>
 
-<form>
-  <label>Level:</label><br>
-  <select>
-    <option>GCSE Maths</option>
-    <option>A-Level Maths</option>
-  </select>
-  <br><br>
+    <h3>Subjects</h3>
 
-  <label>Current Grade:</label><br>
-  <input type="text" placeholder="e.g. Grade 5 / B">
-  <br><br>
+    <p>
+      <strong>Maths</strong> •
+      <strong>Physics</strong> •
+      <strong>Chemistry</strong>
+    </p>
 
-  <label>Target Grade:</label><br>
-  <input type="text" placeholder="e.g. Grade 8 / A*">
-  <br><br>
+    <h3>Learning stages</h3>
 
-  <label>Exam Board:</label><br>
-  <select>
-    <option>AQA</option>
-    <option>Edexcel</option>
-    <option>OCR</option>
-    <option>WJEC</option>
-    <option>Other</option>
-  </select>
-  <br><br>
+    <p>
+      <strong>11+</strong> •
+      <strong>GCSE</strong> •
+      <strong>A-Level</strong>
+    </p>
 
-  <label>What topics need help?</label><br>
-  <input type="text" placeholder="e.g. Algebra, Trigonometry">
-  <br><br>
+    <hr>
 
-  <label>Learning preference:</label><br>
-  <select>
-    <option>Online</option>
-    <option>In-person</option>
-    <option>Either</option>
-  </select>
-  <br><br>
+    <h3>Free Diagnostic</h3>
 
-  <button type="submit">Find My Tutors</button>
-</form>
-<script>
-const form = document.querySelector("form");
+    <p>
+      Discover strengths and weaknesses and understand
+      what the student should work on next.
+    </p>
 
-form.addEventListener("submit", async function(event) {
-  event.preventDefault();
+    <button class="button">Take the Free Diagnostic</button>
 
-  const selects = form.querySelectorAll("select");
-  const inputs = form.querySelectorAll("input");
+    <h3>Match My Tutor</h3>
 
-  const level = selects[0].value.toLowerCase();
-  const currentGrade = inputs[0].value;
-  const targetGrade = inputs[1].value;
-  const examBoard = selects[1].value.toLowerCase();
-  const topics = inputs[2].value.toLowerCase();
-  const preference = selects[2].value.toLowerCase();
+    <p>
+      Match with suitable tutors based on subject, level,
+      ability, target grade, exam board, budget and preferences.
+    </p>
 
-  const oldResults = document.querySelector(".algevia-results");
-  if (oldResults) oldResults.remove();
+    <button class="button">Match My Tutor</button>
 
-  const results = document.createElement("div");
-  results.className = "algevia-results";
-  results.innerHTML = "<h2>Finding your best Algevia matches...</h2>";
-  form.after(results);
+    <div class="practice-box">
 
-  try {
-    const response = await fetch("Algevia_Tutor_Database_Clean_50.csv");
-    const csv = await response.text();
+      <h3>Intelligent Practice Papers</h3>
 
-    const rows = csv.trim().split(/\r?\n/);
-
-    function parseCSVLine(line) {
-      const values = [];
-      let value = "";
-      let insideQuotes = false;
-
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-
-        if (char === '"') {
-          insideQuotes = !insideQuotes;
-        } else if (char === "," && !insideQuotes) {
-          values.push(value.trim());
-          value = "";
-        } else {
-          value += char;
-        }
-      }
-
-      values.push(value.trim());
-      return values;
-    }
-
-    const headers = parseCSVLine(rows[0]);
-
-    const tutors = rows.slice(1).map(row => {
-      const values = parseCSVLine(row);
-      const tutor = {};
-
-      headers.forEach((header, index) => {
-        tutor[header] = values[index] || "";
-      });
-
-      return tutor;
-    });
-
-    function calculateMatch(tutor) {
-      let score = 0;
-      const reasons = [];
-
-      const tutorLevel = (tutor["Level"] || "").toLowerCase();
-      const teaching = (tutor["Relevant teaching"] || "").toLowerCase();
-      const boards = (tutor["Exam Boards"] || "").toLowerCase();
-      const online = (tutor["Online"] || "").toLowerCase();
-      const location = (tutor["Location"] || "").toLowerCase();
-      const experience = (tutor["Qualifications / Experience"] || "").toLowerCase();
-      const priority = (tutor["Algevia priority"] || "").toLowerCase();
-
-      /* 30% — Level */
-      if (tutorLevel.includes(level)) {
-        score += 30;
-        reasons.push("Level matches");
-      } else if (tutorLevel.includes("both")) {
-        score += 30;
-        reasons.push("Teaches both GCSE and A-Level");
-      } else if (teaching.includes(level)) {
-        score += 30;
-        reasons.push("Relevant teaching experience");
-      }
-
-      /* 25% — Exam board */
-      if (
-        examBoard !== "other" &&
-        examBoard !== "" &&
-        (
-          boards.includes(examBoard) ||
-          boards.includes("all exam boards")
-        )
-      ) {
-        score += 25;
-        reasons.push("Exam board matches");
-      } else if (examBoard === "other" || examBoard === "") {
-        score += 12;
-      }
-
-      /* 15% — Topic */
-      if (topics !== "") {
-        const topicWords = topics
-          .split(/[,\s]+/)
-          .filter(word => word.length > 3);
-
-        const topicMatch = topicWords.some(word =>
-          teaching.includes(word) ||
-          experience.includes(word)
-        );
-
-        if (topicMatch) {
-          score += 15;
-          reasons.push("Topic experience may match");
-        }
-      } else {
-        score += 8;
-      }
-
-      /* 10% — Online / in-person */
-      if (
-        preference === "online" &&
-        online.includes("yes")
-      ) {
-        score += 10;
-        reasons.push("Offers online tutoring");
-      } else if (preference === "either") {
-        score += 5;
-      }
-
-      /* 10% — Price */
-      const rateText =
-        tutor["Public rate"] ||
-        tutor["Rate / hr"] ||
-        "";
-
-      const numbers = rateText.match(/\d+/g);
-
-      if (numbers && numbers.length > 0) {
-        const rates = numbers.map(Number);
-        const averageRate =
-          rates.reduce((a, b) => a + b, 0) / rates.length;
-
-        if (averageRate <= 50) {
-          score += 10;
-          reasons.push("Competitive rate");
-        } else if (averageRate <= 75) {
-          score += 7;
-        } else {
-          score += 4;
-        }
-      } else {
-        score += 5;
-      }
-
-      /* 5% — Experience / qualifications */
-      if (
-        experience.includes("qualified") ||
-        experience.includes("pgce") ||
-        experience.includes("qts") ||
-        experience.includes("teacher") ||
-        experience.includes("examiner") ||
-        experience.includes("years")
-      ) {
-        score += 5;
-        reasons.push("Relevant qualifications/experience");
-      }
-
-      /* 5% — Algevia priority */
-      if (priority.includes("high")) {
-        score += 5;
-        reasons.push("High Algevia priority");
-      } else if (priority.includes("medium")) {
-        score += 3;
-      } else {
-        score += 1;
-      }
-
-      return {
-        tutor,
-        score: Math.min(score, 100),
-        reasons
-      };
-    }
-
-    const matches = tutors
-      .map(calculateMatch)
-      .sort((a, b) => b.score - a.score);
-
-    const topMatches = matches.slice(0, 3);
-
-    results.innerHTML = `
-      <h2>Your Top Algevia Matches</h2>
       <p>
-        We matched your requirements for
-        <strong>${level}</strong>.
+        Create practice based on the student's needs,
+        selected topics, current level and target grade.
       </p>
+
       <p>
-        Current grade: ${currentGrade || "Not provided"}<br>
-        Target grade: ${targetGrade || "Not provided"}<br>
-        Exam board: ${examBoard || "Not provided"}
+        Questions are designed to test understanding,
+        reasoning and common misconceptions — not simply
+        generated at random.
       </p>
-    `;
 
-    topMatches.forEach((match, index) => {
-      const tutor = match.tutor;
-
-      results.innerHTML += `
-        <div class="tutor-match">
-          <h3>${index + 1}. ${tutor["Tutor/Prospect"]}</h3>
-
-          <p>
-            <strong>Algevia Match Score: ${match.score}%</strong>
-          </p>
-
-          <p>
-            <strong>Level:</strong>
-            ${tutor["Level"] || "Not specified"}
-          </p>
-
-          <p>
-            <strong>Rate:</strong>
-            ${tutor["Public rate"] || "Not specified"}
-          </p>
-
-          <p>
-            <strong>Location:</strong>
-            ${tutor["Location"] || "Not specified"}
-          </p>
-
-          <p>
-            <strong>Why this tutor matched:</strong>
-          </p>
-
-          <ul>
-            ${
-              match.reasons.length
-                ? match.reasons.map(reason => `<li>${reason}</li>`).join("")
-                : "<li>Relevant tutor profile found</li>"
-            }
-          </ul>
-
-          <p>
-            <strong>Experience:</strong>
-            ${tutor["Qualifications / Experience"] || "Not specified"}
-          </p>
-
-          <p>
-            <strong>Verification:</strong>
-            ${tutor["Verified"] || "Not specified"}
-          </p>
-
-          <hr>
-        </div>
-      `;
-    });
-
-  } catch (error) {
-    results.innerHTML = `
-      <h2>We're sorry</h2>
       <p>
-        We couldn't load the tutor database.
-        Please try again.
+        After the paper, Algevia analyses the answers,
+        explains what went wrong and recommends what
+        to practise next.
       </p>
-    `;
 
-    console.error(error);
-  }
-});
-</script>
+      <button class="button">Practice Papers</button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- TRADES -->
+
+<section id="trades">
+
+  <h2>Algevia Trades</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>Plumbers</h3>
+      <p>Find suitable plumbing professionals for your needs.</p>
+    </div>
+
+    <div class="card">
+      <h3>Electricians</h3>
+      <p>Connect with suitable electrical professionals.</p>
+    </div>
+
+    <div class="card">
+      <h3>Handymen</h3>
+      <p>Find help for everyday property and repair needs.</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- WELLNESS -->
+
+<section id="wellness">
+
+  <h2>Algevia Wellness</h2>
+
+  <div class="card">
+
+    <h3>Find the right wellness professional</h3>
+
+    <p>
+      Algevia can help customers identify their needs
+      and connect them with suitable independent providers.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- PROVIDERS -->
+
+<div class="cta" id="providers">
+
+  <h2>Are you a great provider?</h2>
+
+  <p>
+    Join Algevia and connect with customers looking
+    for your expertise.
+  </p>
+
+  <button class="button">Become a Provider</button>
+
+</div>
+
+
+<!-- FINAL CTA -->
+
+<div class="cta">
+
+  <h2>What do you need help with?</h2>
+
+  <button class="button">Find a Tutor</button>
+  <button class="button">Find a Tradesperson</button>
+  <button class="button">Find Wellness Support</button>
+
+</div>
+
+
+<footer>
+
+  <p><strong>ALGEVIA</strong></p>
+
+  <p>
+    The right person. The right solution. No more guesswork.
+  </p>
+
+  <p>
+    <a href="#">About</a>
+    <a href="#">How it works</a>
+    <a href="#">Education</a>
+    <a href="#">Trades</a>
+    <a href="#">Wellness</a>
+    <a href="#">Become a Provider</a>
+    <a href="#">Contact</a>
+  </p>
+
+  <p>
+    © 2026 Algevia. All rights reserved.
+  </p>
+
+</footer>
+
 </body>
 </html>
