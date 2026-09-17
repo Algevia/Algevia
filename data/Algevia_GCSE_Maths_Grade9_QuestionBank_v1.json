@@ -1,0 +1,230 @@
+{
+  "questionBankVersion": "1.0",
+  "stage": "GCSE",
+  "subject": "Mathematics",
+  "examBoard": "AQA prototype",
+  "tier": "Higher",
+  "targetGrade": 9,
+  "questions": [
+    {
+      "id": "G9-001",
+      "topic": "Algebra",
+      "subtopic": "Quadratics",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "The equation x² − 2kx + k + 3 = 0 has exactly one real solution. Find the possible values of k.",
+      "answer": "(1 + √13)/2 or (1 − √13)/2",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-002",
+      "topic": "Algebra",
+      "subtopic": "Functions",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "f(x)=2x−3 and g(x)=x²+1. Find all values of x for which f(g(x))=g(f(x)).",
+      "answer": "x = 3 ± √31/2",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-003",
+      "topic": "Algebra",
+      "subtopic": "Proof",
+      "marks": 4,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "Prove that the sum of the squares of any two consecutive odd integers is always 2 more than a multiple of 4.",
+      "answer": "Let them be 2n+1 and 2n+3. Their squares sum to 8n²+16n+10 = 4(2n²+4n+2)+2.",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-004",
+      "topic": "Number",
+      "subtopic": "Surds",
+      "marks": 4,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "Simplify exactly: √72 − 2√18 + √8.",
+      "answer": "2√2",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-005",
+      "topic": "Number",
+      "subtopic": "Bounds",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "A rectangle has measured length 8.4 cm and width 5.7 cm, each rounded to the nearest 0.1 cm. Find the upper bound for its area.",
+      "answer": "48.5875 cm²",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-006",
+      "topic": "Ratio and Proportion",
+      "subtopic": "Inverse proportion",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "Six workers take 14 hours to complete a task. Time is inversely proportional to the number of workers. How many workers are needed to finish in 8 hours?",
+      "answer": "10.5, so 11 workers if a whole number is required.",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-007",
+      "topic": "Geometry",
+      "subtopic": "Circle theorems",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "A cyclic quadrilateral has one interior angle of 68°. The opposite angle is x. Find x and state the theorem used.",
+      "answer": "112°",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-008",
+      "topic": "Geometry",
+      "subtopic": "Similarity",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "Two similar shapes have areas 72 cm² and 200 cm². A corresponding side of the smaller shape is 9 cm. Find the corresponding side of the larger shape.",
+      "answer": "15 cm",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-009",
+      "topic": "Trigonometry",
+      "subtopic": "Sine rule",
+      "marks": 5,
+      "calculator": true,
+      "difficulty": 9,
+      "question": "In triangle ABC, A=42°, B=67° and side a=8 cm. Find side b to 3 significant figures.",
+      "answer": "11.7 cm",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-010",
+      "topic": "Trigonometry",
+      "subtopic": "3D trigonometry",
+      "marks": 6,
+      "calculator": true,
+      "difficulty": 9,
+      "question": "A cuboid measures 6 cm by 8 cm by 10 cm. Find the angle between its space diagonal and the 10 cm vertical edge.",
+      "answer": "45°",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-011",
+      "topic": "Probability",
+      "subtopic": "Independence",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "P(A)=0.6, P(B)=0.5 and P(A∩B)=0.3. Determine whether A and B are independent, showing your reasoning.",
+      "answer": "They are independent.",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-012",
+      "topic": "Probability",
+      "subtopic": "Sequential events",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "A biased coin has P(H)=0.7. It is tossed twice independently. Find the probability of exactly one head.",
+      "answer": "0.42",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-013",
+      "topic": "Statistics",
+      "subtopic": "Cumulative frequency",
+      "marks": 5,
+      "calculator": true,
+      "difficulty": 9,
+      "question": "A cumulative frequency graph represents 120 observations. Explain how you would estimate the interquartile range.",
+      "answer": "Read Q1 at CF 30 and Q3 at CF 90, then subtract Q1 from Q3.",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-014",
+      "topic": "Statistics",
+      "subtopic": "Histograms",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "A class interval has width 8 and frequency density 3.5. Find its frequency.",
+      "answer": "28",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-015",
+      "topic": "Graphs",
+      "subtopic": "Quadratic graphs",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "The graph y=x²−6x+5 crosses the x-axis at two points. Without using the quadratic formula, find the x-coordinate of the turning point.",
+      "answer": "3",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-016",
+      "topic": "Graphs",
+      "subtopic": "Iteration",
+      "marks": 6,
+      "calculator": true,
+      "difficulty": 9,
+      "question": "The iteration x(n+1)=√(7+x(n)) is used with x1=2. Calculate x2, x3 and x4 to 3 decimal places.",
+      "answer": "x2=3.000, x3≈3.162, x4≈3.188",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-017",
+      "topic": "Algebra",
+      "subtopic": "Inequalities",
+      "marks": 5,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "Solve the inequality (x−2)(x+3) < 0.",
+      "answer": "−3 < x < 2",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-018",
+      "topic": "Coordinate Geometry",
+      "subtopic": "Perpendicular lines",
+      "marks": 6,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "A=(2,5) and B=(8,2). Find the equation of the line through the midpoint of AB perpendicular to AB.",
+      "answer": "y = 2x − 6.5",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-019",
+      "topic": "Problem Solving",
+      "subtopic": "Optimisation",
+      "marks": 7,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "A rectangle has perimeter 40 cm. Express its area in terms of its length x and determine the maximum possible area.",
+      "answer": "A=x(20−x); maximum area 100 cm² when x=10.",
+      "source": "Algevia original"
+    },
+    {
+      "id": "G9-020",
+      "topic": "Algebra",
+      "subtopic": "Algebraic fractions",
+      "marks": 6,
+      "calculator": false,
+      "difficulty": 9,
+      "question": "Solve (x+1)/(x−2) = 3 − 6/(x−2), stating any restriction on x.",
+      "answer": "No solution; x≠2.",
+      "source": "Algevia original"
+    }
+  ]
+}
