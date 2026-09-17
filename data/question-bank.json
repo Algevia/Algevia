@@ -1,0 +1,31 @@
+{
+  "questionBankVersion": "1.0",
+  "questions": [
+    {
+      "id": "GCSE-MATHS-H-G9-ALG-001",
+      "stage": "GCSE",
+      "subject": "Mathematics",
+      "tier": "Higher",
+      "examBoard": "AQA",
+      "targetGrade": 9,
+      "topic": "Algebra",
+      "subtopic": "Quadratic Equations",
+      "skill": "Algebraic reasoning",
+      "questionType": "Problem solving",
+      "difficulty": 9,
+      "marks": 4,
+      "calculator": false,
+      "steps": "multi-step",
+      "misconception": "Incorrect use of the discriminant",
+      "question": "A quadratic equation has exactly one real solution. Explain what this tells you about its discriminant.",
+      "answer": "The discriminant is 0.",
+      "explanation": "A quadratic has exactly one real solution when its graph touches the x-axis at one point. This occurs when the discriminant is equal to zero.",
+      "markScheme": [
+        "Recognises that there is exactly one real solution.",
+        "States or uses that the discriminant equals zero."
+      ],
+      "status": "prototype",
+      "source": "Algevia original"
+    }
+  ]
+}
