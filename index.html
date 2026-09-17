@@ -554,6 +554,166 @@
   </p>
 
 </footer>
+<!-- ALGEVIA GRADE 9 CHALLENGE -->
+<section id="grade9-challenge" style="max-width:900px;margin:40px auto;padding:30px;border-radius:18px;background:#f5f7fb;font-family:Arial,sans-serif;">
+  <h2 style="margin-top:0;">🎯 Grade 9 Challenge</h2>
 
+  <p>
+    Test yourself with a GCSE Maths Higher Grade 9 challenge
+    from the Algevia Question Intelligence Bank.
+  </p>
+
+  <div id="g9-question" style="background:white;padding:24px;border-radius:14px;margin:20px 0;">
+    Loading question...
+  </div>
+
+  <label for="g9-answer"><strong>Your answer</strong></label>
+
+  <input
+    id="g9-answer"
+    type="text"
+    placeholder="Enter your answer"
+    style="width:100%;box-sizing:border-box;padding:14px;margin:10px 0 15px;border:1px solid #ccc;border-radius:8px;font-size:16px;"
+  >
+
+  <button
+    onclick="checkGrade9Answer()"
+    style="padding:14px 22px;border:0;border-radius:8px;cursor:pointer;font-weight:bold;"
+  >
+    Check Answer
+  </button>
+
+  <button
+    onclick="loadGrade9Question()"
+    style="padding:14px 22px;border:0;border-radius:8px;cursor:pointer;margin-left:8px;"
+  >
+    Try Another
+  </button>
+
+  <div id="g9-result" style="margin-top:20px;"></div>
+</section>
+
+<script>
+let grade9Questions = [];
+let currentGrade9Question = null;
+
+async function loadGrade9Question() {
+  const questionBox = document.getElementById("g9-question");
+  const resultBox = document.getElementById("g9-result");
+  const answerBox = document.getElementById("g9-answer");
+
+  resultBox.innerHTML = "";
+  answerBox.value = "";
+  questionBox.innerHTML = "Loading question...";
+
+  try {
+    const response = await fetch(
+      "data/Algevia_GCSE_Maths_Grade9_QuestionBank_v1.json"
+    );
+
+    const data = await response.json();
+
+    grade9Questions = data.questions || [];
+
+    if (grade9Questions.length === 0) {
+      throw new Error("No questions found.");
+    }
+
+    const randomIndex = Math.floor(
+      Math.random() * grade9Questions.length
+    );
+
+    currentGrade9Question = grade9Questions[randomIndex];
+
+    questionBox.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <strong>GCSE Maths • Higher • Grade 9</strong>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <strong>Topic:</strong>
+        ${currentGrade9Question.topic}
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <strong>Marks:</strong>
+        ${currentGrade9Question.marks}
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <strong>Calculator:</strong>
+        ${currentGrade9Question.calculator ? "Allowed" : "Not allowed"}
+      </div>
+
+      <hr>
+
+      <p style="font-size:18px;line-height:1.6;">
+        ${currentGrade9Question.question}
+      </p>
+    `;
+
+  } catch (error) {
+    questionBox.innerHTML =
+      "Sorry, the question bank could not be loaded.";
+    console.error(error);
+  }
+}
+
+function normaliseAnswer(answer) {
+  return answer
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/,/g, "");
+}
+
+function checkGrade9Answer() {
+  const resultBox = document.getElementById("g9-result");
+  const studentAnswer =
+    normaliseAnswer(document.getElementById("g9-answer").value);
+
+  if (!currentGrade9Question) {
+    resultBox.innerHTML =
+      "<p>Please wait for the question to load.</p>";
+    return;
+  }
+
+  if (!studentAnswer) {
+    resultBox.innerHTML =
+      "<p>Please enter an answer first.</p>";
+    return;
+  }
+
+  const correctAnswer =
+    normaliseAnswer(currentGrade9Question.answer);
+
+  if (studentAnswer === correctAnswer) {
+    resultBox.innerHTML = `
+      <div style="padding:18px;border-radius:10px;background:#eaf8ee;">
+        <h3>✅ Correct!</h3>
+        <p>${currentGrade9Question.explanation}</p>
+        <p><strong>Ready for another challenge?</strong></p>
+      </div>
+    `;
+  } else {
+    resultBox.innerHTML = `
+      <div style="padding:18px;border-radius:10px;background:#fff4e5;">
+        <h3>Not quite.</h3>
+        <p><strong>Correct answer:</strong>
+        ${currentGrade9Question.answer}</p>
+
+        <p><strong>Explanation:</strong>
+        ${currentGrade9Question.explanation}</p>
+
+        <p><strong>Algevia tip:</strong>
+        Look carefully at the method, not just the final answer.
+        Your next version of Algevia will analyse mistakes and
+        recommend the next question.</p>
+      </div>
+    `;
+  }
+}
+
+loadGrade9Question();
+</script>
 </body>
 </html>
