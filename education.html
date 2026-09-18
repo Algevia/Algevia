@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algevia Education</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      color: #172033;
+      line-height: 1.6;
+    }
+
+    header {
+      background: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #172033;
+      font-weight: 600;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 70px 20px;
+      background: white;
+    }
+
+    .hero h1 {
+      font-size: 44px;
+      margin-bottom: 10px;
+    }
+
+    .hero h2 {
+      font-size: 24px;
+      font-weight: normal;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      max-width: 750px;
+      margin: 0 auto 30px;
+      font-size: 18px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 24px;
+      background: #172033;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin: 8px;
+      font-weight: bold;
+    }
+
+    section {
+      max-width: 1100px;
+      margin: auto;
+      padding: 55px 20px;
+    }
+
+    section h2 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 35px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 28px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card h3 {
+      font-size: 22px;
+    }
+
+    .subjects {
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .journey {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      background: white;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav a {
+        margin: 5px;
+        display: inline-block;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">ALGEVIA</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="education.html">Education</a>
+    <a href="trades.html">Trades</a>
+    <a href="wellness.html">Wellness</a>
+    <a href="how-it-works.html">How It Works</a>
+    <a href="provider.html">Become a Provider</a>
+  </nav>
+</header>
+
+<div class="hero">
+
+  <h1>Algevia Education</h1>
+
+  <h2>Learn your way. Improve your way.</h2>
+
+  <p>
+    From 11+ to GCSE and A-Level, Algevia combines intelligent
+    independent learning with the right tutor when you need one.
+  </p>
+
+  <a class="button" href="#diagnostic">Start Free Diagnostic</a>
+  <a class="button" href="#tutor">Match My Tutor</a>
+
+</div>
+
+<section>
+
+  <h2>Choose how you learn</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>📚 Learn by yourself</h3>
+      <p>
+        Learn at your own pace with your AI learning companion.
+        Ask questions, get explanations, practise problems and
+        work on the areas you find difficult.
+      </p>
+      <p><strong>Ask Algevia:</strong></p>
+      <p>
+        "Why is my answer wrong?"<br>
+        "Give me a hint."<br>
+        "Explain this more simply."<br>
+        "Give me a harder question."
+      </p>
+    </div>
+
+    <div class="card" id="tutor">
+      <h3>👨‍🏫 Match My Tutor</h3>
+      <p>
+        Tell Algevia what you need and we'll use your learning
+        profile, requirements and preferences to help identify
+        suitable independent tutors.
+      </p>
+      <a class="button" href="#">Match My Tutor</a>
+    </div>
+
+    <div class="card">
+      <h3>🔗 Learn with both</h3>
+      <p>
+        Combine AI-powered independent learning with human
+        tutoring. Your learning journey can continue between
+        lessons with personalised practice and progress tracking.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<section id="diagnostic">
+
+  <h2>Start with a Free Diagnostic</h2>
+
+  <div class="card">
+
+    <p>
+      Algevia can assess your current knowledge and identify
+      strengths and weaknesses by topic.
+    </p>
+
+    <p>
+      Your results can help guide your learning pathway,
+      practice questions and tutor matching.
+    </p>
+
+    <p><strong>Example:</strong></p>
+
+    <p>
+      Algebra — Strong<br>
+      Geometry — Developing<br>
+      Trigonometry — Needs Practice<br>
+      Statistics — Strong
+    </p>
+
+    <a class="button" href="#">Start Free Diagnostic</a>
+
+  </div>
+
+</section>
+
+<section>
+
+  <h2>11+ → GCSE → A-Level</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>11+</h3>
+      <p>
+        Build confidence and develop mathematical problem-solving
+        skills for 11+ preparation.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>GCSE</h3>
+      <p>
+        Maths, Physics and Chemistry with targeted practice,
+        grade progression and exam preparation.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>A-Level</h3>
+      <p>
+        Maths, Physics and Chemistry with deeper understanding,
+        challenging questions and exam-focused practice.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<section>
+
+  <h2>Intelligent Practice</h2>
+
+  <div class="card">
+
+    <p>
+      Don't just practise more. Practise smarter.
+    </p>
+
+    <p>
+      Algevia can use your learning history to help identify
+      what you should practise next.
+    </p>
+
+    <p>
+      Choose your own paper or let Algevia choose based on
+      your progress.
+    </p>
+
+    <div class="journey">
+      Diagnose → Practise → Analyse → Adapt → Improve
+    </div>
+
+  </div>
+
+</section>
+
+<section>
+
+  <h2>Subjects</h2>
+
+  <div class="subjects">
+    <p><strong>11+:</strong> Maths</p>
+    <p><strong>GCSE:</strong> Maths • Physics • Chemistry</p>
+    <p><strong>A-Level:</strong> Maths • Physics • Chemistry</p>
+  </div>
+
+</section>
+
+<footer>
+  <p>© Algevia — The right person. The right solution.</p>
+</footer>
+
+</body>
+</html>
