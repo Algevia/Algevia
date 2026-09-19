@@ -156,7 +156,6 @@
     <a href="provider.html">Become a Provider</a>
   </nav>
 </header>
-
 <div class="hero">
 
   <h1>Algevia Education</h1>
@@ -164,56 +163,69 @@
   <h2><strong>Learn Smarter. Achieve More.</strong></h2>
 
   <p>
-  Your AI learning companion, with the right tutor when you need one.
-  From 11+ to GCSE and A-Level, Algevia helps you understand,
-  practise, improve and achieve your goals.
-</p>
+    Your AI learning companion, with the right tutor when you need one.
+    From 11+ to GCSE and A-Level, Algevia helps you understand what you know,
+    identify what you need to improve, practise intelligently and work towards
+    your goals.
+  </p>
 
-  <a class="button" href="#diagnostic">Start Free Diagnostic</a>
-  <a class="button" href="#tutor">Match My Tutor</a>
+  <p>
+    <strong>11+ → GCSE → A-Level</strong><br>
+    Maths • Physics • Chemistry
+  </p>
 
 </div>
 
 <section>
 
-  <h2>Choose how you learn</h2>
+  <section>
 
-  <div class="cards">
+  <h2>Intelligent Practice</h2>
 
-    <div class="card">
-      <h3>📚 Learn by yourself</h3>
-      <p>
-        Learn at your own pace with your AI learning companion.
-        Ask questions, get explanations, practise problems and
-        work on the areas you find difficult.
-      </p>
-      <p><strong>Ask Algevia:</strong></p>
-      <p>
-        "Why is my answer wrong?"<br>
-        "Give me a hint."<br>
-        "Explain this more simply."<br>
-        "Give me a harder question."
-      </p>
+  <div class="card">
+
+    <h3>Don't just practise more. Practise smarter.</h3>
+
+    <p>
+      Algevia uses your learning profile, previous performance and
+      areas for improvement to help make practice more purposeful.
+    </p>
+
+    <p>
+      Practice can adapt to your level, target grade, topics,
+      mistakes and progress.
+    </p>
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>🎯 Personalised Practice</h3>
+        <p>
+          Focus on the topics and skills that matter most to your progress.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🧠 Adaptive Questions</h3>
+        <p>
+          Questions can adapt as Algevia learns what you understand
+          and where you need more practice.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>📝 Practice Papers</h3>
+        <p>
+          Build targeted practice papers or allow Algevia to recommend
+          what you should practise next.
+        </p>
+      </div>
+
     </div>
 
-    <div class="card" id="tutor">
-      <h3>👨‍🏫 Match My Tutor</h3>
-      <p>
-        Tell Algevia what you need and we'll use your learning
-        profile, requirements and preferences to help identify
-        suitable independent tutors.
-      </p>
-      <a class="button" href="#">Match My Tutor</a>
-    </div>
-
-    <div class="card">
-      <h3>🔗 Learn with both</h3>
-      <p>
-        Combine AI-powered independent learning with human
-        tutoring. Your learning journey can continue between
-        lessons with personalised practice and progress tracking.
-      </p>
-    </div>
+    <p style="text-align:center; margin-top:25px; font-weight:bold;">
+      Your practice adapts as you learn.
+    </p>
 
   </div>
 
@@ -225,59 +237,238 @@
 
   <div class="card">
 
-    <p>
-      Algevia can assess your current knowledge and identify
-      strengths and weaknesses by topic.
-    </p>
+    <h3>Know where you are. Know what to work on next.</h3>
 
     <p>
-      Your results can help guide your learning pathway,
-      practice questions and tutor matching.
+      Algevia's diagnostic helps identify your strengths, weaknesses
+      and areas that need more practice.
     </p>
 
-    <p><strong>Example:</strong></p>
+    <div class="form-grid">
 
-    <p>
-      Algebra — Strong<br>
-      Geometry — Developing<br>
-      Trigonometry — Needs Practice<br>
-      Statistics — Strong
-    </p>
+      <label>
+        <strong>Stage</strong>
+        <select id="stageSelect">
+          <option value="">Select stage</option>
+          <option value="11+">11+</option>
+          <option value="GCSE">GCSE</option>
+          <option value="A-Level">A-Level</option>
+        </select>
+      </label>
 
-    <a class="button" href="#">Start Free Diagnostic</a>
+      <label>
+        <strong>Subject</strong>
+        <select id="subjectSelect">
+          <option value="">Select subject</option>
+        </select>
+      </label>
+
+      <label>
+        <strong>Exam Board</strong>
+        <select id="examBoardSelect">
+          <option value="">Select exam board</option>
+          <option value="AQA">AQA</option>
+          <option value="Edexcel">Pearson Edexcel</option>
+          <option value="OCR">OCR</option>
+          <option value="Other">Other / Not sure</option>
+        </select>
+      </label>
+
+      <label>
+        <strong>Current Grade / Level</strong>
+        <select id="currentGradeSelect">
+          <option value="">Select current grade / level</option>
+        </select>
+      </label>
+
+      <label>
+        <strong>Target Grade</strong>
+        <select id="targetGradeSelect">
+          <option value="">Select target grade</option>
+        </select>
+      </label>
+
+      <label id="tierField">
+        <strong>GCSE Tier</strong>
+        <select id="tierSelect">
+          <option value="">Select tier</option>
+          <option value="Foundation">Foundation</option>
+          <option value="Higher">Higher</option>
+        </select>
+      </label>
+
+    </div>
+
+    <div style="text-align:center; margin-top:25px;">
+      <button class="button" id="startDiagnostic">
+        Start Free Diagnostic
+      </button>
+    </div>
+
+    <p id="diagnosticMessage" style="text-align:center; font-weight:bold;"></p>
 
   </div>
 
 </section>
 
+<script>
+  const stageSelect = document.getElementById("stageSelect");
+  const subjectSelect = document.getElementById("subjectSelect");
+  const examBoardSelect = document.getElementById("examBoardSelect");
+  const currentGradeSelect = document.getElementById("currentGradeSelect");
+  const targetGradeSelect = document.getElementById("targetGradeSelect");
+  const tierField = document.getElementById("tierField");
+  const startDiagnostic = document.getElementById("startDiagnostic");
+  const diagnosticMessage = document.getElementById("diagnosticMessage");
+
+  function updateDiagnosticOptions() {
+
+    const stage = stageSelect.value;
+
+    subjectSelect.innerHTML =
+      '<option value="">Select subject</option>';
+
+    currentGradeSelect.innerHTML =
+      '<option value="">Select current grade / level</option>';
+
+    targetGradeSelect.innerHTML =
+      '<option value="">Select target grade</option>';
+
+    if (stage === "11+") {
+
+      subjectSelect.innerHTML +=
+        '<option value="Maths">Maths</option>';
+
+      currentGradeSelect.innerHTML +=
+        '<option value="Developing">Developing</option>' +
+        '<option value="Secure">Secure</option>' +
+        '<option value="Strong">Strong</option>';
+
+      targetGradeSelect.innerHTML +=
+        '<option value="11+ Ready">11+ Ready</option>' +
+        '<option value="Highly Competitive">Highly Competitive</option>';
+
+      tierField.style.display = "none";
+      examBoardSelect.parentElement.style.display = "none";
+
+    } else if (stage === "GCSE") {
+
+      subjectSelect.innerHTML +=
+        '<option value="Maths">Maths</option>' +
+        '<option value="Physics">Physics</option>' +
+        '<option value="Chemistry">Chemistry</option>';
+
+      for (let grade = 1; grade <= 9; grade++) {
+        currentGradeSelect.innerHTML +=
+          '<option value="' + grade + '">Grade ' + grade + '</option>';
+
+        targetGradeSelect.innerHTML +=
+          '<option value="' + grade + '">Grade ' + grade + '</option>';
+      }
+
+      tierField.style.display = "block";
+      examBoardSelect.parentElement.style.display = "block";
+
+    } else if (stage === "A-Level") {
+
+      subjectSelect.innerHTML +=
+        '<option value="Maths">Maths</option>' +
+        '<option value="Physics">Physics</option>' +
+        '<option value="Chemistry">Chemistry</option>';
+
+      const grades = ["E", "D", "C", "B", "A", "A*"];
+
+      grades.forEach(function(grade) {
+        currentGradeSelect.innerHTML +=
+          '<option value="' + grade + '">Grade ' + grade + '</option>';
+
+        targetGradeSelect.innerHTML +=
+          '<option value="' + grade + '">Grade ' + grade + '</option>';
+      });
+
+      tierField.style.display = "none";
+      examBoardSelect.parentElement.style.display = "block";
+    }
+  }
+
+  stageSelect.addEventListener("change", updateDiagnosticOptions);
+
+  startDiagnostic.addEventListener("click", function() {
+
+    if (!stageSelect.value ||
+        !subjectSelect.value ||
+        !currentGradeSelect.value ||
+        !targetGradeSelect.value) {
+
+      diagnosticMessage.textContent =
+        "Please complete the required selections before starting.";
+
+      return;
+    }
+
+    diagnosticMessage.textContent =
+      "Your diagnostic is being prepared...";
+  });
+
+  updateDiagnosticOptions();
+</script>
+
 <section>
 
-  <h2>11+ → GCSE → A-Level</h2>
+  <h2>How do you want to learn?</h2>
+
+  <p>
+    Choose the learning approach that works best for you.
+    You can change your approach as your learning needs develop.
+  </p>
 
   <div class="cards">
 
     <div class="card">
-      <h3>11+</h3>
+
+      <h3>📚 Learn by Yourself</h3>
+
       <p>
-        Build confidence and develop mathematical problem-solving
-        skills for 11+ preparation.
+        Learn with your AI learning companion. Ask questions,
+        get explanations and hints, practise problems and
+        work on the areas you find difficult.
       </p>
+
+      <a class="button" href="learn.html">
+        Start AI Learning
+      </a>
+
     </div>
 
     <div class="card">
-      <h3>GCSE</h3>
+
+      <h3>👨‍🏫 Match My Tutor</h3>
+
       <p>
-        Maths, Physics and Chemistry with targeted practice,
-        grade progression and exam preparation.
+        Find a suitable independent tutor based on your
+        learning needs, goals, preferences and diagnostic profile.
       </p>
+
+      <a class="button" href="tutor-match.html">
+        Match My Tutor
+      </a>
+
     </div>
 
     <div class="card">
-      <h3>A-Level</h3>
+
+      <h3>🔗 Learn with Both</h3>
+
       <p>
-        Maths, Physics and Chemistry with deeper understanding,
-        challenging questions and exam-focused practice.
+        Combine AI-powered independent learning with human
+        tutoring. Your learning profile continues to develop
+        across both.
       </p>
+
+      <a class="button" href="combined-learning.html">
+        Learn with Both
+      </a>
+
     </div>
 
   </div>
@@ -286,43 +477,23 @@
 
 <section>
 
-  <h2>Intelligent Practice</h2>
+  <h2>Your Learning Journey</h2>
 
   <div class="card">
 
     <p>
-      Don't just practise more. Practise smarter.
-    </p>
-
-    <p>
-      Algevia can use your learning history to help identify
-      what you should practise next.
-    </p>
-
-    <p>
-      Choose your own paper or let Algevia choose based on
-      your progress.
+      Algevia brings your diagnostic, learning, practice and progress
+      together so your learning can adapt as you improve.
     </p>
 
     <div class="journey">
-      Diagnose → Practise → Analyse → Adapt → Improve
+      Diagnose → Learn → Practise → Analyse → Adapt → Improve
     </div>
 
   </div>
 
 </section>
 
-<section>
-
-  <h2>Subjects</h2>
-
-  <div class="subjects">
-    <p><strong>11+:</strong> Maths</p>
-    <p><strong>GCSE:</strong> Maths • Physics • Chemistry</p>
-    <p><strong>A-Level:</strong> Maths • Physics • Chemistry</p>
-  </div>
-
-</section>
 
 <footer>
   <p>© Algevia — The right person. The right solution.</p>
