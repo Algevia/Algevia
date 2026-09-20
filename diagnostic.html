@@ -490,6 +490,35 @@
 
   function createDiagnostic() {
 
+  /*
+    Read the student's selections from Education page.
+  */
+
+  const params = new URLSearchParams(window.location.search);
+
+  const currentGrade =
+    parseInt(params.get("currentGrade"), 10) || 6;
+
+  const targetGrade =
+    parseInt(params.get("targetGrade"), 10) || 8;
+
+  const stage =
+    params.get("stage") || "GCSE";
+
+  const subject =
+    params.get("subject") || "Maths";
+
+  const examBoard =
+    params.get("examBoard") || "";
+
+  const tier =
+    params.get("tier") || "Higher";
+
+
+  /*
+    Major GCSE Maths topics.
+  */
+
   const topics = [
     "Number",
     "Algebra",
@@ -499,146 +528,430 @@
     "Graphs & Functions"
   ];
 
+
   let selected = [];
 
   const usedIds = new Set();
   const usedTexts = new Set();
   const usedSubtopics = new Set();
 
+
+  /*
+    Convert values such as:
+    6
+    "6"
+    "Grade 6"
+    "grade-6"
+    into a number.
+  */
+
+  function getGrade(value) {
+
+    const match =
+      String(value || "").match(/\d+/);
+
+    return match
+      ? parseInt(match[0], 10)
+      : null;
+  }
+
+
   function normalise(value) {
+
     return String(value || "")
       .trim()
       .toLowerCase();
+
   }
 
-  function addQuestion(question) {
+
+  /*
+    Get the grade attached to a question.
+  */
+
+  function questionGrade(question) {
+
+    return getGrade(
+      question.target_grade
+    );
+
+  }
+
+
+  /*
+    Check whether a question is acceptable.
+  */
+
+  function canAdd(question, allowRepeatedSubtopic = false) {
 
     if (!question) return false;
 
-    const id = normalise(question.id);
-    const text = normalise(question.question);
-    const subtopic = normalise(question.subtopic);
+    const id =
+      normalise(question.id);
 
-    if (usedIds.has(id)) return false;
+    const text =
+      normalise(question.question);
 
-    if (usedTexts.has(text)) return false;
+    const subtopic =
+      normalise(question.subtopic);
 
-    if (usedSubtopics.has(subtopic)) return false;
+    /*
+      Never repeat the same question.
+    */
+
+    if (usedIds.has(id)) {
+      return false;
+    }
+
+    /*
+      Never repeat identical question text.
+    */
+
+    if (usedTexts.has(text)) {
+      return false;
+    }
+
+    /*
+      Avoid repeated subtopics.
+    */
+
+    if (
+      !allowRepeatedSubtopic &&
+      usedSubtopics.has(subtopic)
+    ) {
+      return false;
+    }
+
+    return true;
+
+  }
+
+
+  /*
+    Add a question to the diagnostic.
+  */
+
+  function addQuestion(
+    question,
+    allowRepeatedSubtopic = false
+  ) {
+
+    if (
+      !canAdd(
+        question,
+        allowRepeatedSubtopic
+      )
+    ) {
+      return false;
+    }
+
+    const id =
+      normalise(question.id);
+
+    const text =
+      normalise(question.question);
+
+    const subtopic =
+      normalise(question.subtopic);
 
     selected.push(question);
 
     usedIds.add(id);
+
     usedTexts.add(text);
+
     usedSubtopics.add(subtopic);
 
     return true;
+
   }
 
 
   /*
-    STEP 1
-    Select across the major GCSE Maths topics.
+    Shuffle an array.
   */
 
-  const shuffledTopics = [...topics]
-    .sort(() => Math.random() - 0.5);
+  function shuffle(array) {
 
-  shuffledTopics.forEach(topic => {
-
-    if (selected.length >= 20) return;
-
-    const candidates = questionBank
-      .filter(q =>
-        normalise(q.topic) === normalise(topic) &&
-        !usedSubtopics.has(normalise(q.subtopic))
-      )
+    return [...array]
       .sort(() => Math.random() - 0.5);
 
-    if (candidates.length > 0) {
-
-      const question =
-        candidates.find(q =>
-          !selected.some(s =>
-            Number(s.difficulty) === Number(q.difficulty)
-          )
-        ) || candidates[0];
-
-      addQuestion(question);
-    }
-  });
-
-
-  /*
-    STEP 2
-    Fill remaining places with unused subtopics.
-  */
-
-  const remainingUnique = questionBank
-    .filter(q =>
-      !usedIds.has(normalise(q.id)) &&
-      !usedTexts.has(normalise(q.question)) &&
-      !usedSubtopics.has(normalise(q.subtopic))
-    )
-    .sort(() => Math.random() - 0.5);
-
-  for (const question of remainingUnique) {
-
-    if (selected.length >= 20) break;
-
-    addQuestion(question);
   }
 
 
   /*
-    STEP 3
-    Final safety check.
+    Sort questions by how close their
+    target grade is to the requested grade.
+  */
 
-    If there are not enough unique subtopics,
-    allow a repeated subtopic but NEVER a
-    duplicate question.
+  function gradeDistance(
+    question,
+    desiredGrade
+  ) {
+
+    const qGrade =
+      questionGrade(question);
+
+    if (qGrade === null) {
+      return 99;
+    }
+
+    return Math.abs(
+      qGrade - desiredGrade
+    );
+
+  }
+
+
+  /*
+    Start with questions around the
+    student's current grade.
+  */
+
+  const currentPool =
+    shuffle(
+      questionBank.filter(question => {
+
+        const grade =
+          questionGrade(question);
+
+        return (
+          grade !== null &&
+          Math.abs(
+            grade - currentGrade
+          ) <= 1
+        );
+
+      })
+    );
+
+
+  /*
+    Add approximately 6 questions
+    around current ability.
+  */
+
+  for (const question of currentPool) {
+
+    if (selected.length >= 6) {
+      break;
+    }
+
+    addQuestion(question);
+
+  }
+
+
+  /*
+    Add progression questions between
+    current grade and target grade.
+  */
+
+  const progressionPool =
+    shuffle(
+      questionBank
+        .filter(question => {
+
+          const grade =
+            questionGrade(question);
+
+          if (grade === null) {
+            return false;
+          }
+
+          return (
+            grade >= currentGrade &&
+            grade <= targetGrade
+          );
+
+        })
+        .sort(
+          (a, b) =>
+            gradeDistance(
+              a,
+              targetGrade
+            ) -
+            gradeDistance(
+              b,
+              targetGrade
+            )
+        )
+    );
+
+
+  /*
+    Add approximately 8 progression
+    / target-level questions.
+  */
+
+  for (const question of progressionPool) {
+
+    if (selected.length >= 14) {
+      break;
+    }
+
+    addQuestion(question);
+
+  }
+
+
+  /*
+    Add target-grade questions.
+  */
+
+  const targetPool =
+    shuffle(
+      questionBank.filter(question => {
+
+        const grade =
+          questionGrade(question);
+
+        return (
+          grade !== null &&
+          grade === targetGrade
+        );
+
+      })
+    );
+
+
+  for (const question of targetPool) {
+
+    if (selected.length >= 18) {
+      break;
+    }
+
+    addQuestion(question);
+
+  }
+
+
+  /*
+    Add a small number of stretch questions.
+    These are slightly above the target grade.
+  */
+
+  const stretchPool =
+    shuffle(
+      questionBank.filter(question => {
+
+        const grade =
+          questionGrade(question);
+
+        return (
+          grade !== null &&
+          grade > targetGrade &&
+          grade <= targetGrade + 1
+        );
+
+      })
+    );
+
+
+  for (const question of stretchPool) {
+
+    if (selected.length >= 20) {
+      break;
+    }
+
+    addQuestion(question);
+
+  }
+
+
+  /*
+    If the grade-specific pools did not
+    provide enough questions, fill the
+    remaining places with unused questions
+    while still avoiding repeated subtopics.
   */
 
   if (selected.length < 20) {
 
-    const remainingQuestions = questionBank
-      .filter(q =>
-        !usedIds.has(normalise(q.id)) &&
-        !usedTexts.has(normalise(q.question))
-      )
-      .sort(() => Math.random() - 0.5);
+    const remainingPool =
+      shuffle(
+        questionBank
+          .filter(question =>
+            canAdd(question)
+          )
+      );
 
-    for (const question of remainingQuestions) {
+    for (const question of remainingPool) {
 
-      if (selected.length >= 20) break;
-
-      const id = normalise(question.id);
-      const text = normalise(question.question);
-
-      if (!usedIds.has(id) && !usedTexts.has(text)) {
-
-        selected.push(question);
-
-        usedIds.add(id);
-        usedTexts.add(text);
+      if (selected.length >= 20) {
+        break;
       }
+
+      addQuestion(question);
+
     }
+
   }
 
 
   /*
-    Shuffle the final diagnostic.
+    Final safety fallback.
+
+    If the bank does not contain enough
+    unique subtopics, allow a repeated
+    subtopic but NEVER a duplicate question.
   */
 
-  diagnosticQuestions = selected
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 20);
+  if (selected.length < 20) {
 
+    const finalPool =
+      shuffle(
+        questionBank
+          .filter(question =>
+            canAdd(
+              question,
+              true
+            )
+          )
+      );
+
+    for (const question of finalPool) {
+
+      if (selected.length >= 20) {
+        break;
+      }
+
+      addQuestion(
+        question,
+        true
+      );
+
+    }
+
+  }
+
+
+  /*
+    Final randomisation.
+
+    This prevents the test from always
+    appearing in grade order.
+  */
+
+  diagnosticQuestions =
+    shuffle(selected)
+      .slice(0, 20);
+
+
+  /*
+    Reset diagnostic state.
+  */
 
   currentQuestion = 0;
 
   score = 0;
 
   answers = [];
+
+
+  /*
+    Display the first question.
+  */
 
   showQuestion();
 
