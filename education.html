@@ -403,20 +403,30 @@
 
   startDiagnostic.addEventListener("click", function() {
 
-    if (!stageSelect.value ||
-        !subjectSelect.value ||
-        !currentGradeSelect.value ||
-        !targetGradeSelect.value) {
-
-      diagnosticMessage.textContent =
-        "Please complete the required selections before starting.";
-
-      return;
-    }
+  if (!stageSelect.value ||
+      !subjectSelect.value ||
+      !currentGradeSelect.value ||
+      !targetGradeSelect.value) {
 
     diagnosticMessage.textContent =
-      "Your diagnostic is being prepared...";
+      "Please complete the required selections before starting.";
+
+    return;
+  }
+
+  const params = new URLSearchParams({
+    stage: stageSelect.value,
+    subject: subjectSelect.value,
+    examBoard: examBoardSelect.value,
+    currentGrade: currentGradeSelect.value,
+    targetGrade: targetGradeSelect.value,
+    tier: tierField.value
   });
+
+  window.location.href =
+    "diagnostic.html?" + params.toString();
+
+});
 
   updateDiagnosticOptions();
 </script>
