@@ -509,59 +509,143 @@
 
     let selected = [];
 
+const usedIds = new Set();
+const usedTexts = new Set();
+const usedSubtopics = new Set();
 
-    topics.forEach(topic => {
+const topics = [
+  "Number",
+  "Algebra",
+  "Ratio, Proportion & Rates",
+  "Geometry & Measures",
+  "Statistics & Probability",
+  "Graphs & Functions"
+];
 
-      const topicQuestions =
-        questionBank.filter(q => q.topic === topic);
+function normalise(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+}
 
-      if (topicQuestions.length > 0) {
+function addQuestion(question) {
 
-        const random =
-          topicQuestions[
-            Math.floor(
-              Math.random() * topicQuestions.length
-            )
-          ];
+  if (!question) return false;
 
-        selected.push(random);
+  const id = normalise(question.id);
+  const text = normalise(question.question);
+  const subtopic = normalise(question.subtopic);
 
-      }
+  // Never allow the same question twice.
+  if (usedIds.has(id)) return false;
 
-    });
+  // Never allow identical question text twice.
+  if (usedTexts.has(text)) return false;
+
+  // Avoid repeating the same subtopic.
+  if (usedSubtopics.has(subtopic)) return false;
+
+  selected.push(question);
+
+  usedIds.add(id);
+  usedTexts.add(text);
+  usedSubtopics.add(subtopic);
+
+  return true;
+}
 
 
-    /*
-      Add additional random questions
-      until we have exactly 20.
-    */
+/*
+  STEP 1
+  Get broad coverage across the major GCSE topics.
+*/
 
-    const remaining =
-      questionBank.filter(q =>
-        !selected.some(s => s.id === q.id)
-      );
+const shuffledTopics = [...topics]
+  .sort(() => Math.random() - 0.5);
+
+shuffledTopics.forEach(topic => {
+
+  if (selected.length >= 20) return;
+
+  const candidates = questionBank
+    .filter(q =>
+      normalise(q.topic) === normalise(topic) &&
+      !usedSubtopics.has(normalise(q.subtopic))
+    )
+    .sort(() => Math.random() - 0.5);
+
+  if (candidates.length > 0) {
+
+    // Prefer a different difficulty level when possible.
+    const question =
+      candidates.find(q =>
+        !selected.some(s =>
+          Number(s.difficulty) === Number(q.difficulty)
+        )
+      ) || candidates[0];
+
+    addQuestion(question);
+  }
+});
 
 
-    while (
-      selected.length < 20 &&
-      remaining.length > 0
-    ) {
+/*
+  STEP 2
+  Fill the remaining places using completely different
+  subtopics wherever possible.
+*/
 
-      const index =
-        Math.floor(
-          Math.random() * remaining.length
-        );
+const remainingUnique = questionBank
+  .filter(q =>
+    !usedIds.has(normalise(q.id)) &&
+    !usedTexts.has(normalise(q.question)) &&
+    !usedSubtopics.has(normalise(q.subtopic))
+  )
+  .sort(() => Math.random() - 0.5);
 
-      selected.push(
-        remaining.splice(index, 1)[0]
-      );
+for (const question of remainingUnique) {
 
+  if (selected.length >= 20) break;
+
+  addQuestion(question);
+}
+
+
+/*
+  STEP 3
+  If the bank ever has fewer than 20 unique subtopics,
+  allow a repeated subtopic — but NEVER a duplicate question.
+*/
+
+if (selected.length < 20) {
+
+  const remainingQuestions = questionBank
+    .filter(q =>
+      !usedIds.has(normalise(q.id)) &&
+      !usedTexts.has(normalise(q.question))
+    )
+    .sort(() => Math.random() - 0.5);
+
+  for (const question of remainingQuestions) {
+
+    if (selected.length >= 20) break;
+
+    const id = normalise(question.id);
+    const text = normalise(question.question);
+
+    if (!usedIds.has(id) && !usedTexts.has(text)) {
+
+      selected.push(question);
+
+      usedIds.add(id);
+      usedTexts.add(text);
     }
-
-
-    /*
-      Shuffle the final diagnostic.
-    */
+  }
+}
+/*
+  Shuffle the final diagnostic.
+*/
+    topics.forEach(t
 
     diagnosticQuestions =
       selected
