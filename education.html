@@ -64,6 +64,7 @@
       padding: 14px 24px;
       background: #172033;
       color: white;
+      font-family: inherit;
       text-decoration: none;
       border-radius: 8px;
       margin: 8px;
@@ -89,16 +90,21 @@
     }
 
     .card {
-      background: white;
-      padding: 28px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-    }
+  background: white;
+  padding: 28px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+}
 
     .card h3 {
       font-size: 22px;
     }
 
+    .card .button {
+  margin-top: auto;
+}
     .subjects {
       text-align: center;
       font-size: 20px;
