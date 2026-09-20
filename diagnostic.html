@@ -490,179 +490,159 @@
 
   function createDiagnostic() {
 
-    const topics = [
+  const topics = [
+    "Number",
+    "Algebra",
+    "Ratio, Proportion & Rates",
+    "Geometry & Measures",
+    "Statistics & Probability",
+    "Graphs & Functions"
+  ];
 
-      "Number",
+  let selected = [];
 
-      "Algebra",
+  const usedIds = new Set();
+  const usedTexts = new Set();
+  const usedSubtopics = new Set();
 
-      "Ratio, Proportion & Rates",
+  function normalise(value) {
+    return String(value || "")
+      .trim()
+      .toLowerCase();
+  }
 
-      "Geometry & Measures",
+  function addQuestion(question) {
 
-      "Statistics & Probability",
+    if (!question) return false;
 
-      "Graphs & Functions"
+    const id = normalise(question.id);
+    const text = normalise(question.question);
+    const subtopic = normalise(question.subtopic);
 
-    ];
+    if (usedIds.has(id)) return false;
 
+    if (usedTexts.has(text)) return false;
 
-    let selected = [];
+    if (usedSubtopics.has(subtopic)) return false;
 
-const usedIds = new Set();
-const usedTexts = new Set();
-const usedSubtopics = new Set();
+    selected.push(question);
 
-const topics = [
-  "Number",
-  "Algebra",
-  "Ratio, Proportion & Rates",
-  "Geometry & Measures",
-  "Statistics & Probability",
-  "Graphs & Functions"
-];
+    usedIds.add(id);
+    usedTexts.add(text);
+    usedSubtopics.add(subtopic);
 
-function normalise(value) {
-  return String(value || "")
-    .trim()
-    .toLowerCase();
-}
-
-function addQuestion(question) {
-
-  if (!question) return false;
-
-  const id = normalise(question.id);
-  const text = normalise(question.question);
-  const subtopic = normalise(question.subtopic);
-
-  // Never allow the same question twice.
-  if (usedIds.has(id)) return false;
-
-  // Never allow identical question text twice.
-  if (usedTexts.has(text)) return false;
-
-  // Avoid repeating the same subtopic.
-  if (usedSubtopics.has(subtopic)) return false;
-
-  selected.push(question);
-
-  usedIds.add(id);
-  usedTexts.add(text);
-  usedSubtopics.add(subtopic);
-
-  return true;
-}
+    return true;
+  }
 
 
-/*
-  STEP 1
-  Get broad coverage across the major GCSE topics.
-*/
+  /*
+    STEP 1
+    Select across the major GCSE Maths topics.
+  */
 
-const shuffledTopics = [...topics]
-  .sort(() => Math.random() - 0.5);
+  const shuffledTopics = [...topics]
+    .sort(() => Math.random() - 0.5);
 
-shuffledTopics.forEach(topic => {
+  shuffledTopics.forEach(topic => {
 
-  if (selected.length >= 20) return;
+    if (selected.length >= 20) return;
 
-  const candidates = questionBank
+    const candidates = questionBank
+      .filter(q =>
+        normalise(q.topic) === normalise(topic) &&
+        !usedSubtopics.has(normalise(q.subtopic))
+      )
+      .sort(() => Math.random() - 0.5);
+
+    if (candidates.length > 0) {
+
+      const question =
+        candidates.find(q =>
+          !selected.some(s =>
+            Number(s.difficulty) === Number(q.difficulty)
+          )
+        ) || candidates[0];
+
+      addQuestion(question);
+    }
+  });
+
+
+  /*
+    STEP 2
+    Fill remaining places with unused subtopics.
+  */
+
+  const remainingUnique = questionBank
     .filter(q =>
-      normalise(q.topic) === normalise(topic) &&
+      !usedIds.has(normalise(q.id)) &&
+      !usedTexts.has(normalise(q.question)) &&
       !usedSubtopics.has(normalise(q.subtopic))
     )
     .sort(() => Math.random() - 0.5);
 
-  if (candidates.length > 0) {
-
-    // Prefer a different difficulty level when possible.
-    const question =
-      candidates.find(q =>
-        !selected.some(s =>
-          Number(s.difficulty) === Number(q.difficulty)
-        )
-      ) || candidates[0];
-
-    addQuestion(question);
-  }
-});
-
-
-/*
-  STEP 2
-  Fill the remaining places using completely different
-  subtopics wherever possible.
-*/
-
-const remainingUnique = questionBank
-  .filter(q =>
-    !usedIds.has(normalise(q.id)) &&
-    !usedTexts.has(normalise(q.question)) &&
-    !usedSubtopics.has(normalise(q.subtopic))
-  )
-  .sort(() => Math.random() - 0.5);
-
-for (const question of remainingUnique) {
-
-  if (selected.length >= 20) break;
-
-  addQuestion(question);
-}
-
-
-/*
-  STEP 3
-  If the bank ever has fewer than 20 unique subtopics,
-  allow a repeated subtopic — but NEVER a duplicate question.
-*/
-
-if (selected.length < 20) {
-
-  const remainingQuestions = questionBank
-    .filter(q =>
-      !usedIds.has(normalise(q.id)) &&
-      !usedTexts.has(normalise(q.question))
-    )
-    .sort(() => Math.random() - 0.5);
-
-  for (const question of remainingQuestions) {
+  for (const question of remainingUnique) {
 
     if (selected.length >= 20) break;
 
-    const id = normalise(question.id);
-    const text = normalise(question.question);
+    addQuestion(question);
+  }
 
-    if (!usedIds.has(id) && !usedTexts.has(text)) {
 
-      selected.push(question);
+  /*
+    STEP 3
+    Final safety check.
 
-      usedIds.add(id);
-      usedTexts.add(text);
+    If there are not enough unique subtopics,
+    allow a repeated subtopic but NEVER a
+    duplicate question.
+  */
+
+  if (selected.length < 20) {
+
+    const remainingQuestions = questionBank
+      .filter(q =>
+        !usedIds.has(normalise(q.id)) &&
+        !usedTexts.has(normalise(q.question))
+      )
+      .sort(() => Math.random() - 0.5);
+
+    for (const question of remainingQuestions) {
+
+      if (selected.length >= 20) break;
+
+      const id = normalise(question.id);
+      const text = normalise(question.question);
+
+      if (!usedIds.has(id) && !usedTexts.has(text)) {
+
+        selected.push(question);
+
+        usedIds.add(id);
+        usedTexts.add(text);
+      }
     }
   }
+
+
+  /*
+    Shuffle the final diagnostic.
+  */
+
+  diagnosticQuestions = selected
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 20);
+
+
+  currentQuestion = 0;
+
+  score = 0;
+
+  answers = [];
+
+  showQuestion();
+
 }
-/*
-  Shuffle the final diagnostic.
-*/
-    topics.forEach(t
-
-    diagnosticQuestions =
-      selected
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 20);
-
-
-    currentQuestion = 0;
-
-    score = 0;
-
-    answers = [];
-
-
-    showQuestion();
-
-  }
 
 
   /*
