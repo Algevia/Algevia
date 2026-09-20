@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Algevia Free Diagnostic</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      color: #172033;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 18px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #172033;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 35px 20px;
+    }
+
+    .hero {
+      text-align: center;
+      background: white;
+      padding: 35px 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .progress-wrap {
+      margin: 20px 0;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 5%;
+      background: #172033;
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .question-number {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #667085;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .answer-area {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .answer-area input {
+      flex: 1;
+      min-width: 220px;
+      padding: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 17px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 24px;
+      background: #172033;
+      color: white;
+      font-family: inherit;
+      font-size: inherit;
+      text-decoration: none;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .button:hover {
+      opacity: 0.9;
+    }
+
+    .error {
+      color: #b42318;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    .results {
+      display: none;
+    }
+
+    .profile-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 25px;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .profile-item {
+      padding: 20px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    .strong {
+      border-left: 5px solid #198754;
+    }
+
+    .developing {
+      border-left: 5px solid #d97706;
+    }
+
+    .priority {
+      border-left: 5px solid #b42318;
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .method-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .method-card .button {
+      margin-top: auto;
+      align-self: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #667085;
+      font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .profile-grid,
+      .method-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .answer-area {
+        flex-direction: column;
+      }
+
+      .answer-area input {
+        width: 100%;
+      }
+
+      nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">ALGEVIA</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="education.html">Education</a>
+    <a href="trades.html">Trades</a>
+    <a href="wellness.html">Wellness</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- INTRODUCTION -->
+
+  <section class="hero" id="intro">
+
+    <h1>Free Learning Diagnostic</h1>
+
+    <p>
+      Answer 20 mixed-topic questions so Algevia can understand
+      your strengths, weaknesses and learning priorities.
+    </p>
+
+    <p>
+      <strong>There is no need to prepare.</strong>
+      Just answer as accurately as you can.
+    </p>
+
+  </section>
+
+
+  <!-- DIAGNOSTIC -->
+
+  <section id="diagnosticArea">
+
+    <div class="progress-wrap">
+
+      <div style="display:flex; justify-content:space-between;">
+        <strong id="questionCounter">Question 1 of 20</strong>
+        <span id="topicLabel">Loading...</span>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+    </div>
+
+
+    <div class="question-card">
+
+      <div class="question-number" id="questionNumber">
+        Question 1
+      </div>
+
+      <div class="question" id="questionText">
+        Loading question...
+      </div>
+
+      <div class="answer-area">
+
+        <input
+          type="text"
+          id="answerInput"
+          placeholder="Enter your answer"
+          autocomplete="off"
+        >
+
+        <button
+          class="button"
+          id="nextButton"
+          onclick="submitAnswer()"
+        >
+          Next Question
+        </button>
+
+      </div>
+
+      <div class="error" id="errorMessage"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- RESULTS -->
+
+  <section class="results" id="resultsArea">
+
+    <div class="hero">
+
+      <h1>Your Algevia Learning Profile</h1>
+
+      <p>
+        Your diagnostic is complete. Algevia has analysed your
+        performance across the topics assessed.
+      </p>
+
+    </div>
+
+
+    <div class="profile-box">
+
+      <h2>Your Results</h2>
+
+      <p>
+        <strong>Score:</strong>
+        <span id="finalScore"></span> / 20
+      </p>
+
+      <p>
+        <strong>Estimated starting level:</strong>
+        <span id="estimatedLevel"></span>
+      </p>
+
+      <div class="profile-grid" id="profileGrid"></div>
+
+    </div>
+
+
+    <div class="profile-box">
+
+      <h2>What do you want to do next?</h2>
+
+      <p>
+        Choose the learning approach that works best for you.
+        Your Learning Profile will follow you through your learning journey.
+      </p>
+
+      <div class="method-grid">
+
+        <div class="method-card">
+
+          <h3>📚 Learn by Yourself</h3>
+
+          <p>
+            Learn with Algevia AI using personalised explanations,
+            examples, practice and adaptive questions.
+          </p>
+
+          <a class="button" href="learn.html">
+            Start AI Learning
+          </a>
+
+        </div>
+
+
+        <div class="method-card">
+
+          <h3>👨‍🏫 Match My Tutor</h3>
+
+          <p>
+            Use your Learning Profile to help Algevia identify
+            tutors suited to your subject, level and learning needs.
+          </p>
+
+          <a class="button" href="tutor-match.html">
+            Match My Tutor
+          </a>
+
+        </div>
+
+
+        <div class="method-card">
+
+          <h3>🔗 Learn with Both</h3>
+
+          <p>
+            Combine personalised AI learning with support from
+            a tutor who understands your Learning Profile.
+          </p>
+
+          <a class="button" href="combined-learning.html">
+            Learn with Both
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+  © Algevia — The right person. The right solution. No more guesswork.
+</footer>
+
+
+<script>
+
+  /*
+    ALGEVIA 20-QUESTION DIAGNOSTIC
+
+    IMPORTANT:
+    This first version is a front-end prototype.
+
+    It currently loads the trusted question bank,
+    selects 20 mixed-topic questions and creates
+    a basic Learning Profile.
+
+    Account protection, server-side entitlement,
+    duplicate-account prevention and permanent
+    storage will be connected later.
+  */
+
+
+  let questionBank = [];
+
+  let diagnosticQuestions = [];
+
+  let currentQuestion = 0;
+
+  let score = 0;
+
+  let answers = [];
+
+
+  /*
+    Load the existing 150-question bank
+  */
+
+  async function loadQuestionBank() {
+
+    try {
+
+      const response =
+        await fetch(
+          "data/Algevia_GCSE_Maths_Higher_Diagnostic_QuestionBank_150_v1.json"
+        );
+
+      if (!response.ok) {
+        throw new Error("Question bank could not be loaded.");
+      }
+
+      const data = await response.json();
+
+      questionBank = data.questions;
+
+      createDiagnostic();
+
+    } catch (error) {
+
+      document.getElementById("questionText").innerText =
+        "The diagnostic question bank could not be loaded.";
+
+      console.error(error);
+
+    }
+
+  }
+
+
+  /*
+    Select 20 mixed-topic questions.
+
+    We deliberately try to cover all major topics.
+  */
+
+  function createDiagnostic() {
+
+    const topics = [
+
+      "Number",
+
+      "Algebra",
+
+      "Ratio, Proportion & Rates",
+
+      "Geometry & Measures",
+
+      "Statistics & Probability",
+
+      "Graphs & Functions"
+
+    ];
+
+
+    let selected = [];
+
+
+    topics.forEach(topic => {
+
+      const topicQuestions =
+        questionBank.filter(q => q.topic === topic);
+
+      if (topicQuestions.length > 0) {
+
+        const random =
+          topicQuestions[
+            Math.floor(
+              Math.random() * topicQuestions.length
+            )
+          ];
+
+        selected.push(random);
+
+      }
+
+    });
+
+
+    /*
+      Add additional random questions
+      until we have exactly 20.
+    */
+
+    const remaining =
+      questionBank.filter(q =>
+        !selected.some(s => s.id === q.id)
+      );
+
+
+    while (
+      selected.length < 20 &&
+      remaining.length > 0
+    ) {
+
+      const index =
+        Math.floor(
+          Math.random() * remaining.length
+        );
+
+      selected.push(
+        remaining.splice(index, 1)[0]
+      );
+
+    }
+
+
+    /*
+      Shuffle the final diagnostic.
+    */
+
+    diagnosticQuestions =
+      selected
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 20);
+
+
+    currentQuestion = 0;
+
+    score = 0;
+
+    answers = [];
+
+
+    showQuestion();
+
+  }
+
+
+  /*
+    Display current question
+  */
+
+  function showQuestion() {
+
+    const q =
+      diagnosticQuestions[currentQuestion];
+
+
+    document.getElementById("questionNumber").innerText =
+      "Question " + (currentQuestion + 1);
+
+
+    document.getElementById("questionCounter").innerText =
+      "Question " +
+      (currentQuestion + 1) +
+      " of 20";
+
+
+    document.getElementById("topicLabel").innerText =
+      q.topic;
+
+
+    document.getElementById("questionText").innerText =
+      q.question;
+
+
+    document.getElementById("answerInput").value =
+      "";
+
+
+    document.getElementById("errorMessage").innerText =
+      "";
+
+
+    const progress =
+      ((currentQuestion + 1) / 20) * 100;
+
+
+    document.getElementById("progressFill").style.width =
+      progress + "%";
+
+
+    document.getElementById("answerInput").focus();
+
+  }
+
+
+  /*
+    Basic answer normalisation.
+  */
+
+  function normaliseAnswer(value) {
+
+    return value
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/£/g, "")
+      .replace(/,/g, "")
+      .replace(/cm²/g, "")
+      .replace(/cm2/g, "")
+      .replace(/km\/h/g, "")
+      .replace(/\s+/g, "");
+
+  }
+
+
+  /*
+    Check answer.
+  */
+
+  function answersMatch(studentAnswer, correctAnswer) {
+
+    const a =
+      normaliseAnswer(studentAnswer);
+
+    const b =
+      normaliseAnswer(correctAnswer);
+
+
+    if (a === b) {
+      return true;
+    }
+
+
+    /*
+      Allow simple numeric equivalence.
+    */
+
+    const numA =
+      Number(a.replace(/[^0-9.-]/g, ""));
+
+    const numB =
+      Number(b.replace(/[^0-9.-]/g, ""));
+
+
+    if (
+      !Number.isNaN(numA) &&
+      !Number.isNaN(numB) &&
+      Math.abs(numA - numB) < 0.0001
+    ) {
+
+      return true;
+
+    }
+
+
+    return false;
+
+  }
+
+
+  /*
+    Submit answer and move forward.
+  */
+
+  function submitAnswer() {
+
+    const input =
+      document.getElementById("answerInput");
+
+    const studentAnswer =
+      input.value.trim();
+
+
+    if (!studentAnswer) {
+
+      document.getElementById("errorMessage").innerText =
+        "Please enter an answer before continuing.";
+
+      return;
+
+    }
+
+
+    const q =
+      diagnosticQuestions[currentQuestion];
+
+
+    const correct =
+      answersMatch(
+        studentAnswer,
+        q.answer
+      );
+
+
+    if (correct) {
+      score++;
+    }
+
+
+    answers.push({
+
+      questionId: q.id,
+
+      topic: q.topic,
+
+      subtopic: q.subtopic,
+
+      difficulty: q.difficulty,
+
+      studentAnswer: studentAnswer,
+
+      correctAnswer: q.answer,
+
+      correct: correct
+
+    });
+
+
+    currentQuestion++;
+
+
+    if (currentQuestion >= 20) {
+
+      finishDiagnostic();
+
+    } else {
+
+      showQuestion();
+
+    }
+
+  }
+
+
+  /*
+    Create Learning Profile.
+  */
+
+  function createLearningProfile() {
+
+    const topicResults = {};
+
+
+    answers.forEach(result => {
+
+      if (!topicResults[result.topic]) {
+
+        topicResults[result.topic] = {
+
+          correct: 0,
+
+          total: 0
+
+        };
+
+      }
+
+
+      topicResults[result.topic].total++;
+
+
+      if (result.correct) {
+
+        topicResults[result.topic].correct++;
+
+      }
+
+    });
+
+
+    return topicResults;
+
+  }
+
+
+  /*
+    Convert topic performance into
+    Strong / Developing / Priority.
+  */
+
+  function getProfileStatus(percentage) {
+
+    if (percentage >= 75) {
+
+      return "Strong";
+
+    }
+
+
+    if (percentage >= 50) {
+
+      return "Developing";
+
+    }
+
+
+    return "Priority";
+
+  }
+
+
+  /*
+    Estimate starting grade.
+
+    This is deliberately labelled as an
+    initial estimate, not a formal GCSE grade.
+  */
+
+  function estimateLevel() {
+
+    const percentage =
+      (score / 20) * 100;
+
+
+    if (percentage >= 90) return "Grade 9 range";
+
+    if (percentage >= 80) return "Grade 8 range";
+
+    if (percentage >= 70) return "Grade 7 range";
+
+    if (percentage >= 60) return "Grade 6 range";
+
+    if (percentage >= 50) return "Grade 5 range";
+
+    if (percentage >= 40) return "Grade 4 range";
+
+    if (percentage >= 30) return "Grade 3 range";
+
+    return "Below Grade 3 range";
+
+  }
+
+
+  /*
+    Finish diagnostic.
+  */
+
+  function finishDiagnostic() {
+
+    document.getElementById("diagnosticArea").style.display =
+      "none";
+
+
+    document.getElementById("intro").style.display =
+      "none";
+
+
+    document.getElementById("resultsArea").style.display =
+      "block";
+
+
+    document.getElementById("finalScore").innerText =
+      score;
+
+
+    document.getElementById("estimatedLevel").innerText =
+      estimateLevel();
+
+
+    const profile =
+      createLearningProfile();
+
+
+    const grid =
+      document.getElementById("profileGrid");
+
+
+    grid.innerHTML = "";
+
+
+    Object.keys(profile).forEach(topic => {
+
+      const result =
+        profile[topic];
+
+
+      const percentage =
+        Math.round(
+          (result.correct / result.total) * 100
+        );
+
+
+      const status =
+        getProfileStatus(percentage);
+
+
+      let className =
+        "profile-item";
+
+
+      if (status === "Strong") {
+
+        className += " strong";
+
+      } else if (status === "Developing") {
+
+        className += " developing";
+
+      } else {
+
+        className += " priority";
+
+      }
+
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        className;
+
+
+      card.innerHTML = `
+
+        <h3>${topic}</h3>
+
+        <p>
+          <strong>${status}</strong>
+        </p>
+
+        <p>
+          ${result.correct} / ${result.total}
+          correct (${percentage}%)
+        </p>
+
+      `;
+
+
+      grid.appendChild(card);
+
+    });
+
+
+    /*
+      Save a temporary local copy.
+
+      This is NOT the permanent student record.
+      The real system will use a secure backend.
+    */
+
+    localStorage.setItem(
+
+      "algeviaLearningProfile",
+
+      JSON.stringify({
+
+        score: score,
+
+        estimatedLevel: estimateLevel(),
+
+        topicResults: profile,
+
+        answers: answers,
+
+        createdAt:
+          new Date().toISOString()
+
+      })
+
+    );
+
+  }
+
+
+  /*
+    Allow Enter key to submit.
+  */
+
+  document
+    .getElementById("answerInput")
+    .addEventListener(
+      "keydown",
+      function(event) {
+
+        if (event.key === "Enter") {
+
+          submitAnswer();
+
+        }
+
+      }
+    );
+
+
+  /*
+    Start loading the question bank.
+  */
+
+  loadQuestionBank();
+
+</script>
+
+</body>
+</html>
