@@ -453,34 +453,92 @@
 
   async function loadQuestionBank() {
 
-    try {
+  try {
 
-      const response =
-        await fetch(
-          "data/Algevia_GCSE_Maths_Higher_Diagnostic_QuestionBank_150_v1.json"
-        );
+    const params = new URLSearchParams(window.location.search);
 
-      if (!response.ok) {
-        throw new Error("Question bank could not be loaded.");
-      }
+    const stage = params.get("stage") || "";
+    const subject = params.get("subject") || "";
+    const examBoard = params.get("examBoard") || "";
+    const tier = params.get("tier") || "";
 
-      const data = await response.json();
+    let bankFile = "";
 
-      questionBank = data.questions;
+    /*
+      ALGEVIA QUESTION-BANK ROUTING
 
-      createDiagnostic();
+      Only route to a question bank that actually exists.
+      Never show questions from an unrelated subject or level.
+    */
 
-    } catch (error) {
+    if (
+      stage === "GCSE" &&
+      subject === "Maths" &&
+      examBoard === "AQA" &&
+      tier === "Higher"
+    ) {
 
-      document.getElementById("questionText").innerText =
-        "The diagnostic question bank could not be loaded.";
-
-      console.error(error);
+      bankFile =
+        "data/Algevia_GCSE_Maths_Higher_Diagnostic_QuestionBank_150_v1.json";
 
     }
 
+    /*
+      Other banks will be added here as they are created.
+
+      Examples:
+
+      GCSE Maths AQA Foundation
+      GCSE Maths Edexcel Higher
+      GCSE Maths Edexcel Foundation
+      GCSE Physics AQA
+      GCSE Chemistry AQA
+      A-Level Maths AQA
+      A-Level Physics AQA
+      A-Level Chemistry AQA
+      11+ Maths
+    */
+
+    if (!bankFile) {
+
+      document.getElementById("questionText").innerText =
+        "A diagnostic question bank for your selected subject, level and exam board is not available yet.";
+
+      console.warn(
+        "No question bank available for:",
+        {
+          stage,
+          subject,
+          examBoard,
+          tier
+        }
+      );
+
+      return;
+    }
+
+    const response = await fetch(bankFile);
+
+    if (!response.ok) {
+      throw new Error("Question bank could not be loaded.");
+    }
+
+    const data = await response.json();
+
+    questionBank = data.questions;
+
+    createDiagnostic();
+
+  } catch (error) {
+
+    document.getElementById("questionText").innerText =
+      "The diagnostic question bank could not be loaded.";
+
+    console.error(error);
+
   }
 
+}
 
   /*
     Select 20 mixed-topic questions.
