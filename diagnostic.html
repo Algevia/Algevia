@@ -455,8 +455,7 @@
 
   try {
 
-    const params =
-      new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
 
     const stage =
       (params.get("stage") || "").trim();
@@ -470,12 +469,14 @@
     const tier =
       (params.get("tier") || "").trim();
 
-    let bankFile = "";
+    console.log("ALGEVIA SELECTION:", {
+      stage,
+      subject,
+      examBoard,
+      tier
+    });
 
-    /*
-      Normalise names used by the Education page
-      and the question-bank metadata.
-    */
+    let bankFile = "";
 
     const normalStage =
       stage.toLowerCase();
@@ -522,7 +523,7 @@
         "A diagnostic question bank for your selected subject, level and exam board is not available yet.";
 
       console.warn(
-        "No question bank available for:",
+        "ALGEVIA: No question bank available:",
         {
           stage,
           subject,
@@ -534,6 +535,66 @@
       return;
     }
 
+
+    console.log(
+      "ALGEVIA: Loading bank:",
+      bankFile
+    );
+
+
+    const response =
+      await fetch(bankFile);
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Question bank could not be loaded."
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    questionBank =
+      Array.isArray(data.questions)
+        ? data.questions
+        : [];
+
+
+    console.log(
+      "ALGEVIA: Questions loaded:",
+      questionBank.length
+    );
+
+
+    if (questionBank.length === 0) {
+
+      throw new Error(
+        "Question bank contains no questions."
+      );
+
+    }
+
+
+    createDiagnostic();
+
+
+  } catch (error) {
+
+    document.getElementById("questionText").innerText =
+      "The diagnostic question bank could not be loaded.";
+
+    console.error(
+      "ALGEVIA DIAGNOSTIC ERROR:",
+      error
+    );
+
+  }
+
+}
 
     /*
       Load the selected bank.
