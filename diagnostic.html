@@ -549,57 +549,174 @@
   function createDiagnostic() {
 
   /*
-    Read the student's selections from Education page.
+    ALGEVIA 20-QUESTION DIAGNOSTIC ENGINE
+
+    Selection hierarchy:
+
+    Stage
+    → Subject
+    → Exam Board
+    → Tier
+    → Current Grade
+    → Target Grade
+    → Difficulty
+    → Topic
+    → Subtopic
+    → Question
   */
 
   const params = new URLSearchParams(window.location.search);
 
   const currentGrade =
-    parseInt(params.get("currentGrade"), 10) || 6;
+    parseInt(params.get("currentGrade"), 10);
 
   const targetGrade =
-    parseInt(params.get("targetGrade"), 10) || 8;
+    parseInt(params.get("targetGrade"), 10);
 
   const stage =
-    params.get("stage") || "GCSE";
+    params.get("stage") || "";
 
   const subject =
-    params.get("subject") || "Maths";
+    params.get("subject") || "";
 
   const examBoard =
     params.get("examBoard") || "";
 
   const tier =
-    params.get("tier") || "Higher";
+    params.get("tier") || "";
 
 
   /*
-    Major GCSE Maths topics.
+    Validate the student's grade selections.
   */
 
-  const topics = [
-    "Number",
-    "Algebra",
-    "Ratio, Proportion & Rates",
-    "Geometry & Measures",
-    "Statistics & Probability",
-    "Graphs & Functions"
-  ];
+  if (
+    Number.isNaN(currentGrade) ||
+    Number.isNaN(targetGrade)
+  ) {
 
+    document.getElementById("questionText").innerText =
+      "Please return to Education and complete your current and target grade selections.";
+
+    return;
+  }
+
+
+  /*
+    Target grade must never be below current grade.
+  */
+
+  if (targetGrade < currentGrade) {
+
+    document.getElementById("questionText").innerText =
+      "Your target grade must be the same as or higher than your current grade.";
+
+    return;
+  }
+
+
+  /*
+    Make sure we actually have a question bank.
+  */
+
+  if (
+    !Array.isArray(questionBank) ||
+    questionBank.length === 0
+  ) {
+
+    document.getElementById("questionText").innerText =
+      "No suitable diagnostic questions are available.";
+
+    return;
+  }
+
+
+  /*
+    Re-check that the loaded bank matches the
+    student's selected pathway.
+
+    This provides an additional safety layer
+    after the bank-routing logic.
+  */
+
+  let compatibleQuestions =
+    questionBank.filter(question => {
+
+      const stageMatch =
+        !question.stage ||
+        question.stage === stage;
+
+      const subjectMatch =
+        !question.subject ||
+        question.subject === subject;
+
+      const boardMatch =
+        !question.examBoard ||
+        !examBoard ||
+        question.examBoard === examBoard;
+
+      const tierMatch =
+        !question.tier ||
+        !tier ||
+        question.tier === tier;
+
+      return (
+        stageMatch &&
+        subjectMatch &&
+        boardMatch &&
+        tierMatch
+      );
+
+    });
+
+
+  /*
+    If the metadata filter produces nothing,
+    do not silently use the wrong bank.
+  */
+
+  if (compatibleQuestions.length === 0) {
+
+    document.getElementById("questionText").innerText =
+      "No questions match your selected subject, level, exam board and tier.";
+
+    console.warn(
+      "No compatible questions found:",
+      {
+        stage,
+        subject,
+        examBoard,
+        tier
+      }
+    );
+
+    return;
+  }
+
+
+  /*
+    We will build the diagnostic progressively.
+  */
 
   let selected = [];
 
   const usedIds = new Set();
+
   const usedTexts = new Set();
+
   const usedSubtopics = new Set();
+
+  const usedTopics = new Set();
 
 
   /*
     Convert values such as:
+
     6
     "6"
     "Grade 6"
     "grade-6"
+
     into a number.
   */
 
@@ -614,6 +731,31 @@
   }
 
 
+  /*
+    Convert difficulty into a number.
+  */
+
+  function getDifficulty(question) {
+
+    const value =
+      Number(question.difficulty);
+
+    if (
+      Number.isFinite(value) &&
+      value >= 1 &&
+      value <= 5
+    ) {
+      return value;
+    }
+
+    return null;
+  }
+
+
+  /*
+    Normalise text for duplicate detection.
+  */
+
   function normalise(value) {
 
     return String(value || "")
@@ -624,7 +766,7 @@
 
 
   /*
-    Get the grade attached to a question.
+    Get question grade.
   */
 
   function questionGrade(question) {
@@ -632,15 +774,38 @@
     return getGrade(
       question.target_grade
     );
-
   }
 
 
   /*
-    Check whether a question is acceptable.
+    Estimate the appropriate difficulty for
+    the student's current grade.
+
+    This is a guide, not a formal grade conversion.
   */
 
-  function canAdd(question, allowRepeatedSubtopic = false) {
+  function expectedDifficulty(grade) {
+
+    if (grade <= 4) return 1;
+
+    if (grade === 5) return 2;
+
+    if (grade === 6) return 3;
+
+    if (grade === 7) return 4;
+
+    return 5;
+  }
+
+
+  /*
+    Check whether a question can be added.
+  */
+
+  function canAdd(
+    question,
+    allowRepeatedSubtopic = false
+  ) {
 
     if (!question) return false;
 
@@ -652,6 +817,10 @@
 
     const subtopic =
       normalise(question.subtopic);
+
+    if (!id || !text) {
+      return false;
+    }
 
     /*
       Never repeat the same question.
@@ -670,23 +839,23 @@
     }
 
     /*
-      Avoid repeated subtopics.
+      Avoid repeated subtopics where possible.
     */
 
     if (
       !allowRepeatedSubtopic &&
+      subtopic &&
       usedSubtopics.has(subtopic)
     ) {
       return false;
     }
 
     return true;
-
   }
 
 
   /*
-    Add a question to the diagnostic.
+    Add question to the diagnostic.
   */
 
   function addQuestion(
@@ -712,63 +881,190 @@
     const subtopic =
       normalise(question.subtopic);
 
+    const topic =
+      normalise(question.topic);
+
     selected.push(question);
 
     usedIds.add(id);
 
     usedTexts.add(text);
 
-    usedSubtopics.add(subtopic);
-
-    return true;
-
-  }
-
-
-  /*
-    Shuffle an array.
-  */
-
-  function shuffle(array) {
-
-    return [...array]
-      .sort(() => Math.random() - 0.5);
-
-  }
-
-
-  /*
-    Sort questions by how close their
-    target grade is to the requested grade.
-  */
-
-  function gradeDistance(
-    question,
-    desiredGrade
-  ) {
-
-    const qGrade =
-      questionGrade(question);
-
-    if (qGrade === null) {
-      return 99;
+    if (subtopic) {
+      usedSubtopics.add(subtopic);
     }
 
-    return Math.abs(
-      qGrade - desiredGrade
-    );
+    if (topic) {
+      usedTopics.add(topic);
+    }
 
+    return true;
   }
 
 
   /*
-    Start with questions around the
-    student's current grade.
+    Score a candidate.
+
+    Higher score means a better diagnostic fit.
+
+    Factors:
+
+    • grade suitability
+    • difficulty suitability
+    • new topic
+    • new subtopic
+    • target progression
+  */
+
+  function candidateScore(
+    question,
+    desiredGrade,
+    desiredDifficulty
+  ) {
+
+    const grade =
+      questionGrade(question);
+
+    const difficulty =
+      getDifficulty(question);
+
+    if (grade === null) {
+      return -999;
+    }
+
+    let score = 0;
+
+    /*
+      Grade proximity.
+    */
+
+    score -=
+      Math.abs(
+        grade - desiredGrade
+      ) * 10;
+
+
+    /*
+      Difficulty proximity.
+    */
+
+    if (difficulty !== null) {
+
+      score -=
+        Math.abs(
+          difficulty -
+          desiredDifficulty
+        ) * 4;
+
+    }
+
+
+    /*
+      Reward a new topic.
+    */
+
+    const topic =
+      normalise(question.topic);
+
+    if (
+      topic &&
+      !usedTopics.has(topic)
+    ) {
+      score += 20;
+    }
+
+
+    /*
+      Reward a new subtopic.
+    */
+
+    const subtopic =
+      normalise(question.subtopic);
+
+    if (
+      subtopic &&
+      !usedSubtopics.has(subtopic)
+    ) {
+      score += 10;
+    }
+
+
+    /*
+      Small random element prevents the
+      same questions appearing every time.
+    */
+
+    score += Math.random() * 3;
+
+    return score;
+  }
+
+
+  /*
+    Select the best available questions from
+    a pool.
+  */
+
+  function selectFromPool(
+    pool,
+    count,
+    desiredGrade,
+    desiredDifficulty
+  ) {
+
+    let candidates =
+      [...pool];
+
+    for (
+      let i = 0;
+      i < count;
+      i++
+    ) {
+
+      candidates =
+        candidates.filter(
+          question =>
+            canAdd(question)
+        );
+
+      if (
+        candidates.length === 0
+      ) {
+        break;
+      }
+
+      candidates.sort(
+        (a, b) =>
+          candidateScore(
+            b,
+            desiredGrade,
+            desiredDifficulty
+          ) -
+          candidateScore(
+            a,
+            desiredGrade,
+            desiredDifficulty
+          )
+      );
+
+      const chosen =
+        candidates.shift();
+
+      addQuestion(chosen);
+    }
+  }
+
+
+  /*
+    Current ability section.
+
+    Approximately 6 questions around
+    the student's current grade.
   */
 
   const currentPool =
-    shuffle(
-      questionBank.filter(question => {
+    compatibleQuestions.filter(
+      question => {
 
         const grade =
           questionGrade(question);
@@ -780,118 +1076,95 @@
           ) <= 1
         );
 
-      })
+      }
     );
 
 
-  /*
-    Add approximately 6 questions
-    around current ability.
-  */
-
-  for (const question of currentPool) {
-
-    if (selected.length >= 6) {
-      break;
-    }
-
-    addQuestion(question);
-
-  }
+  selectFromPool(
+    currentPool,
+    6,
+    currentGrade,
+    expectedDifficulty(currentGrade)
+  );
 
 
   /*
-    Add progression questions between
-    current grade and target grade.
+    Progression section.
+
+    Move from current grade toward
+    target grade.
   */
 
   const progressionPool =
-    shuffle(
-      questionBank
-        .filter(question => {
-
-          const grade =
-            questionGrade(question);
-
-          if (grade === null) {
-            return false;
-          }
-
-          return (
-            grade >= currentGrade &&
-            grade <= targetGrade
-          );
-
-        })
-        .sort(
-          (a, b) =>
-            gradeDistance(
-              a,
-              targetGrade
-            ) -
-            gradeDistance(
-              b,
-              targetGrade
-            )
-        )
-    );
-
-
-  /*
-    Add approximately 8 progression
-    / target-level questions.
-  */
-
-  for (const question of progressionPool) {
-
-    if (selected.length >= 14) {
-      break;
-    }
-
-    addQuestion(question);
-
-  }
-
-
-  /*
-    Add target-grade questions.
-  */
-
-  const targetPool =
-    shuffle(
-      questionBank.filter(question => {
+    compatibleQuestions.filter(
+      question => {
 
         const grade =
           questionGrade(question);
 
         return (
           grade !== null &&
-          grade === targetGrade
+          grade >= currentGrade &&
+          grade <= targetGrade
         );
 
-      })
+      }
     );
 
 
-  for (const question of targetPool) {
+  const progressionGrade =
+    Math.max(
+      currentGrade,
+      Math.round(
+        (
+          currentGrade +
+          targetGrade
+        ) / 2
+      )
+    );
 
-    if (selected.length >= 18) {
-      break;
-    }
 
-    addQuestion(question);
-
-  }
+  selectFromPool(
+    progressionPool,
+    6,
+    progressionGrade,
+    expectedDifficulty(progressionGrade)
+  );
 
 
   /*
-    Add a small number of stretch questions.
-    These are slightly above the target grade.
+    Target-grade section.
+
+    These questions directly assess
+    the student's target.
+  */
+
+  const targetPool =
+    compatibleQuestions.filter(
+      question =>
+        questionGrade(question) ===
+        targetGrade
+    );
+
+
+  selectFromPool(
+    targetPool,
+    6,
+    targetGrade,
+    expectedDifficulty(targetGrade)
+  );
+
+
+  /*
+    Stretch section.
+
+    A small number of questions
+    slightly above the target.
   */
 
   const stretchPool =
-    shuffle(
-      questionBank.filter(question => {
+    compatibleQuestions.filter(
+      question => {
 
         const grade =
           questionGrade(question);
@@ -902,48 +1175,43 @@
           grade <= targetGrade + 1
         );
 
-      })
+      }
     );
 
 
-  for (const question of stretchPool) {
-
-    if (selected.length >= 20) {
-      break;
-    }
-
-    addQuestion(question);
-
-  }
+  selectFromPool(
+    stretchPool,
+    2,
+    targetGrade + 1,
+    expectedDifficulty(
+      targetGrade + 1
+    )
+  );
 
 
   /*
-    If the grade-specific pools did not
-    provide enough questions, fill the
-    remaining places with unused questions
-    while still avoiding repeated subtopics.
+    If we do not yet have 20 questions,
+    use the best remaining questions.
+
+    We still avoid repeated subtopics
+    wherever the bank allows it.
   */
 
   if (selected.length < 20) {
 
     const remainingPool =
-      shuffle(
-        questionBank
-          .filter(question =>
+      compatibleQuestions
+        .filter(
+          question =>
             canAdd(question)
-          )
-      );
+        );
 
-    for (const question of remainingPool) {
-
-      if (selected.length >= 20) {
-        break;
-      }
-
-      addQuestion(question);
-
-    }
-
+    selectFromPool(
+      remainingPool,
+      20 - selected.length,
+      targetGrade,
+      expectedDifficulty(targetGrade)
+    );
   }
 
 
@@ -951,26 +1219,29 @@
     Final safety fallback.
 
     If the bank does not contain enough
-    unique subtopics, allow a repeated
-    subtopic but NEVER a duplicate question.
+    unique subtopics, allow repeated
+    subtopics but NEVER duplicate questions.
   */
 
   if (selected.length < 20) {
 
     const finalPool =
-      shuffle(
-        questionBank
-          .filter(question =>
-            canAdd(
-              question,
-              true
-            )
+      compatibleQuestions.filter(
+        question =>
+          canAdd(
+            question,
+            true
           )
       );
 
-    for (const question of finalPool) {
+    for (
+      const question of
+      finalPool
+    ) {
 
-      if (selected.length >= 20) {
+      if (
+        selected.length >= 20
+      ) {
         break;
       }
 
@@ -978,21 +1249,49 @@
         question,
         true
       );
-
     }
+  }
 
+
+  /*
+    Never start a diagnostic with fewer
+    than 20 questions.
+  */
+
+  if (selected.length < 20) {
+
+    document.getElementById("questionText").innerText =
+      "There are not yet enough suitable questions in this diagnostic bank. Please try again later.";
+
+    console.warn(
+      "Diagnostic bank contains fewer than 20 suitable questions.",
+      {
+        selected: selected.length,
+        required: 20,
+        stage,
+        subject,
+        examBoard,
+        tier
+      }
+    );
+
+    return;
   }
 
 
   /*
     Final randomisation.
 
-    This prevents the test from always
+    This prevents the diagnostic from
     appearing in grade order.
   */
 
   diagnosticQuestions =
-    shuffle(selected)
+    selected
+      .sort(
+        () =>
+          Math.random() - 0.5
+      )
       .slice(0, 20);
 
 
