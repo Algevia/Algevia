@@ -455,48 +455,65 @@
 
   try {
 
-    const params = new URLSearchParams(window.location.search);
+    const params =
+      new URLSearchParams(window.location.search);
 
-    const stage = params.get("stage") || "";
-    const subject = params.get("subject") || "";
-    const examBoard = params.get("examBoard") || "";
-    const tier = params.get("tier") || "";
+    const stage =
+      (params.get("stage") || "").trim();
+
+    const subject =
+      (params.get("subject") || "").trim();
+
+    const examBoard =
+      (params.get("examBoard") || "").trim();
+
+    const tier =
+      (params.get("tier") || "").trim();
 
     let bankFile = "";
 
     /*
-      ALGEVIA QUESTION-BANK ROUTING
+      Normalise names used by the Education page
+      and the question-bank metadata.
+    */
 
-      Only route to a question bank that actually exists.
-      Never show questions from an unrelated subject or level.
+    const normalStage =
+      stage.toLowerCase();
+
+    const normalSubject =
+      subject
+        .toLowerCase()
+        .replace(/\s+/g, "");
+
+    const normalBoard =
+      examBoard.toLowerCase();
+
+    const normalTier =
+      tier.toLowerCase();
+
+
+    /*
+      GCSE Maths — AQA — Higher
     */
 
     if (
-  stage === "GCSE" &&
-  (subject === "Maths" || subject === "Mathematics") &&
-  examBoard === "AQA" &&
-  tier === "Higher"
-) {
+      normalStage === "gcse" &&
+      (
+        normalSubject === "maths" ||
+        normalSubject === "mathematics"
+      ) &&
+      normalBoard === "aqa" &&
+      normalTier === "higher"
+    ) {
 
       bankFile =
         "data/Algevia_GCSE_Maths_Higher_Diagnostic_QuestionBank_150_v2.json";
 
     }
 
+
     /*
-      Other banks will be added here as they are created.
-
-      Examples:
-
-      GCSE Maths AQA Foundation
-      GCSE Maths Edexcel Higher
-      GCSE Maths Edexcel Foundation
-      GCSE Physics AQA
-      GCSE Chemistry AQA
-      A-Level Maths AQA
-      A-Level Physics AQA
-      A-Level Chemistry AQA
-      11+ Maths
+      No matching bank.
     */
 
     if (!bankFile) {
@@ -517,17 +534,48 @@
       return;
     }
 
-    const response = await fetch(bankFile);
+
+    /*
+      Load the selected bank.
+    */
+
+    const response =
+      await fetch(bankFile);
 
     if (!response.ok) {
-      throw new Error("Question bank could not be loaded.");
+
+      throw new Error(
+        "Question bank could not be loaded."
+      );
+
     }
 
-    const data = await response.json();
 
-    questionBank = data.questions;
+    const data =
+      await response.json();
+
+
+    questionBank =
+      Array.isArray(data.questions)
+        ? data.questions
+        : [];
+
+
+    if (questionBank.length === 0) {
+
+      throw new Error(
+        "Question bank contains no questions."
+      );
+
+    }
+
+
+    /*
+      Start the diagnostic.
+    */
 
     createDiagnostic();
+
 
   } catch (error) {
 
@@ -539,6 +587,7 @@
   }
 
 }
+
 
   /*
     Select 20 mixed-topic questions.
@@ -646,9 +695,29 @@
         !question.stage ||
         question.stage === stage;
 
-      const subjectMatch =
-        !question.subject ||
-        question.subject === subject;
+      const questionSubject =
+  String(question.subject || "")
+    .trim()
+    .toLowerCase();
+
+const selectedSubject =
+  String(subject || "")
+    .trim()
+    .toLowerCase();
+
+const subjectMatch =
+  !question.subject ||
+  questionSubject === selectedSubject ||
+  (
+    (
+      questionSubject === "mathematics" ||
+      questionSubject === "maths"
+    ) &&
+    (
+      selectedSubject === "mathematics" ||
+      selectedSubject === "maths"
+    )
+  );
 
       const boardMatch =
         !question.examBoard ||
