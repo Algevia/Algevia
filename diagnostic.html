@@ -472,11 +472,11 @@
     */
 
     if (
-      stage === "GCSE" &&
-      subject === "Maths" &&
-      examBoard === "AQA" &&
-      tier === "Higher"
-    ) {
+  stage === "GCSE" &&
+  (subject === "Maths" || subject === "Mathematics") &&
+  examBoard === "AQA" &&
+  tier === "Higher"
+) {
 
       bankFile =
         "data/Algevia_GCSE_Maths_Higher_Diagnostic_QuestionBank_150_v2.json";
