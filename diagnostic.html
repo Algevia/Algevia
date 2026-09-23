@@ -427,15 +427,52 @@ function normalise(value) {
 }
 
 function getParams() {
-  const params = new URLSearchParams(window.location.search);
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  function getParameter(name) {
+
+    const wanted =
+      name.toLowerCase();
+
+    for (const [key, value] of params.entries()) {
+
+      if (key.toLowerCase() === wanted) {
+        return value;
+      }
+
+    }
+
+    return "";
+  }
 
   return {
-    stage: (params.get("stage") || "").trim(),
-    subject: (params.get("subject") || "").trim(),
-    examBoard: (params.get("examBoard") || "").trim(),
-    tier: (params.get("tier") || "").trim(),
-    currentGrade: parseInt(params.get("currentGrade"), 10),
-    targetGrade: parseInt(params.get("targetGrade"), 10)
+
+    stage:
+      getParameter("stage").trim(),
+
+    subject:
+      getParameter("subject").trim(),
+
+    examBoard:
+      getParameter("examBoard").trim(),
+
+    tier:
+      getParameter("tier").trim(),
+
+    currentGrade:
+      parseInt(
+        getParameter("currentGrade"),
+        10
+      ),
+
+    targetGrade:
+      parseInt(
+        getParameter("targetGrade"),
+        10
+      )
+
   };
 }
 
