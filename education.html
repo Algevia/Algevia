@@ -326,6 +326,7 @@
   const currentGradeSelect = document.getElementById("currentGradeSelect");
   const targetGradeSelect = document.getElementById("targetGradeSelect");
   const tierField = document.getElementById("tierField");
+  const tierSelect = document.getElementById("tierSelect");
   const startDiagnostic = document.getElementById("startDiagnostic");
   const diagnosticMessage = document.getElementById("diagnosticMessage");
 
@@ -420,7 +421,7 @@
     examBoard: examBoardSelect.value,
     currentGrade: currentGradeSelect.value,
     targetGrade: targetGradeSelect.value,
-    tier: tierField.value
+    tier: tierSelect.value
   });
 
   window.location.href =
