@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Algevia Free Diagnostic</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -19,7 +16,7 @@
     }
 
     header {
-      background: white;
+      background: #fff;
       border-bottom: 1px solid #e5e7eb;
       padding: 18px 8%;
       display: flex;
@@ -29,7 +26,7 @@
 
     .logo {
       font-size: 24px;
-      font-weight: bold;
+      font-weight: 700;
       letter-spacing: 1px;
     }
 
@@ -47,20 +44,34 @@
       padding: 35px 20px;
     }
 
+    .hero,
+    .question-card,
+    .profile-box,
+    .method-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+    }
+
     .hero {
       text-align: center;
-      background: white;
       padding: 35px 20px;
-      border-radius: 12px;
       margin-bottom: 25px;
     }
 
-    h1 {
-      margin-bottom: 10px;
-    }
+    h1 { margin: 0 0 10px; }
+    h2 { margin-top: 0; }
 
     .progress-wrap {
       margin: 20px 0;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 10px;
+      font-size: 14px;
     }
 
     .progress-bar {
@@ -72,28 +83,25 @@
 
     .progress-fill {
       height: 100%;
-      width: 5%;
+      width: 0;
       background: #172033;
-      transition: width 0.3s ease;
+      transition: width .2s ease;
     }
 
     .question-card {
-      background: white;
       padding: 30px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
     }
 
     .question-number {
       font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 15px;
+      font-weight: 700;
       color: #667085;
+      margin-bottom: 15px;
     }
 
     .question {
       font-size: 22px;
-      font-weight: bold;
+      font-weight: 700;
       line-height: 1.5;
       margin-bottom: 25px;
     }
@@ -117,35 +125,39 @@
       display: inline-block;
       padding: 14px 24px;
       background: #172033;
-      color: white;
+      color: #fff;
       font-family: inherit;
       font-size: inherit;
       text-decoration: none;
       border-radius: 8px;
-      border: none;
+      border: 0;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 700;
     }
 
-    .button:hover {
-      opacity: 0.9;
+    .button:hover { opacity: .9; }
+
+    .button.secondary {
+      background: #fff;
+      color: #172033;
+      border: 1px solid #cbd5e1;
     }
 
     .error {
       color: #b42318;
       margin-top: 12px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
-    .results {
-      display: none;
+    .status {
+      text-align: center;
+      padding: 35px 20px;
     }
+
+    .results { display: none; }
 
     .profile-box {
-      background: white;
       padding: 30px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
       margin-bottom: 25px;
     }
 
@@ -163,17 +175,9 @@
       border: 1px solid #e5e7eb;
     }
 
-    .strong {
-      border-left: 5px solid #198754;
-    }
-
-    .developing {
-      border-left: 5px solid #d97706;
-    }
-
-    .priority {
-      border-left: 5px solid #b42318;
-    }
+    .strong { border-left: 5px solid #198754; }
+    .developing { border-left: 5px solid #d97706; }
+    .priority { border-left: 5px solid #b42318; }
 
     .method-grid {
       display: grid;
@@ -182,10 +186,7 @@
     }
 
     .method-card {
-      background: white;
       padding: 25px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
       display: flex;
       flex-direction: column;
     }
@@ -216,9 +217,7 @@
         width: 100%;
       }
 
-      nav {
-        display: none;
-      }
+      nav { display: none; }
     }
   </style>
 </head>
@@ -227,7 +226,6 @@
 
 <header>
   <div class="logo">ALGEVIA</div>
-
   <nav>
     <a href="index.html">Home</a>
     <a href="education.html">Education</a>
@@ -238,42 +236,30 @@
 
 <main class="container">
 
-  <!-- INTRODUCTION -->
-
   <section class="hero" id="intro">
-
     <h1>Free Learning Diagnostic</h1>
-
     <p>
-      Answer 20 mixed-topic questions so Algevia can understand
+      Answer exactly 20 mixed-topic questions so Algevia can understand
       your strengths, weaknesses and learning priorities.
     </p>
-
     <p>
-      <strong>There is no need to prepare.</strong>
-      Just answer as accurately as you can.
+      <strong>No preparation is needed.</strong>
+      Answer as accurately as you can.
     </p>
-
   </section>
-
-
-  <!-- DIAGNOSTIC -->
 
   <section id="diagnosticArea">
 
     <div class="progress-wrap">
-
-      <div style="display:flex; justify-content:space-between;">
+      <div class="progress-meta">
         <strong id="questionCounter">Question 1 of 20</strong>
-        <span id="topicLabel">Loading...</span>
+        <span id="topicLabel">Preparing...</span>
       </div>
 
       <div class="progress-bar">
         <div class="progress-fill" id="progressFill"></div>
       </div>
-
     </div>
-
 
     <div class="question-card">
 
@@ -286,7 +272,6 @@
       </div>
 
       <div class="answer-area">
-
         <input
           type="text"
           id="answerInput"
@@ -297,38 +282,28 @@
         <button
           class="button"
           id="nextButton"
-          onclick="submitAnswer()"
+          type="button"
         >
           Next Question
         </button>
-
       </div>
 
       <div class="error" id="errorMessage"></div>
 
     </div>
-
   </section>
-
-
-  <!-- RESULTS -->
 
   <section class="results" id="resultsArea">
 
     <div class="hero">
-
       <h1>Your Algevia Learning Profile</h1>
-
       <p>
-        Your diagnostic is complete. Algevia has analysed your
-        performance across the topics assessed.
+        Your 20-question diagnostic is complete. Algevia has analysed
+        your performance across the topics assessed.
       </p>
-
     </div>
 
-
     <div class="profile-box">
-
       <h2>Your Results</h2>
 
       <p>
@@ -337,640 +312,273 @@
       </p>
 
       <p>
-        <strong>Estimated starting level:</strong>
+        <strong>Initial performance range:</strong>
         <span id="estimatedLevel"></span>
       </p>
 
       <div class="profile-grid" id="profileGrid"></div>
-
     </div>
 
-
     <div class="profile-box">
-
       <h2>What do you want to do next?</h2>
 
       <p>
-        Choose the learning approach that works best for you.
-        Your Learning Profile will follow you through your learning journey.
+        Your Learning Profile can support independent learning,
+        tutor matching or both.
       </p>
 
       <div class="method-grid">
 
         <div class="method-card">
-
           <h3>📚 Learn by Yourself</h3>
-
           <p>
-            Learn with Algevia AI using personalised explanations,
-            examples, practice and adaptive questions.
+            Learn with personalised explanations, examples,
+            practice and adaptive questions.
           </p>
-
-          <a class="button" href="learn.html">
-            Start AI Learning
-          </a>
-
+          <a class="button" href="learn.html">Start AI Learning</a>
         </div>
 
-
         <div class="method-card">
-
           <h3>👨‍🏫 Match My Tutor</h3>
-
           <p>
-            Use your Learning Profile to help Algevia identify
-            tutors suited to your subject, level and learning needs.
+            Use your Learning Profile to help identify tutors
+            suited to your subject and learning needs.
           </p>
-
-          <a class="button" href="tutor-match.html">
-            Match My Tutor
-          </a>
-
+          <a class="button" href="tutor-match.html">Match My Tutor</a>
         </div>
 
-
         <div class="method-card">
-
           <h3>🔗 Learn with Both</h3>
-
           <p>
             Combine personalised AI learning with support from
             a tutor who understands your Learning Profile.
           </p>
-
-          <a class="button" href="combined-learning.html">
-            Learn with Both
-          </a>
-
+          <a class="button" href="combined-learning.html">Learn with Both</a>
         </div>
 
       </div>
-
     </div>
 
   </section>
 
 </main>
 
-
 <footer>
   © Algevia — The right person. The right solution. No more guesswork.
 </footer>
 
-
 <script>
+"use strict";
 
-  /*
-    ALGEVIA 20-QUESTION DIAGNOSTIC
+/*
+  ALGEVIA DIAGNOSTIC v2
 
-    IMPORTANT:
-    This first version is a front-end prototype.
+  Architecture:
+  Education selections
+  → exact question-bank routing
+  → validation
+  → 20-question selection
+  → answers
+  → Learning Profile
 
-    It currently loads the trusted question bank,
-    selects 20 mixed-topic questions and creates
-    a basic Learning Profile.
+  Current live bank:
+  GCSE Maths / AQA / Higher
 
-    Account protection, server-side entitlement,
-    duplicate-account prevention and permanent
-    storage will be connected later.
-  */
+  Other subjects, levels, boards and tiers are deliberately
+  not allowed to fall back to this bank.
+*/
 
+const QUESTION_COUNT = 20;
 
-  let questionBank = [];
+let questionBank = [];
+let diagnosticQuestions = [];
+let currentQuestion = 0;
+let score = 0;
+let answers = [];
 
-  let diagnosticQuestions = [];
+const elements = {
+  questionText: document.getElementById("questionText"),
+  questionNumber: document.getElementById("questionNumber"),
+  questionCounter: document.getElementById("questionCounter"),
+  topicLabel: document.getElementById("topicLabel"),
+  progressFill: document.getElementById("progressFill"),
+  answerInput: document.getElementById("answerInput"),
+  nextButton: document.getElementById("nextButton"),
+  errorMessage: document.getElementById("errorMessage"),
+  diagnosticArea: document.getElementById("diagnosticArea"),
+  intro: document.getElementById("intro"),
+  resultsArea: document.getElementById("resultsArea"),
+  finalScore: document.getElementById("finalScore"),
+  estimatedLevel: document.getElementById("estimatedLevel"),
+  profileGrid: document.getElementById("profileGrid")
+};
 
-  let currentQuestion = 0;
-
-  let score = 0;
-
-  let answers = [];
-
-
-  /*
-    Load the existing 150-question bank
-  */
-
-  async function loadQuestionBank() {
-
-  try {
-
-    const params = new URLSearchParams(window.location.search);
-
-    const stage =
-      (params.get("stage") || "").trim();
-
-    const subject =
-      (params.get("subject") || "").trim();
-
-    const examBoard =
-      (params.get("examBoard") || "").trim();
-
-    const tier =
-      (params.get("tier") || "").trim();
-
-    console.log("ALGEVIA SELECTION:", {
-      stage,
-      subject,
-      examBoard,
-      tier
-    });
-
-    let bankFile = "";
-
-    const normalStage =
-      stage.toLowerCase();
-
-    const normalSubject =
-      subject
-        .toLowerCase()
-        .replace(/\s+/g, "");
-
-    const normalBoard =
-      examBoard.toLowerCase();
-
-    const normalTier =
-      tier.toLowerCase();
-
-
-    /*
-      GCSE Maths — AQA — Higher
-    */
-
-    if (
-      normalStage === "gcse" &&
-      (
-        normalSubject === "maths" ||
-        normalSubject === "mathematics"
-      ) &&
-      normalBoard === "aqa" &&
-      normalTier === "higher"
-    ) {
-
-      bankFile =
-        "data/Algevia_GCSE_Maths_Higher_Diagnostic_QuestionBank_150_v2.json";
-
-    }
-
-
-    /*
-      No matching bank.
-    */
-
-    if (!bankFile) {
-
-      document.getElementById("questionText").innerText =
-        "A diagnostic question bank for your selected subject, level and exam board is not available yet.";
-
-      console.warn(
-        "ALGEVIA: No question bank available:",
-        {
-          stage,
-          subject,
-          examBoard,
-          tier
-        }
-      );
-
-      return;
-    }
-
-
-    console.log(
-      "ALGEVIA: Loading bank:",
-      bankFile
-    );
-
-
-    const response =
-      await fetch(bankFile);
-
-    if (!response.ok) {
-
-      throw new Error(
-        "Question bank could not be loaded."
-      );
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    questionBank =
-      Array.isArray(data.questions)
-        ? data.questions
-        : [];
-
-
-    console.log(
-      "ALGEVIA: Questions loaded:",
-      questionBank.length
-    );
-
-
-    if (questionBank.length === 0) {
-
-      throw new Error(
-        "Question bank contains no questions."
-      );
-
-    }
-
-
-    createDiagnostic();
-
-
-  } catch (error) {
-
-    document.getElementById("questionText").innerText =
-      "The diagnostic question bank could not be loaded.";
-
-    console.error(
-      "ALGEVIA DIAGNOSTIC ERROR:",
-      error
-    );
-
-  }
-
+function setMessage(message) {
+  elements.questionText.textContent = message;
+  elements.topicLabel.textContent = "";
+  elements.questionCounter.textContent = "";
+  elements.progressFill.style.width = "0%";
 }
 
-    /*
-      Load the selected bank.
-    */
-
-    const response =
-      await fetch(bankFile);
-
-    if (!response.ok) {
-
-      throw new Error(
-        "Question bank could not be loaded."
-      );
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    questionBank =
-      Array.isArray(data.questions)
-        ? data.questions
-        : [];
-
-
-    if (questionBank.length === 0) {
-
-      throw new Error(
-        "Question bank contains no questions."
-      );
-
-    }
-
-
-    /*
-      Start the diagnostic.
-    */
-
-    createDiagnostic();
-
-
-  } catch (error) {
-
-    document.getElementById("questionText").innerText =
-      "The diagnostic question bank could not be loaded.";
-
-    console.error(error);
-
-  }
-
+function normalise(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
 }
 
-
-  /*
-    Select 20 mixed-topic questions.
-
-    We deliberately try to cover all major topics.
-  */
-
-  function createDiagnostic() {
-
-  /*
-    ALGEVIA 20-QUESTION DIAGNOSTIC ENGINE
-
-    Selection hierarchy:
-
-    Stage
-    → Subject
-    → Exam Board
-    → Tier
-    → Current Grade
-    → Target Grade
-    → Difficulty
-    → Topic
-    → Subtopic
-    → Question
-  */
-
+function getParams() {
   const params = new URLSearchParams(window.location.search);
 
-  const currentGrade =
-    parseInt(params.get("currentGrade"), 10);
+  return {
+    stage: (params.get("stage") || "").trim(),
+    subject: (params.get("subject") || "").trim(),
+    examBoard: (params.get("examBoard") || "").trim(),
+    tier: (params.get("tier") || "").trim(),
+    currentGrade: parseInt(params.get("currentGrade"), 10),
+    targetGrade: parseInt(params.get("targetGrade"), 10)
+  };
+}
 
-  const targetGrade =
-    parseInt(params.get("targetGrade"), 10);
+function questionGrade(question) {
+  const match = String(
+    question.target_grade ?? ""
+  ).match(/\d+/);
 
-  const stage =
-    params.get("stage") || "";
+  return match ? parseInt(match[0], 10) : null;
+}
 
-  const subject =
-    params.get("subject") || "";
+function questionDifficulty(question) {
+  const value = Number(question.difficulty);
+  return Number.isFinite(value) ? value : null;
+}
 
-  const examBoard =
-    params.get("examBoard") || "";
+function shuffle(array) {
+  const result = [...array];
 
-  const tier =
-    params.get("tier") || "";
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
 
+  return result;
+}
 
-  /*
-    Validate the student's grade selections.
-  */
+/*
+  Exact routing.
+  No unrelated question bank is ever used.
+*/
+function getBankFile(selection) {
+  const stage = normalise(selection.stage);
+  const subject = normalise(selection.subject);
+  const board = normalise(selection.examBoard);
+  const tier = normalise(selection.tier);
 
   if (
-    Number.isNaN(currentGrade) ||
-    Number.isNaN(targetGrade)
+    stage === "gcse" &&
+    (subject === "maths" || subject === "mathematics") &&
+    board === "aqa" &&
+    tier === "higher"
   ) {
-
-    document.getElementById("questionText").innerText =
-      "Please return to Education and complete your current and target grade selections.";
-
-    return;
+    return "data/Algevia_GCSE_Maths_Higher_Diagnostic_QuestionBank_150_v2.json";
   }
 
+  return "";
+}
 
-  /*
-    Target grade must never be below current grade.
-  */
-
-  if (targetGrade < currentGrade) {
-
-    document.getElementById("questionText").innerText =
-      "Your target grade must be the same as or higher than your current grade.";
-
-    return;
+function validateSelection(selection) {
+  if (!selection.stage || !selection.subject) {
+    return "Please return to Education and complete your subject and level selections.";
   }
 
-
-  /*
-    Make sure we actually have a question bank.
-  */
-
-  if (
-    !Array.isArray(questionBank) ||
-    questionBank.length === 0
-  ) {
-
-    document.getElementById("questionText").innerText =
-      "No suitable diagnostic questions are available.";
-
-    return;
+  if (!Number.isFinite(selection.currentGrade) ||
+      !Number.isFinite(selection.targetGrade)) {
+    return "Please return to Education and complete your current and target grade selections.";
   }
 
-
-  /*
-    Re-check that the loaded bank matches the
-    student's selected pathway.
-
-    This provides an additional safety layer
-    after the bank-routing logic.
-  */
-
-  let compatibleQuestions =
-    questionBank.filter(question => {
-
-      const stageMatch =
-        !question.stage ||
-        question.stage === stage;
-
-      const questionSubject =
-  String(question.subject || "")
-    .trim()
-    .toLowerCase();
-
-const selectedSubject =
-  String(subject || "")
-    .trim()
-    .toLowerCase();
-
-const subjectMatch =
-  !question.subject ||
-  questionSubject === selectedSubject ||
-  (
-    (
-      questionSubject === "mathematics" ||
-      questionSubject === "maths"
-    ) &&
-    (
-      selectedSubject === "mathematics" ||
-      selectedSubject === "maths"
-    )
-  );
-
-      const boardMatch =
-        !question.examBoard ||
-        !examBoard ||
-        question.examBoard === examBoard;
-
-      const tierMatch =
-        !question.tier ||
-        !tier ||
-        question.tier === tier;
-
-      return (
-        stageMatch &&
-        subjectMatch &&
-        boardMatch &&
-        tierMatch
-      );
-
-    });
-
-
-  /*
-    If the metadata filter produces nothing,
-    do not silently use the wrong bank.
-  */
-
-  if (compatibleQuestions.length === 0) {
-
-    document.getElementById("questionText").innerText =
-      "No questions match your selected subject, level, exam board and tier.";
-
-    console.warn(
-      "No compatible questions found:",
-      {
-        stage,
-        subject,
-        examBoard,
-        tier
-      }
-    );
-
-    return;
+  if (selection.targetGrade < selection.currentGrade) {
+    return "Your target grade must be the same as or higher than your current grade.";
   }
 
+  const stage = normalise(selection.stage);
+  const tier = normalise(selection.tier);
 
-  /*
-    We will build the diagnostic progressively.
-  */
+  if (stage === "gcse" && tier === "higher") {
+    if (selection.currentGrade < 4 || selection.currentGrade > 9 ||
+        selection.targetGrade < 4 || selection.targetGrade > 9) {
+      return "For GCSE Higher, current and target grades must be between 4 and 9.";
+    }
+  }
 
-  let selected = [];
+  if (stage === "gcse" && tier === "foundation") {
+    if (selection.currentGrade < 1 || selection.currentGrade > 5 ||
+        selection.targetGrade < 1 || selection.targetGrade > 5) {
+      return "For GCSE Foundation, current and target grades must be between 1 and 5.";
+    }
+  }
 
+  return "";
+}
+
+function compatibleQuestions(selection) {
+  const stage = normalise(selection.stage);
+  const subject = normalise(selection.subject);
+  const board = normalise(selection.examBoard);
+  const tier = normalise(selection.tier);
+
+  return questionBank.filter(question => {
+    const qStage = normalise(question.stage);
+    const qSubject = normalise(question.subject);
+    const qBoard = normalise(question.examBoard);
+    const qTier = normalise(question.tier);
+
+    const stageMatch = !qStage || qStage === stage;
+    const subjectMatch =
+      !qSubject ||
+      qSubject === subject ||
+      (qSubject === "mathematics" && subject === "maths") ||
+      (qSubject === "maths" && subject === "mathematics");
+
+    const boardMatch = !qBoard || qBoard === board;
+    const tierMatch = !qTier || qTier === tier;
+
+    return stageMatch && subjectMatch && boardMatch && tierMatch;
+  });
+}
+
+/*
+  Selection deliberately considers:
+  current ability
+  progression
+  target
+  difficulty
+  topic diversity
+  subtopic diversity
+*/
+function buildDiagnostic(selection) {
+  const pool = compatibleQuestions(selection);
+
+  if (pool.length < QUESTION_COUNT) {
+    return {
+      questions: [],
+      error:
+        "There are not yet enough suitable questions in this diagnostic bank. Please try again later."
+    };
+  }
+
+  const selected = [];
   const usedIds = new Set();
-
   const usedTexts = new Set();
-
   const usedSubtopics = new Set();
 
-  const usedTopics = new Set();
-
-
-  /*
-    Convert values such as:
-
-    6
-    "6"
-    "Grade 6"
-    "grade-6"
-
-    into a number.
-  */
-
-  function getGrade(value) {
-
-    const match =
-      String(value || "").match(/\d+/);
-
-    return match
-      ? parseInt(match[0], 10)
-      : null;
-  }
-
-
-  /*
-    Convert difficulty into a number.
-  */
-
-  function getDifficulty(question) {
-
-    const value =
-      Number(question.difficulty);
-
-    if (
-      Number.isFinite(value) &&
-      value >= 1 &&
-      value <= 5
-    ) {
-      return value;
-    }
-
-    return null;
-  }
-
-
-  /*
-    Normalise text for duplicate detection.
-  */
-
-  function normalise(value) {
-
-    return String(value || "")
-      .trim()
-      .toLowerCase();
-
-  }
-
-
-  /*
-    Get question grade.
-  */
-
-  function questionGrade(question) {
-
-    return getGrade(
-      question.target_grade
-    );
-  }
-
-
-  /*
-    Estimate the appropriate difficulty for
-    the student's current grade.
-
-    This is a guide, not a formal grade conversion.
-  */
-
-  function expectedDifficulty(grade) {
-
-    if (grade <= 4) return 1;
-
-    if (grade === 5) return 2;
-
-    if (grade === 6) return 3;
-
-    if (grade === 7) return 4;
-
-    return 5;
-  }
-
-
-  /*
-    Check whether a question can be added.
-  */
-
-  function canAdd(
-    question,
-    allowRepeatedSubtopic = false
-  ) {
-
+  const addIfSuitable = (question, allowRepeatedSubtopic = false) => {
     if (!question) return false;
 
-    const id =
-      normalise(question.id);
+    const id = normalise(question.id);
+    const text = normalise(question.question);
+    const subtopic = normalise(question.subtopic);
 
-    const text =
-      normalise(question.question);
-
-    const subtopic =
-      normalise(question.subtopic);
-
-    if (!id || !text) {
-      return false;
-    }
-
-    /*
-      Never repeat the same question.
-    */
-
-    if (usedIds.has(id)) {
-      return false;
-    }
-
-    /*
-      Never repeat identical question text.
-    */
-
-    if (usedTexts.has(text)) {
-      return false;
-    }
-
-    /*
-      Avoid repeated subtopics where possible.
-    */
+    if (!id || !text) return false;
+    if (usedIds.has(id) || usedTexts.has(text)) return false;
 
     if (
       !allowRepeatedSubtopic &&
@@ -980,921 +588,420 @@ const subjectMatch =
       return false;
     }
 
-    return true;
-  }
-
-
-  /*
-    Add question to the diagnostic.
-  */
-
-  function addQuestion(
-    question,
-    allowRepeatedSubtopic = false
-  ) {
-
-    if (
-      !canAdd(
-        question,
-        allowRepeatedSubtopic
-      )
-    ) {
-      return false;
-    }
-
-    const id =
-      normalise(question.id);
-
-    const text =
-      normalise(question.question);
-
-    const subtopic =
-      normalise(question.subtopic);
-
-    const topic =
-      normalise(question.topic);
-
     selected.push(question);
-
     usedIds.add(id);
-
     usedTexts.add(text);
 
     if (subtopic) {
       usedSubtopics.add(subtopic);
     }
 
-    if (topic) {
-      usedTopics.add(topic);
-    }
-
     return true;
-  }
+  };
 
+  const currentGrade = selection.currentGrade;
+  const targetGrade = selection.targetGrade;
 
-  /*
-    Score a candidate.
-
-    Higher score means a better diagnostic fit.
-
-    Factors:
-
-    • grade suitability
-    • difficulty suitability
-    • new topic
-    • new subtopic
-    • target progression
-  */
-
-  function candidateScore(
-    question,
-    desiredGrade,
-    desiredDifficulty
-  ) {
-
-    const grade =
-      questionGrade(question);
-
-    const difficulty =
-      getDifficulty(question);
-
-    if (grade === null) {
-      return -999;
-    }
-
-    let score = 0;
-
-    /*
-      Grade proximity.
-    */
-
-    score -=
-      Math.abs(
-        grade - desiredGrade
-      ) * 10;
-
-
-    /*
-      Difficulty proximity.
-    */
-
-    if (difficulty !== null) {
-
-      score -=
-        Math.abs(
-          difficulty -
-          desiredDifficulty
-        ) * 4;
-
-    }
-
-
-    /*
-      Reward a new topic.
-    */
-
-    const topic =
-      normalise(question.topic);
-
-    if (
-      topic &&
-      !usedTopics.has(topic)
-    ) {
-      score += 20;
-    }
-
-
-    /*
-      Reward a new subtopic.
-    */
-
-    const subtopic =
-      normalise(question.subtopic);
-
-    if (
-      subtopic &&
-      !usedSubtopics.has(subtopic)
-    ) {
-      score += 10;
-    }
-
-
-    /*
-      Small random element prevents the
-      same questions appearing every time.
-    */
-
-    score += Math.random() * 3;
-
-    return score;
-  }
-
-
-  /*
-    Select the best available questions from
-    a pool.
-  */
-
-  function selectFromPool(
-    pool,
-    count,
-    desiredGrade,
-    desiredDifficulty
-  ) {
-
-    let candidates =
-      [...pool];
-
-    for (
-      let i = 0;
-      i < count;
-      i++
-    ) {
-
-      candidates =
-        candidates.filter(
-          question =>
-            canAdd(question)
-        );
-
-      if (
-        candidates.length === 0
-      ) {
-        break;
-      }
-
-      candidates.sort(
-        (a, b) =>
-          candidateScore(
-            b,
-            desiredGrade,
-            desiredDifficulty
-          ) -
-          candidateScore(
-            a,
-            desiredGrade,
-            desiredDifficulty
-          )
-      );
-
-      const chosen =
-        candidates.shift();
-
-      addQuestion(chosen);
-    }
-  }
-
-
-  /*
-    Current ability section.
-
-    Approximately 6 questions around
-    the student's current grade.
-  */
-
-  const currentPool =
-    compatibleQuestions.filter(
-      question => {
-
-        const grade =
-          questionGrade(question);
-
-        return (
-          grade !== null &&
-          Math.abs(
-            grade - currentGrade
-          ) <= 1
-        );
-
-      }
-    );
-
-
-  selectFromPool(
-    currentPool,
-    6,
-    currentGrade,
-    expectedDifficulty(currentGrade)
+  const currentPool = shuffle(
+    pool.filter(question => {
+      const grade = questionGrade(question);
+      return grade !== null &&
+        Math.abs(grade - currentGrade) <= 1;
+    })
   );
 
+  for (const question of currentPool) {
+    if (selected.length >= 6) break;
+    addIfSuitable(question);
+  }
 
-  /*
-    Progression section.
-
-    Move from current grade toward
-    target grade.
-  */
-
-  const progressionPool =
-    compatibleQuestions.filter(
-      question => {
-
-        const grade =
-          questionGrade(question);
-
-        return (
-          grade !== null &&
-          grade >= currentGrade &&
-          grade <= targetGrade
-        );
-
-      }
+  const progressionPool = shuffle(
+    pool.filter(question => {
+      const grade = questionGrade(question);
+      return grade !== null &&
+        grade >= currentGrade &&
+        grade <= targetGrade;
+    })
+  ).sort((a, b) => {
+    const aDistance = Math.abs(
+      questionGrade(a) - targetGrade
     );
-
-
-  const progressionGrade =
-    Math.max(
-      currentGrade,
-      Math.round(
-        (
-          currentGrade +
-          targetGrade
-        ) / 2
-      )
+    const bDistance = Math.abs(
+      questionGrade(b) - targetGrade
     );
+    return aDistance - bDistance;
+  });
 
+  for (const question of progressionPool) {
+    if (selected.length >= 14) break;
+    addIfSuitable(question);
+  }
 
-  selectFromPool(
-    progressionPool,
-    6,
-    progressionGrade,
-    expectedDifficulty(progressionGrade)
-  );
-
-
-  /*
-    Target-grade section.
-
-    These questions directly assess
-    the student's target.
-  */
-
-  const targetPool =
-    compatibleQuestions.filter(
-      question =>
-        questionGrade(question) ===
-        targetGrade
-    );
-
-
-  selectFromPool(
-    targetPool,
-    6,
-    targetGrade,
-    expectedDifficulty(targetGrade)
-  );
-
-
-  /*
-    Stretch section.
-
-    A small number of questions
-    slightly above the target.
-  */
-
-  const stretchPool =
-    compatibleQuestions.filter(
-      question => {
-
-        const grade =
-          questionGrade(question);
-
-        return (
-          grade !== null &&
-          grade > targetGrade &&
-          grade <= targetGrade + 1
-        );
-
-      }
-    );
-
-
-  selectFromPool(
-    stretchPool,
-    2,
-    targetGrade + 1,
-    expectedDifficulty(
-      targetGrade + 1
+  const targetPool = shuffle(
+    pool.filter(question =>
+      questionGrade(question) === targetGrade
     )
   );
 
-
-  /*
-    If we do not yet have 20 questions,
-    use the best remaining questions.
-
-    We still avoid repeated subtopics
-    wherever the bank allows it.
-  */
-
-  if (selected.length < 20) {
-
-    const remainingPool =
-      compatibleQuestions
-        .filter(
-          question =>
-            canAdd(question)
-        );
-
-    selectFromPool(
-      remainingPool,
-      20 - selected.length,
-      targetGrade,
-      expectedDifficulty(targetGrade)
-    );
+  for (const question of targetPool) {
+    if (selected.length >= 18) break;
+    addIfSuitable(question);
   }
 
+  const stretchPool = shuffle(
+    pool.filter(question => {
+      const grade = questionGrade(question);
+      return grade !== null &&
+        grade > targetGrade &&
+        grade <= targetGrade + 1;
+    })
+  );
+
+  for (const question of stretchPool) {
+    if (selected.length >= QUESTION_COUNT) break;
+    addIfSuitable(question);
+  }
 
   /*
-    Final safety fallback.
-
-    If the bank does not contain enough
-    unique subtopics, allow repeated
-    subtopics but NEVER duplicate questions.
+    Fill any remaining places with the best available
+    unused questions. Repeated subtopics are allowed only
+    when the bank does not contain enough unique subtopics.
   */
+  if (selected.length < QUESTION_COUNT) {
+    const remaining = shuffle(
+      pool.filter(question => {
+        const id = normalise(question.id);
+        const text = normalise(question.question);
+        return id && text &&
+          !usedIds.has(id) &&
+          !usedTexts.has(text);
+      })
+    ).sort((a, b) => {
+      const aGrade = questionGrade(a) ?? 99;
+      const bGrade = questionGrade(b) ?? 99;
 
-  if (selected.length < 20) {
+      return Math.abs(aGrade - targetGrade) -
+             Math.abs(bGrade - targetGrade);
+    });
 
-    const finalPool =
-      compatibleQuestions.filter(
-        question =>
-          canAdd(
-            question,
-            true
-          )
-      );
-
-    for (
-      const question of
-      finalPool
-    ) {
-
-      if (
-        selected.length >= 20
-      ) {
-        break;
-      }
-
-      addQuestion(
-        question,
-        true
-      );
+    for (const question of remaining) {
+      if (selected.length >= QUESTION_COUNT) break;
+      addIfSuitable(question, true);
     }
   }
 
+  if (selected.length < QUESTION_COUNT) {
+    return {
+      questions: [],
+      error:
+        "There are not yet enough unique questions in this diagnostic bank. Please try again later."
+    };
+  }
 
-  /*
-    Never start a diagnostic with fewer
-    than 20 questions.
-  */
+  return {
+    questions: shuffle(selected).slice(0, QUESTION_COUNT),
+    error: ""
+  };
+}
 
-  if (selected.length < 20) {
+function showQuestion() {
+  const question = diagnosticQuestions[currentQuestion];
 
-    document.getElementById("questionText").innerText =
-      "There are not yet enough suitable questions in this diagnostic bank. Please try again later.";
-
-    console.warn(
-      "Diagnostic bank contains fewer than 20 suitable questions.",
-      {
-        selected: selected.length,
-        required: 20,
-        stage,
-        subject,
-        examBoard,
-        tier
-      }
-    );
-
+  if (!question) {
+    setMessage("The diagnostic could not display this question.");
     return;
   }
 
+  elements.questionNumber.textContent =
+    "Question " + (currentQuestion + 1);
 
-  /*
-    Final randomisation.
+  elements.questionCounter.textContent =
+    "Question " + (currentQuestion + 1) +
+    " of " + QUESTION_COUNT;
 
-    This prevents the diagnostic from
-    appearing in grade order.
-  */
+  elements.topicLabel.textContent =
+    question.topic || "Mixed topic";
 
-  diagnosticQuestions =
-    selected
-      .sort(
-        () =>
-          Math.random() - 0.5
-      )
-      .slice(0, 20);
+  elements.questionText.textContent =
+    question.question || "";
 
+  elements.answerInput.value = "";
+  elements.errorMessage.textContent = "";
 
-  /*
-    Reset diagnostic state.
-  */
+  elements.progressFill.style.width =
+    (((currentQuestion + 1) / QUESTION_COUNT) * 100) + "%";
 
-  currentQuestion = 0;
-
-  score = 0;
-
-  answers = [];
-
-
-  /*
-    Display the first question.
-  */
-
-  showQuestion();
-
+  elements.answerInput.focus();
 }
 
+function normaliseAnswer(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/£/g, "")
+    .replace(/,/g, "")
+    .replace(/cm²/g, "")
+    .replace(/cm2/g, "")
+    .replace(/km\/h/g, "")
+    .replace(/\s+/g, "");
+}
 
-  /*
-    Display current question
-  */
+function answersMatch(studentAnswer, correctAnswer) {
+  const a = normaliseAnswer(studentAnswer);
+  const b = normaliseAnswer(correctAnswer);
 
-  function showQuestion() {
+  if (a === b) return true;
 
-    const q =
-      diagnosticQuestions[currentQuestion];
+  const numericA = Number(
+    a.replace(/[^0-9.\-]/g, "")
+  );
+  const numericB = Number(
+    b.replace(/[^0-9.\-]/g, "")
+  );
 
-
-    document.getElementById("questionNumber").innerText =
-      "Question " + (currentQuestion + 1);
-
-
-    document.getElementById("questionCounter").innerText =
-      "Question " +
-      (currentQuestion + 1) +
-      " of 20";
-
-
-    document.getElementById("topicLabel").innerText =
-      q.topic;
-
-
-    document.getElementById("questionText").innerText =
-      q.question;
-
-
-    document.getElementById("answerInput").value =
-      "";
-
-
-    document.getElementById("errorMessage").innerText =
-      "";
-
-
-    const progress =
-      ((currentQuestion + 1) / 20) * 100;
-
-
-    document.getElementById("progressFill").style.width =
-      progress + "%";
-
-
-    document.getElementById("answerInput").focus();
-
+  if (
+    Number.isFinite(numericA) &&
+    Number.isFinite(numericB) &&
+    Math.abs(numericA - numericB) < 0.0001
+  ) {
+    return true;
   }
 
+  return false;
+}
 
-  /*
-    Basic answer normalisation.
-  */
+function submitAnswer() {
+  const studentAnswer =
+    elements.answerInput.value.trim();
 
-  function normaliseAnswer(value) {
-
-    return value
-      .toString()
-      .trim()
-      .toLowerCase()
-      .replace(/£/g, "")
-      .replace(/,/g, "")
-      .replace(/cm²/g, "")
-      .replace(/cm2/g, "")
-      .replace(/km\/h/g, "")
-      .replace(/\s+/g, "");
-
+  if (!studentAnswer) {
+    elements.errorMessage.textContent =
+      "Please enter an answer before continuing.";
+    return;
   }
 
+  const question =
+    diagnosticQuestions[currentQuestion];
 
-  /*
-    Check answer.
-  */
+  const correct =
+    answersMatch(
+      studentAnswer,
+      question.answer
+    );
 
-  function answersMatch(studentAnswer, correctAnswer) {
+  if (correct) score++;
 
-    const a =
-      normaliseAnswer(studentAnswer);
+  answers.push({
+    questionId: question.id,
+    topic: question.topic,
+    subtopic: question.subtopic,
+    difficulty: question.difficulty,
+    studentAnswer,
+    correctAnswer: question.answer,
+    correct
+  });
 
-    const b =
-      normaliseAnswer(correctAnswer);
+  currentQuestion++;
 
+  if (currentQuestion >= QUESTION_COUNT) {
+    finishDiagnostic();
+  } else {
+    showQuestion();
+  }
+}
 
-    if (a === b) {
-      return true;
+function profileStatus(percentage) {
+  if (percentage >= 75) return "Strong";
+  if (percentage >= 50) return "Developing";
+  return "Priority";
+}
+
+function estimateLevel() {
+  const percentage =
+    (score / QUESTION_COUNT) * 100;
+
+  if (percentage >= 90) return "Grade 9 range";
+  if (percentage >= 80) return "Grade 8 range";
+  if (percentage >= 70) return "Grade 7 range";
+  if (percentage >= 60) return "Grade 6 range";
+  if (percentage >= 50) return "Grade 5 range";
+  if (percentage >= 40) return "Grade 4 range";
+  if (percentage >= 30) return "Grade 3 range";
+  return "Below Grade 3 range";
+}
+
+function finishDiagnostic() {
+  const topicResults = {};
+
+  answers.forEach(result => {
+    const topic = result.topic || "Other";
+
+    if (!topicResults[topic]) {
+      topicResults[topic] = {
+        correct: 0,
+        total: 0
+      };
     }
 
+    topicResults[topic].total++;
+
+    if (result.correct) {
+      topicResults[topic].correct++;
+    }
+  });
+
+  elements.finalScore.textContent = score;
+  elements.estimatedLevel.textContent = estimateLevel();
+  elements.profileGrid.innerHTML = "";
+
+  Object.keys(topicResults).forEach(topic => {
+    const result = topicResults[topic];
+
+    const percentage = Math.round(
+      (result.correct / result.total) * 100
+    );
+
+    const status = profileStatus(percentage);
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "profile-item " +
+      status.toLowerCase();
+
+    card.innerHTML = `
+      <h3>${topic}</h3>
+      <p><strong>${status}</strong></p>
+      <p>
+        ${result.correct} / ${result.total}
+        correct (${percentage}%)
+      </p>
+    `;
+
+    elements.profileGrid.appendChild(card);
+  });
+
+  /*
+    Temporary prototype storage only.
+    Permanent student records will be handled by the
+    secure backend/account system.
+  */
+  localStorage.setItem(
+    "algeviaLearningProfile",
+    JSON.stringify({
+      score,
+      estimatedLevel: estimateLevel(),
+      topicResults,
+      answers,
+      createdAt: new Date().toISOString()
+    })
+  );
+
+  elements.diagnosticArea.style.display = "none";
+  elements.intro.style.display = "none";
+  elements.resultsArea.style.display = "block";
+}
+
+async function startDiagnostic() {
+  try {
+    const selection = getParams();
+    const validationMessage =
+      validateSelection(selection);
+
+    if (validationMessage) {
+      setMessage(validationMessage);
+      return;
+    }
 
     /*
-      Allow simple numeric equivalence.
+      Unsupported selections must stop here.
+      They must never receive GCSE Maths questions.
     */
+    const bankFile = getBankFile(selection);
 
-    const numA =
-      Number(a.replace(/[^0-9.-]/g, ""));
-
-    const numB =
-      Number(b.replace(/[^0-9.-]/g, ""));
-
-
-    if (
-      !Number.isNaN(numA) &&
-      !Number.isNaN(numB) &&
-      Math.abs(numA - numB) < 0.0001
-    ) {
-
-      return true;
-
-    }
-
-
-    return false;
-
-  }
-
-
-  /*
-    Submit answer and move forward.
-  */
-
-  function submitAnswer() {
-
-    const input =
-      document.getElementById("answerInput");
-
-    const studentAnswer =
-      input.value.trim();
-
-
-    if (!studentAnswer) {
-
-      document.getElementById("errorMessage").innerText =
-        "Please enter an answer before continuing.";
+    if (!bankFile) {
+      if (normalise(selection.stage) === "11+") {
+        setMessage("11+ Maths diagnostic coming soon.");
+      } else {
+        setMessage(
+          "A diagnostic question bank for your selected subject, level, exam board and tier is not available yet."
+        );
+      }
 
       return;
-
     }
 
+    elements.questionText.textContent =
+      "Preparing your diagnostic...";
 
-    const q =
-      diagnosticQuestions[currentQuestion];
+    elements.topicLabel.textContent =
+      "Loading question bank";
 
+    const response =
+      await fetch(bankFile, {
+        cache: "no-store"
+      });
 
-    const correct =
-      answersMatch(
-        studentAnswer,
-        q.answer
+    if (!response.ok) {
+      throw new Error(
+        "Question bank could not be loaded."
       );
-
-
-    if (correct) {
-      score++;
     }
 
+    const data = await response.json();
 
-    answers.push({
-
-      questionId: q.id,
-
-      topic: q.topic,
-
-      subtopic: q.subtopic,
-
-      difficulty: q.difficulty,
-
-      studentAnswer: studentAnswer,
-
-      correctAnswer: q.answer,
-
-      correct: correct
-
-    });
-
-
-    currentQuestion++;
-
-
-    if (currentQuestion >= 20) {
-
-      finishDiagnostic();
-
-    } else {
-
-      showQuestion();
-
+    if (!data || !Array.isArray(data.questions)) {
+      throw new Error(
+        "Question bank format is invalid."
+      );
     }
 
-  }
+    questionBank = data.questions;
 
+    const result =
+      buildDiagnostic(selection);
 
-  /*
-    Create Learning Profile.
-  */
-
-  function createLearningProfile() {
-
-    const topicResults = {};
-
-
-    answers.forEach(result => {
-
-      if (!topicResults[result.topic]) {
-
-        topicResults[result.topic] = {
-
-          correct: 0,
-
-          total: 0
-
-        };
-
-      }
-
-
-      topicResults[result.topic].total++;
-
-
-      if (result.correct) {
-
-        topicResults[result.topic].correct++;
-
-      }
-
-    });
-
-
-    return topicResults;
-
-  }
-
-
-  /*
-    Convert topic performance into
-    Strong / Developing / Priority.
-  */
-
-  function getProfileStatus(percentage) {
-
-    if (percentage >= 75) {
-
-      return "Strong";
-
+    if (result.error) {
+      setMessage(result.error);
+      return;
     }
 
-
-    if (percentage >= 50) {
-
-      return "Developing";
-
-    }
-
-
-    return "Priority";
-
-  }
-
-
-  /*
-    Estimate starting grade.
-
-    This is deliberately labelled as an
-    initial estimate, not a formal GCSE grade.
-  */
-
-  function estimateLevel() {
-
-    const percentage =
-      (score / 20) * 100;
-
-
-    if (percentage >= 90) return "Grade 9 range";
-
-    if (percentage >= 80) return "Grade 8 range";
-
-    if (percentage >= 70) return "Grade 7 range";
-
-    if (percentage >= 60) return "Grade 6 range";
-
-    if (percentage >= 50) return "Grade 5 range";
-
-    if (percentage >= 40) return "Grade 4 range";
-
-    if (percentage >= 30) return "Grade 3 range";
-
-    return "Below Grade 3 range";
-
-  }
-
-
-  /*
-    Finish diagnostic.
-  */
-
-  function finishDiagnostic() {
-
-    document.getElementById("diagnosticArea").style.display =
-      "none";
-
-
-    document.getElementById("intro").style.display =
-      "none";
-
-
-    document.getElementById("resultsArea").style.display =
-      "block";
-
-
-    document.getElementById("finalScore").innerText =
-      score;
-
-
-    document.getElementById("estimatedLevel").innerText =
-      estimateLevel();
-
-
-    const profile =
-      createLearningProfile();
-
-
-    const grid =
-      document.getElementById("profileGrid");
-
-
-    grid.innerHTML = "";
-
-
-    Object.keys(profile).forEach(topic => {
-
-      const result =
-        profile[topic];
-
-
-      const percentage =
-        Math.round(
-          (result.correct / result.total) * 100
-        );
-
-
-      const status =
-        getProfileStatus(percentage);
-
-
-      let className =
-        "profile-item";
-
-
-      if (status === "Strong") {
-
-        className += " strong";
-
-      } else if (status === "Developing") {
-
-        className += " developing";
-
-      } else {
-
-        className += " priority";
-
-      }
-
-
-      const card =
-        document.createElement("div");
-
-
-      card.className =
-        className;
-
-
-      card.innerHTML = `
-
-        <h3>${topic}</h3>
-
-        <p>
-          <strong>${status}</strong>
-        </p>
-
-        <p>
-          ${result.correct} / ${result.total}
-          correct (${percentage}%)
-        </p>
-
-      `;
-
-
-      grid.appendChild(card);
-
-    });
-
-
-    /*
-      Save a temporary local copy.
-
-      This is NOT the permanent student record.
-      The real system will use a secure backend.
-    */
-
-    localStorage.setItem(
-
-      "algeviaLearningProfile",
-
-      JSON.stringify({
-
-        score: score,
-
-        estimatedLevel: estimateLevel(),
-
-        topicResults: profile,
-
-        answers: answers,
-
-        createdAt:
-          new Date().toISOString()
-
-      })
-
+    diagnosticQuestions = result.questions;
+    currentQuestion = 0;
+    score = 0;
+    answers = [];
+
+    showQuestion();
+
+  } catch (error) {
+    console.error(
+      "ALGEVIA DIAGNOSTIC ERROR:",
+      error
     );
 
-  }
-
-
-  /*
-    Allow Enter key to submit.
-  */
-
-  document
-    .getElementById("answerInput")
-    .addEventListener(
-      "keydown",
-      function(event) {
-
-        if (event.key === "Enter") {
-
-          submitAnswer();
-
-        }
-
-      }
+    setMessage(
+      "The diagnostic question bank could not be loaded. Please try again."
     );
+  }
+}
 
+elements.nextButton.addEventListener(
+  "click",
+  submitAnswer
+);
 
-  /*
-    Start loading the question bank.
-  */
+elements.answerInput.addEventListener(
+  "keydown",
+  event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitAnswer();
+    }
+  }
+);
 
-  console.log("ALGEVIA: diagnostic script reached bottom");
-  
-  document.getElementById("questionText").innerText =
-  "ALGEVIA: loadQuestionBank is about to start";
-
-loadQuestionBank();
-
+startDiagnostic();
 </script>
 
 </body>
