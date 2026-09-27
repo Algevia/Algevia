@@ -991,6 +991,19 @@ function showQuestion() {
   elements.topicLabel.textContent =
     question.topic || "Mixed topic";
 
+  const grade = questionGrade(question);
+
+const difficulty =
+  question.difficulty !== undefined
+    ? question.difficulty
+    : "N/A";
+
+elements.topicLabel.textContent =
+  (question.topic || "Mixed topic") +
+  " | Target Grade: " +
+  (grade !== null ? grade : "N/A") +
+  " | Difficulty: " +
+  difficulty;
   elements.questionText.textContent =
     question.question || "";
 
