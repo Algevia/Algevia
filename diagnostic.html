@@ -477,11 +477,18 @@ function getParams() {
 }
 
 function questionGrade(question) {
-  const match = String(
-    question.target_grade ?? ""
-  ).match(/\d+/);
+  const value =
+    question.targetGrade ??
+    question.target_grade ??
+    question.targetGradeRange ??
+    question.target_grade_range ??
+    "";
 
-  return match ? parseInt(match[0], 10) : null;
+  const match = String(value).match(/\d+/);
+
+  return match
+    ? parseInt(match[0], 10)
+    : null;
 }
 
 function questionDifficulty(question) {
