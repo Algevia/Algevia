@@ -605,125 +605,349 @@ function buildDiagnostic(selection) {
   const selected = [];
   const usedIds = new Set();
   const usedTexts = new Set();
+  const usedTopics = new Set();
   const usedSubtopics = new Set();
+  const usedSkills = new Set();
+  const usedQuestionTypes = new Set();
 
-  const addIfSuitable = (question, allowRepeatedSubtopic = false) => {
-    if (!question) return false;
+  const majorTopics = [
+    "number",
+    "algebra",
+    "ratio, proportion & rates",
+    "geometry & measures",
+    "probability",
+    "statistics"
+  ];
 
+  function topicKey(question) {
+    return normalise(question.topic);
+  }
+
+  function subtopicKey(question) {
+    return normalise(question.subtopic);
+  }
+
+  function skillKey(question) {
+    return normalise(question.skill);
+  }
+
+  function questionTypeKey(question) {
+    return normalise(question.questionType);
+  }
+
+  function isDuplicate(question) {
     const id = normalise(question.id);
     const text = normalise(question.question);
-    const subtopic = normalise(question.subtopic);
 
-    if (!id || !text) return false;
-    if (usedIds.has(id) || usedTexts.has(text)) return false;
+    return (
+      !id ||
+      !text ||
+      usedIds.has(id) ||
+      usedTexts.has(text)
+    );
+  }
+
+  function addQuestion(question, allowRepeatedSkill = false) {
+    if (!question || isDuplicate(question)) {
+      return false;
+    }
+
+    const topic = topicKey(question);
+    const subtopic = subtopicKey(question);
+    const skill = skillKey(question);
+    const questionType = questionTypeKey(question);
 
     if (
-      !allowRepeatedSubtopic &&
       subtopic &&
       usedSubtopics.has(subtopic)
     ) {
       return false;
     }
 
+    if (
+      !allowRepeatedSkill &&
+      skill &&
+      usedSkills.has(skill)
+    ) {
+      return false;
+    }
+
     selected.push(question);
-    usedIds.add(id);
-    usedTexts.add(text);
+
+    usedIds.add(normalise(question.id));
+    usedTexts.add(normalise(question.question));
+
+    if (topic) {
+      usedTopics.add(topic);
+    }
 
     if (subtopic) {
       usedSubtopics.add(subtopic);
     }
 
+    if (skill) {
+      usedSkills.add(skill);
+    }
+
+    if (questionType) {
+      usedQuestionTypes.add(questionType);
+    }
+
     return true;
-  };
-
-  const currentGrade = selection.currentGrade;
-  const targetGrade = selection.targetGrade;
-
-  const currentPool = shuffle(
-    pool.filter(question => {
-      const grade = questionGrade(question);
-      return grade !== null &&
-        Math.abs(grade - currentGrade) <= 1;
-    })
-  );
-
-  for (const question of currentPool) {
-    if (selected.length >= 6) break;
-    addIfSuitable(question);
   }
 
-  const progressionPool = shuffle(
-    pool.filter(question => {
-      const grade = questionGrade(question);
-      return grade !== null &&
-        grade >= currentGrade &&
-        grade <= targetGrade;
-    })
-  ).sort((a, b) => {
-    const aDistance = Math.abs(
-      questionGrade(a) - targetGrade
+  function gradeDistance(question, desiredGrade) {
+    const grade = questionGrade(question);
+
+    if (grade === null) {
+      return 99;
+    }
+
+    return Math.abs(grade - desiredGrade);
+  }
+
+  function candidateScore(question, desiredGrade) {
+    const grade = questionGrade(question);
+
+    if (grade === null) {
+      return -999;
+    }
+
+    let score = 0;
+
+    // Stay close to the desired grade
+    score -= gradeDistance(question, desiredGrade) * 10;
+
+    // Strongly reward a new major topic
+    const topic = topicKey(question);
+
+    if (topic && !usedTopics.has(topic)) {
+      score += 50;
+    }
+
+    // Reward a new skill
+    const skill = skillKey(question);
+
+    if (skill && !usedSkills.has(skill)) {
+      score += 30;
+    }
+
+    // Reward a new subtopic
+    const subtopic = subtopicKey(question);
+
+    if (
+      subtopic &&
+      !usedSubtopics.has(subtopic)
+    ) {
+      score += 20;
+    }
+
+    // Reward a new question type
+    const questionType = questionTypeKey(question);
+
+    if (
+      questionType &&
+      !usedQuestionTypes.has(questionType)
+    ) {
+      score += 10;
+    }
+
+    // Small reward for known difficulty
+    if (
+      question.difficulty !== undefined &&
+      question.difficulty !== null
+    ) {
+      score += 3;
+    }
+
+    return score;
+  }
+
+  function chooseBest(candidates, desiredGrade) {
+    const available = candidates.filter(
+      question => !isDuplicate(question)
     );
-    const bDistance = Math.abs(
-      questionGrade(b) - targetGrade
+
+    if (available.length === 0) {
+      return null;
+    }
+
+    available.sort(
+      (a, b) =>
+        candidateScore(b, desiredGrade) -
+        candidateScore(a, desiredGrade)
     );
-    return aDistance - bDistance;
-  });
 
-  for (const question of progressionPool) {
-    if (selected.length >= 14) break;
-    addIfSuitable(question);
+    return available[0];
   }
 
-  const targetPool = shuffle(
-    pool.filter(question =>
-      questionGrade(question) === targetGrade
-    )
-  );
+  const currentGrade = Number(selection.currentGrade);
+  const targetGrade = Number(selection.targetGrade);
 
-  for (const question of targetPool) {
-    if (selected.length >= 18) break;
-    addIfSuitable(question);
-  }
+  /*
+    STEP 1
+    First guarantee all six major AQA topic areas
+    where the question bank contains them.
+  */
 
-  const stretchPool = shuffle(
-    pool.filter(question => {
-      const grade = questionGrade(question);
-      return grade !== null &&
-        grade > targetGrade &&
-        grade <= targetGrade + 1;
-    })
-  );
+  for (const majorTopic of majorTopics) {
+    const topicCandidates = pool.filter(
+      question =>
+        topicKey(question) === majorTopic
+    );
 
-  for (const question of stretchPool) {
-    if (selected.length >= QUESTION_COUNT) break;
-    addIfSuitable(question);
+    if (topicCandidates.length === 0) {
+      continue;
+    }
+
+    /*
+      Spread the first six questions across the
+      student's current-to-target grade range.
+    */
+    const progress =
+      selected.length / 5;
+
+    const desiredGrade =
+      currentGrade +
+      ((targetGrade - currentGrade) * progress);
+
+    const chosen =
+      chooseBest(
+        topicCandidates,
+        desiredGrade
+      );
+
+    if (chosen) {
+      addQuestion(chosen, true);
+    }
   }
 
   /*
-    Fill any remaining places with the best available
-    unused questions. Repeated subtopics are allowed only
-    when the bank does not contain enough unique subtopics.
+    STEP 2
+    Fill the remaining questions progressively
+    from current grade toward target grade.
+  */
+
+  while (selected.length < QUESTION_COUNT) {
+
+    const remainingSlots =
+      QUESTION_COUNT - selected.length;
+
+    const progress =
+      (selected.length - 6) /
+      Math.max(QUESTION_COUNT - 7, 1);
+
+    let desiredGrade =
+      currentGrade +
+      ((targetGrade - currentGrade) * progress);
+
+    desiredGrade = Math.round(desiredGrade);
+
+    const candidates = pool.filter(
+      question => {
+        const grade = questionGrade(question);
+
+        return (
+          grade !== null &&
+          grade >= currentGrade &&
+          grade <= targetGrade &&
+          !isDuplicate(question)
+        );
+      }
+    );
+
+    let chosen =
+      chooseBest(
+        candidates,
+        desiredGrade
+      );
+
+    /*
+      If there are not enough questions between
+      current and target grade, use nearby grades.
+    */
+    if (!chosen) {
+      const fallbackCandidates =
+        pool.filter(question => {
+          const grade = questionGrade(question);
+
+          return (
+            grade !== null &&
+            grade >= currentGrade - 1 &&
+            grade <= targetGrade + 1 &&
+            !isDuplicate(question)
+          );
+        });
+
+      chosen =
+        chooseBest(
+          fallbackCandidates,
+          desiredGrade
+        );
+    }
+
+    /*
+      Final fallback:
+      never repeat an actual question.
+      Repeated skills are allowed only if necessary.
+    */
+    if (!chosen) {
+      const finalCandidates =
+        pool.filter(
+          question => !isDuplicate(question)
+        );
+
+      chosen =
+        chooseBest(
+          finalCandidates,
+          targetGrade
+        );
+
+      if (chosen) {
+        addQuestion(chosen, true);
+      }
+    } else {
+      addQuestion(chosen);
+    }
+
+    /*
+      Safety against an unexpected selection loop.
+    */
+    if (!chosen && remainingSlots > 0) {
+      break;
+    }
+  }
+
+  /*
+    STEP 3
+    Final fill if the bank does not contain enough
+    unique skills/subtopics.
   */
   if (selected.length < QUESTION_COUNT) {
-    const remaining = shuffle(
-      pool.filter(question => {
-        const id = normalise(question.id);
-        const text = normalise(question.question);
-        return id && text &&
-          !usedIds.has(id) &&
-          !usedTexts.has(text);
-      })
-    ).sort((a, b) => {
-      const aGrade = questionGrade(a) ?? 99;
-      const bGrade = questionGrade(b) ?? 99;
 
-      return Math.abs(aGrade - targetGrade) -
-             Math.abs(bGrade - targetGrade);
-    });
+    const remaining =
+      pool
+        .filter(
+          question => !isDuplicate(question)
+        )
+        .sort(
+          (a, b) =>
+            gradeDistance(a, targetGrade) -
+            gradeDistance(b, targetGrade)
+        );
 
     for (const question of remaining) {
-      if (selected.length >= QUESTION_COUNT) break;
-      addIfSuitable(question, true);
+
+      if (
+        selected.length >= QUESTION_COUNT
+      ) {
+        break;
+      }
+
+      addQuestion(
+        question,
+        true
+      );
     }
   }
 
@@ -735,8 +959,16 @@ function buildDiagnostic(selection) {
     };
   }
 
+  /*
+    Randomise the final order so the six topics
+    are not always presented in the same sequence.
+  */
   return {
-    questions: shuffle(selected).slice(0, QUESTION_COUNT),
+    questions:
+      shuffle(selected).slice(
+        0,
+        QUESTION_COUNT
+      ),
     error: ""
   };
 }
