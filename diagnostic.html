@@ -395,7 +395,61 @@ let diagnosticQuestions = [];
 let currentQuestion = 0;
 let score = 0;
 let answers = [];
+  
+/* Completed diagnostic question history */
+const DIAGNOSTIC_HISTORY_KEY =
+  "algeviaCompletedDiagnosticQuestionIds";
 
+function getDiagnosticHistory() {
+  try {
+    const saved =
+      localStorage.getItem(
+        DIAGNOSTIC_HISTORY_KEY
+      );
+
+    if (!saved) {
+      return [];
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : [];
+  } catch (error) {
+    console.warn(
+      "Could not read diagnostic history:",
+      error
+    );
+
+    return [];
+  }
+}
+
+function saveDiagnosticHistory(questionIds) {
+  try {
+    const existing =
+      getDiagnosticHistory();
+
+    const combined = [
+      ...new Set([
+        ...existing,
+        ...questionIds
+      ])
+    ];
+
+    localStorage.setItem(
+      DIAGNOSTIC_HISTORY_KEY,
+      JSON.stringify(combined)
+    );
+  } catch (error) {
+    console.warn(
+      "Could not save diagnostic history:",
+      error
+    );
+  }
+}
 const elements = {
   questionText: document.getElementById("questionText"),
   questionNumber: document.getElementById("questionNumber"),
@@ -601,7 +655,19 @@ function compatibleQuestions(selection) {
 function buildDiagnostic(selection) {
   const pool = compatibleQuestions(selection);
 
-  if (pool.length < QUESTION_COUNT) {
+    const completedQuestionIds =
+    new Set(
+      getDiagnosticHistory()
+        .map(id => normalise(id))
+    );
+
+  const freshPool =
+    pool.filter(question =>
+      !completedQuestionIds.has(
+        normalise(question.id)
+      )
+    );
+  if (freshPool.length >= QUESTION_COUNT) {
     return {
       questions: [],
       error:
@@ -798,7 +864,7 @@ function buildDiagnostic(selection) {
   */
 
   for (const majorTopic of majorTopics) {
-    const topicCandidates = pool.filter(
+    const topicCandidates = freshPool.filter(
       question =>
         topicKey(question) === majorTopic
     );
@@ -850,7 +916,7 @@ function buildDiagnostic(selection) {
 
     desiredGrade = Math.round(desiredGrade);
 
-    const candidates = pool.filter(
+    const candidates = freshPool.filter(
       question => {
         const grade = questionGrade(question);
 
@@ -875,7 +941,7 @@ function buildDiagnostic(selection) {
     */
     if (!chosen) {
       const fallbackCandidates =
-        pool.filter(question => {
+        freshpool.filter(question => {
           const grade = questionGrade(question);
 
           return (
@@ -900,7 +966,7 @@ function buildDiagnostic(selection) {
     */
     if (!chosen) {
       const finalCandidates =
-        pool.filter(
+        freshpool.filter(
           question => !isDuplicate(question)
         );
 
@@ -932,18 +998,44 @@ function buildDiagnostic(selection) {
   */
   if (selected.length < QUESTION_COUNT) {
 
-    const remaining =
-      pool
-        .filter(
-          question => !isDuplicate(question)
-        )
-        .sort(
-          (a, b) =>
-            gradeDistance(a, targetGrade) -
-            gradeDistance(b, targetGrade)
-        );
+  const remaining =
+    freshPool
+      .filter(
+        question => !isDuplicate(question)
+      )
+      .sort(
+        (a, b) =>
+          gradeDistance(a, targetGrade) -
+          gradeDistance(b, targetGrade)
+      );
 
-    for (const question of remaining) {
+  for (const question of remaining) {
+
+    if (
+      selected.length >= QUESTION_COUNT
+    ) {
+      break;
+    }
+
+    addQuestion(
+      question,
+      true
+    );
+  }
+
+  /*
+    If fewer than 20 fresh questions remain,
+    safely reuse older questions to complete
+    the diagnostic.
+  */
+  if (selected.length < QUESTION_COUNT) {
+
+    const previousQuestions =
+      pool.filter(
+        question => !isDuplicate(question)
+      );
+
+    for (const question of previousQuestions) {
 
       if (
         selected.length >= QUESTION_COUNT
@@ -956,6 +1048,16 @@ function buildDiagnostic(selection) {
         true
       );
     }
+  }
+}
+
+if (selected.length < QUESTION_COUNT) {
+  return {
+    questions: [],
+    error:
+      "There are not enough suitable questions in this diagnostic bank yet. Please try again later."
+  };
+}
   }
 
   if (selected.length < QUESTION_COUNT) {
@@ -1187,6 +1289,12 @@ function finishDiagnostic() {
     })
   );
 
+  // Record the questions used in this completed diagnostic
+saveDiagnosticHistory(
+  diagnosticQuestions.map(
+    question => question.id
+  )
+);
   elements.diagnosticArea.style.display = "none";
   elements.intro.style.display = "none";
   elements.resultsArea.style.display = "block";
