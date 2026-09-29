@@ -667,13 +667,6 @@ function buildDiagnostic(selection) {
         normalise(question.id)
       )
     );
-  if (freshPool.length >= QUESTION_COUNT) {
-    return {
-      questions: [],
-      error:
-        "There are not yet enough suitable questions in this diagnostic bank. Please try again later."
-    };
-  }
 
   const selected = [];
   const usedIds = new Set();
