@@ -724,11 +724,12 @@ function buildDiagnostic(selection) {
     const questionType = questionTypeKey(question);
 
     if (
-      subtopic &&
-      usedSubtopics.has(subtopic)
-    ) {
-      return false;
-    }
+  subtopic &&
+  usedSubtopics.has(subtopic) &&
+  !allowRepeatedSkill
+) {
+  return false;
+}
 
     if (
       !allowRepeatedSkill &&
@@ -973,8 +974,8 @@ function buildDiagnostic(selection) {
         addQuestion(chosen, true);
       }
     } else {
-      addQuestion(chosen);
-    }
+  addQuestion(chosen, true);
+}
 
     /*
       Safety against an unexpected selection loop.
