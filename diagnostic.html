@@ -1039,9 +1039,16 @@ while (
   if (selected.length < QUESTION_COUNT) {
 
     const previousQuestions =
-      pool.filter(
-        question => !isDuplicate(question)
-      );
+  pool.filter(question => {
+    const grade = questionGrade(question);
+
+    return (
+      grade !== null &&
+      grade >= currentGrade &&
+      grade <= targetGrade &&
+      !isDuplicate(question)
+    );
+  });
 
     for (const question of previousQuestions) {
 
