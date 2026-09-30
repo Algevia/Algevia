@@ -859,9 +859,17 @@ function buildDiagnostic(selection) {
 
   for (const majorTopic of majorTopics) {
     const topicCandidates = freshPool.filter(
-      question =>
-        topicKey(question) === majorTopic
+  question => {
+    const grade = questionGrade(question);
+
+    return (
+      topicKey(question) === majorTopic &&
+      grade !== null &&
+      grade >= currentGrade &&
+      grade <= targetGrade
     );
+  }
+);
 
     if (topicCandidates.length === 0) {
       continue;
