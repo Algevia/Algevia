@@ -895,7 +895,13 @@ function buildDiagnostic(selection) {
     from current grade toward target grade.
   */
 
-  while (selected.length < QUESTION_COUNT) {
+  let safetyCounter = 0;
+
+while (
+  selected.length < QUESTION_COUNT &&
+  safetyCounter < 100
+) {
+  safetyCounter++;
 
     const remainingSlots =
       QUESTION_COUNT - selected.length;
