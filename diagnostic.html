@@ -941,7 +941,7 @@ while (
     */
     if (!chosen) {
       const fallbackCandidates =
-        freshpool.filter(question => {
+        freshPool.filter(question => {
           const grade = questionGrade(question);
 
           return (
@@ -966,7 +966,7 @@ while (
     */
     if (!chosen) {
       const finalCandidates =
-        freshpool.filter(
+        freshPool.filter(
           question => !isDuplicate(question)
         );
 
