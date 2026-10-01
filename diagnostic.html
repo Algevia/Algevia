@@ -1056,31 +1056,30 @@ while (
   if (selected.length < QUESTION_COUNT) {
 
     const previousQuestions =
-  pool.filter(question => {
-    const grade = questionGrade(question);
+  shuffle(
+    pool.filter(question => {
+      const grade = questionGrade(question);
 
-    return (
-      grade !== null &&
-      grade >= currentGrade &&
-      grade <= targetGrade &&
-      !isDuplicate(question)
-    );
-  });
-
-    for (const question of previousQuestions) {
-
-      if (
-        selected.length >= QUESTION_COUNT
-      ) {
-        break;
-      }
-
-      addQuestion(
-        question,
-        true
+      return (
+        grade !== null &&
+        grade >= currentGrade &&
+        grade <= targetGrade &&
+        !isDuplicate(question)
       );
-    }
+    })
+  );
+
+for (const question of previousQuestions) {
+
+  if (
+    selected.length >= QUESTION_COUNT
+  ) {
+    break;
   }
+
+  addQuestion(
+    question
+  );
 }
 
 if (selected.length < QUESTION_COUNT) {
