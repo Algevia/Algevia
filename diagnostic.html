@@ -1327,6 +1327,12 @@ saveDiagnosticHistory(
     question => question.id
   )
 );
+
+  alert(
+  "Diagnostic history saved: " +
+  getDiagnosticHistory().length +
+  " question IDs"
+);
   elements.diagnosticArea.style.display = "none";
   elements.intro.style.display = "none";
   elements.resultsArea.style.display = "block";
