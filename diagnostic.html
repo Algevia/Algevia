@@ -833,22 +833,40 @@ function buildDiagnostic(selection) {
 }
 
   function chooseBest(candidates, desiredGrade) {
-    const available = candidates.filter(
-      question => !isDuplicate(question)
-    );
+  const available = candidates.filter(
+    question => !isDuplicate(question)
+  );
 
-    if (available.length === 0) {
-      return null;
-    }
-
-    available.sort(
-      (a, b) =>
-        candidateScore(b, desiredGrade) -
-        candidateScore(a, desiredGrade)
-    );
-
-    return available[0];
+  if (available.length === 0) {
+    return null;
   }
+
+  /*
+    Shuffle first so questions with similar scores
+    do not always appear in the same order.
+  */
+  const shuffled = shuffle(available);
+
+  shuffled.sort(
+    (a, b) => {
+      const scoreDifference =
+        candidateScore(b, desiredGrade) -
+        candidateScore(a, desiredGrade);
+
+      /*
+        If two questions are similarly suitable,
+        allow either to be selected.
+      */
+      if (Math.abs(scoreDifference) <= 5) {
+        return Math.random() - 0.5;
+      }
+
+      return scoreDifference;
+    }
+  );
+
+  return shuffled[0];
+}
 
   const currentGrade = Number(selection.currentGrade);
   const targetGrade = Number(selection.targetGrade);
