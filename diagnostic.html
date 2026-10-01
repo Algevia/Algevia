@@ -774,61 +774,63 @@ function buildDiagnostic(selection) {
   }
 
   function candidateScore(question, desiredGrade) {
-    const grade = questionGrade(question);
+  const grade = questionGrade(question);
 
-    if (grade === null) {
-      return -999;
-    }
-
-    let score = 0;
-
-    // Stay close to the desired grade
-    score -= gradeDistance(question, desiredGrade) * 10;
-
-    // Strongly reward a new major topic
-    const topic = topicKey(question);
-
-    if (topic && !usedTopics.has(topic)) {
-      score += 50;
-    }
-
-    // Reward a new skill
-    const skill = skillKey(question);
-
-    if (skill && !usedSkills.has(skill)) {
-      score += 30;
-    }
-
-    // Reward a new subtopic
-    const subtopic = subtopicKey(question);
-
-    if (
-      subtopic &&
-      !usedSubtopics.has(subtopic)
-    ) {
-      score += 20;
-    }
-
-    // Reward a new question type
-    const questionType = questionTypeKey(question);
-
-    if (
-      questionType &&
-      !usedQuestionTypes.has(questionType)
-    ) {
-      score += 10;
-    }
-
-    // Small reward for known difficulty
-    if (
-      question.difficulty !== undefined &&
-      question.difficulty !== null
-    ) {
-      score += 3;
-    }
-
-    return score;
+  if (grade === null) {
+    return -999;
   }
+
+  let score = 0;
+
+  // Stay close to the desired grade
+  score -= gradeDistance(question, desiredGrade) * 10;
+
+  const topic = topicKey(question);
+  const skill = skillKey(question);
+  const subtopic = subtopicKey(question);
+  const questionType = questionTypeKey(question);
+
+  // Balance major topics
+  if (topic && usedTopics.has(topic)) {
+    score -= 35;
+  } else {
+    score += 50;
+  }
+
+  // Discourage repeating the same skill
+  if (skill && usedSkills.has(skill)) {
+    score -= 30;
+  } else {
+    score += 30;
+  }
+
+  // Discourage repeating subtopics
+  if (subtopic && usedSubtopics.has(subtopic)) {
+    score -= 25;
+  } else {
+    score += 20;
+  }
+
+  // Discourage repeating question types
+  if (
+    questionType &&
+    usedQuestionTypes.has(questionType)
+  ) {
+    score -= 15;
+  } else {
+    score += 10;
+  }
+
+  // Small reward for known difficulty
+  if (
+    question.difficulty !== undefined &&
+    question.difficulty !== null
+  ) {
+    score += 3;
+  }
+
+  return score;
+}
 
   function chooseBest(candidates, desiredGrade) {
     const available = candidates.filter(
