@@ -895,7 +895,7 @@ function buildDiagnostic(selection) {
       );
 
     if (chosen) {
-      addQuestion(chosen, true);
+      addQuestion(chosen);
     }
   }
 
@@ -990,7 +990,7 @@ while (
         addQuestion(chosen, true);
       }
     } else {
-  addQuestion(chosen, true);
+  addQuestion(chosen);
 }
 
     /*
@@ -1027,10 +1027,7 @@ while (
       break;
     }
 
-    addQuestion(
-      question,
-      true
-    );
+    addQuestion(question);
   }
 
   /*
