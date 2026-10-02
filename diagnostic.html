@@ -1378,20 +1378,29 @@ async function startDiagnostic() {
     let data = null;
 
     try {
-      const response =
-        await fetch(bankFile, {
-          cache: "no-store"
-        });
+  const controller = new AbortController();
 
-      if (response.ok) {
-        data = await response.json();
-      }
-    } catch (error) {
-      console.warn(
-        "Vercel question bank load failed:",
-        error
-      );
-    }
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 8000);
+
+  const response =
+    await fetch(bankFile, {
+      cache: "no-store",
+      signal: controller.signal
+    });
+
+  clearTimeout(timeout);
+
+  if (response.ok) {
+    data = await response.json();
+  }
+} catch (error) {
+  console.warn(
+    "Vercel question bank load failed:",
+    error
+  );
+}
 
     if (!data || !Array.isArray(data.questions)) {
       try {
