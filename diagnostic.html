@@ -1365,32 +1365,25 @@ async function startDiagnostic() {
 
       return;
     }
-
     elements.questionText.textContent =
-      "Preparing your diagnostic...";
+  "Loading your diagnostic...";
 
-    elements.topicLabel.textContent =
-      "Loading question bank";
+elements.topicLabel.textContent =
+  "Connecting to Algevia";
 
-        const GITHUB_BANK_URL =
+const GITHUB_BANK_URL =
   "https://raw.githubusercontent.com/Algevia/Algevia/refs/heads/main/data/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";
 
-    let data = null;
+let data = null;
 
-    try {
-  const controller = new AbortController();
+/* Try the deployed Vercel question bank first */
+try {
+  elements.topicLabel.textContent =
+    "Loading question bank...";
 
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 8000);
-
-  const response =
-    await fetch(bankFile, {
-      cache: "no-store",
-      signal: controller.signal
-    });
-
-  clearTimeout(timeout);
+  const response = await fetch(bankFile, {
+    cache: "no-store"
+  });
 
   if (response.ok) {
     data = await response.json();
@@ -1402,29 +1395,46 @@ async function startDiagnostic() {
   );
 }
 
-    if (!data || !Array.isArray(data.questions)) {
-      try {
-        const githubResponse =
-          await fetch(GITHUB_BANK_URL, {
-            cache: "no-store"
-          });
+/* If Vercel fails, try GitHub */
+if (!data || !Array.isArray(data.questions)) {
+  try {
+    elements.topicLabel.textContent =
+      "Using backup question bank...";
 
-        if (!githubResponse.ok) {
-          throw new Error(
-            "GitHub question bank could not be loaded."
-          );
-        }
+    const githubResponse =
+      await fetch(GITHUB_BANK_URL, {
+        cache: "no-store"
+      });
 
-        data =
-          await githubResponse.json();
-      } catch (error) {
-        console.error(
-          "GitHub question bank load failed:",
-          error
-        );
+    if (!githubResponse.ok) {
+      throw new Error(
+        "GitHub question bank could not be loaded."
+      );
+    }
 
-        throw new Error(
-          "Question bank could not be loaded from Vercel or GitHub."
+    data = await githubResponse.json();
+
+  } catch (error) {
+    console.error(
+      "Question bank loading failed:",
+      error
+    );
+
+    throw new Error(
+      "Question bank could not be loaded."
+    );
+  }
+}
+
+if (!data || !Array.isArray(data.questions)) {
+  throw new Error(
+    "Question bank format is invalid."
+  );
+}
+
+elements.topicLabel.textContent =
+  "Building your diagnostic...";
+    "Question bank could not be loaded from Vercel or GitHub."
         );
       }
     }
