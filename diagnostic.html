@@ -246,6 +246,14 @@
       <strong>No preparation is needed.</strong>
       Answer as accurately as you can.
     </p>
+    <button
+  class="button"
+  id="resetDiagnosticHistory"
+  type="button"
+  style="margin-top:20px;"
+>
+  Reset Diagnostic History
+</button>
   </section>
 
   <section id="diagnosticArea">
@@ -466,6 +474,21 @@ const elements = {
   estimatedLevel: document.getElementById("estimatedLevel"),
   profileGrid: document.getElementById("profileGrid")
 };
+  const resetDiagnosticHistoryButton =
+  document.getElementById("resetDiagnosticHistory");
+
+resetDiagnosticHistoryButton.addEventListener(
+  "click",
+  function() {
+    localStorage.removeItem(
+      DIAGNOSTIC_HISTORY_KEY
+    );
+
+    alert("Diagnostic history has been reset.");
+
+    window.location.reload();
+  }
+);
 
 function setMessage(message) {
   elements.questionText.textContent = message;
