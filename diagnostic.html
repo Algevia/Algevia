@@ -1071,17 +1071,90 @@ function profileStatus(percentage) {
 }
 
 function estimateLevel() {
-  const percentage =
-    (score / QUESTION_COUNT) * 100;
+  const selection = getParams();
 
-  if (percentage >= 90) return "Grade 9 range";
-  if (percentage >= 80) return "Grade 8 range";
-  if (percentage >= 70) return "Grade 7 range";
-  if (percentage >= 60) return "Grade 6 range";
-  if (percentage >= 50) return "Grade 5 range";
-  if (percentage >= 40) return "Grade 4 range";
-  if (percentage >= 30) return "Grade 3 range";
-  return "Below Grade 3 range";
+  const currentGrade = Number(selection.currentGrade);
+  const targetGrade = Number(selection.targetGrade);
+
+  if (
+    !Number.isFinite(currentGrade) ||
+    !Number.isFinite(targetGrade) ||
+    !answers.length
+  ) {
+    return "Initial estimate unavailable";
+  }
+
+  let weightedCorrect = 0;
+  let weightedTotal = 0;
+
+  answers.forEach(result => {
+    const question =
+      diagnosticQuestions.find(
+        item => item.id === result.questionId
+      );
+
+    if (!question) return;
+
+    const difficulty =
+      Number(question.difficulty);
+
+    const gradeForQuestion =
+  questionGrade(question);
+
+    let weight = 1;
+
+    if (Number.isFinite(difficulty)) {
+      weight +=
+        Math.max(1, Math.min(5, difficulty)) * 0.10;
+    }
+
+    if (Number.isFinite(gradeForQuestion)) {
+  if (gradeForQuestion >= targetGrade) {
+        weight += 0.15;
+      } else if (gradeForQuestion >= currentGrade) {
+        weight += 0.05;
+      }
+    }
+
+    weightedTotal += weight;
+
+    if (result.correct) {
+      weightedCorrect += weight;
+    }
+  });
+
+  if (!weightedTotal) {
+    return "Initial estimate unavailable";
+  }
+
+  const weightedPercentage =
+    (weightedCorrect / weightedTotal) * 100;
+
+  let estimatedGrade = currentGrade;
+
+  if (weightedPercentage < 40) {
+    estimatedGrade = currentGrade - 1;
+  } else if (weightedPercentage < 60) {
+    estimatedGrade = currentGrade;
+  } else if (weightedPercentage < 75) {
+    estimatedGrade = currentGrade + 1;
+  } else {
+    estimatedGrade = currentGrade + 2;
+  }
+
+  estimatedGrade = Math.max(
+    1,
+    Math.min(
+      targetGrade,
+      estimatedGrade
+    )
+  );
+
+  return (
+    "Around Grade " +
+    estimatedGrade +
+    " level (initial estimate)"
+  );
 }
 
 function finishDiagnostic() {
