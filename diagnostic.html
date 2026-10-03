@@ -1064,7 +1064,14 @@ function submitAnswer() {
   }
 }
 
-function profileStatus(percentage) {
+function profileStatus(percentage, total) {
+  if (total < 3) return "Limited";
+
+  if (total < 5) {
+    if (percentage >= 50) return "Developing";
+    return "Priority";
+  }
+
   if (percentage >= 75) return "Strong";
   if (percentage >= 50) return "Developing";
   return "Priority";
@@ -1188,7 +1195,7 @@ function finishDiagnostic() {
       (result.correct / result.total) * 100
     );
 
-    const status = profileStatus(percentage);
+    const status = profileStatus(percentage, result.total);
 
     const card =
       document.createElement("div");
