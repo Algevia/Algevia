@@ -655,18 +655,13 @@ function compatibleQuestions(selection) {
 function buildDiagnostic(selection) {
   const pool = compatibleQuestions(selection);
 
-    const completedQuestionIds =
-    new Set(
-      getDiagnosticHistory()
-        .map(id => normalise(id))
-    );
+  const completedQuestionIds = new Set(
+    getDiagnosticHistory().map(id => normalise(id))
+  );
 
-  const freshPool =
-    pool.filter(question =>
-      !completedQuestionIds.has(
-        normalise(question.id)
-      )
-    );
+  const freshPool = pool.filter(question =>
+    !completedQuestionIds.has(normalise(question.id))
+  );
 
   const selected = [];
   const usedIds = new Set();
@@ -703,13 +698,13 @@ function buildDiagnostic(selection) {
 
   function isDuplicate(question) {
     const id = normalise(question.id);
-    const text = normalise(question.question);
+    const questionText = normalise(question.question);
 
     return (
       !id ||
-      !text ||
+      !questionText ||
       usedIds.has(id) ||
-      usedTexts.has(text)
+      usedTexts.has(questionText)
     );
   }
 
@@ -724,12 +719,12 @@ function buildDiagnostic(selection) {
     const questionType = questionTypeKey(question);
 
     if (
-  subtopic &&
-  usedSubtopics.has(subtopic) &&
-  !allowRepeatedSkill
-) {
-  return false;
-}
+      !allowRepeatedSkill &&
+      subtopic &&
+      usedSubtopics.has(subtopic)
+    ) {
+      return false;
+    }
 
     if (
       !allowRepeatedSkill &&
@@ -740,324 +735,131 @@ function buildDiagnostic(selection) {
     }
 
     selected.push(question);
-
     usedIds.add(normalise(question.id));
     usedTexts.add(normalise(question.question));
 
-    if (topic) {
-      usedTopics.add(topic);
-    }
-
-    if (subtopic) {
-      usedSubtopics.add(subtopic);
-    }
-
-    if (skill) {
-      usedSkills.add(skill);
-    }
-
-    if (questionType) {
-      usedQuestionTypes.add(questionType);
-    }
+    if (topic) usedTopics.add(topic);
+    if (subtopic) usedSubtopics.add(subtopic);
+    if (skill) usedSkills.add(skill);
+    if (questionType) usedQuestionTypes.add(questionType);
 
     return true;
   }
 
   function gradeDistance(question, desiredGrade) {
     const grade = questionGrade(question);
-
-    if (grade === null) {
-      return 99;
-    }
-
-    return Math.abs(grade - desiredGrade);
+    return grade === null ? 999 : Math.abs(grade - desiredGrade);
   }
 
   function candidateScore(question, desiredGrade) {
-  const grade = questionGrade(question);
+    const grade = questionGrade(question);
 
-  if (grade === null) {
-    return -999;
+    if (grade === null) {
+      return -9999;
+    }
+
+    let scoreValue = 0;
+
+    scoreValue -= gradeDistance(question, desiredGrade) * 10;
+
+    const topic = topicKey(question);
+    const skill = skillKey(question);
+    const subtopic = subtopicKey(question);
+    const questionType = questionTypeKey(question);
+
+    scoreValue += topic && !usedTopics.has(topic) ? 50 : -35;
+    scoreValue += skill && !usedSkills.has(skill) ? 30 : -30;
+    scoreValue += subtopic && !usedSubtopics.has(subtopic) ? 20 : -25;
+    scoreValue += questionType && !usedQuestionTypes.has(questionType)
+      ? 10
+      : -15;
+
+    if (question.difficulty !== undefined &&
+        question.difficulty !== null) {
+      scoreValue += 3;
+    }
+
+    return scoreValue;
   }
-
-  let score = 0;
-
-  // Stay close to the desired grade
-  score -= gradeDistance(question, desiredGrade) * 10;
-
-  const topic = topicKey(question);
-  const skill = skillKey(question);
-  const subtopic = subtopicKey(question);
-  const questionType = questionTypeKey(question);
-
-  // Balance major topics
-  if (topic && usedTopics.has(topic)) {
-    score -= 35;
-  } else {
-    score += 50;
-  }
-
-  // Discourage repeating the same skill
-  if (skill && usedSkills.has(skill)) {
-    score -= 30;
-  } else {
-    score += 30;
-  }
-
-  // Discourage repeating subtopics
-  if (subtopic && usedSubtopics.has(subtopic)) {
-    score -= 25;
-  } else {
-    score += 20;
-  }
-
-  // Discourage repeating question types
-  if (
-    questionType &&
-    usedQuestionTypes.has(questionType)
-  ) {
-    score -= 15;
-  } else {
-    score += 10;
-  }
-
-  // Small reward for known difficulty
-  if (
-    question.difficulty !== undefined &&
-    question.difficulty !== null
-  ) {
-    score += 3;
-  }
-
-  return score;
-}
 
   function chooseBest(candidates, desiredGrade) {
-  const available = candidates.filter(
-    question => !isDuplicate(question)
-  );
+    const available = candidates.filter(
+      question => !isDuplicate(question)
+    );
 
-  if (available.length === 0) {
-    return null;
-  }
+    if (!available.length) {
+      return null;
+    }
 
-  /*
-    Shuffle first so questions with similar scores
-    do not always appear in the same order.
-  */
-  const shuffled = shuffle(available);
+    const shuffled = shuffle(available);
 
-  shuffled.sort(
-    (a, b) => {
-      const scoreDifference =
+    shuffled.sort((a, b) => {
+      const difference =
         candidateScore(b, desiredGrade) -
         candidateScore(a, desiredGrade);
 
-      /*
-        If two questions are similarly suitable,
-        allow either to be selected.
-      */
-      if (Math.abs(scoreDifference) <= 5) {
+      if (Math.abs(difference) <= 5) {
         return Math.random() - 0.5;
       }
 
-      return scoreDifference;
-    }
-  );
+      return difference;
+    });
 
-  return shuffled[0];
-}
+    return shuffled[0];
+  }
 
   const currentGrade = Number(selection.currentGrade);
   const targetGrade = Number(selection.targetGrade);
 
-  /*
-    STEP 1
-    First guarantee all six major AQA topic areas
-    where the question bank contains them.
-  */
-
+  // Step 1: cover all six major topics where possible.
   for (const majorTopic of majorTopics) {
-    const topicCandidates = freshPool.filter(
-  question => {
-    const grade = questionGrade(question);
+    const candidates = freshPool.filter(question => {
+      const grade = questionGrade(question);
 
-    return (
-      topicKey(question) === majorTopic &&
-      grade !== null &&
-      grade >= currentGrade &&
-      grade <= targetGrade
-    );
-  }
-);
+      return (
+        topicKey(question) === majorTopic &&
+        grade !== null &&
+        grade >= currentGrade &&
+        grade <= targetGrade &&
+        !isDuplicate(question)
+      );
+    });
 
-    if (topicCandidates.length === 0) {
+    if (!candidates.length) {
       continue;
     }
 
-    /*
-      Spread the first six questions across the
-      student's current-to-target grade range.
-    */
-    const progress =
-      selected.length / 5;
-
+    const progress = selected.length / Math.max(majorTopics.length - 1, 1);
     const desiredGrade =
       currentGrade +
       ((targetGrade - currentGrade) * progress);
 
-    const chosen =
-      chooseBest(
-        topicCandidates,
-        desiredGrade
-      );
+    const chosen = chooseBest(candidates, desiredGrade);
 
     if (chosen) {
       addQuestion(chosen);
     }
   }
 
-  /*
-    STEP 2
-    Fill the remaining questions progressively
-    from current grade toward target grade.
-  */
-
+  // Step 2: fill remaining slots strictly within current-to-target grade.
   let safetyCounter = 0;
 
-while (
-  selected.length < QUESTION_COUNT &&
-  safetyCounter < 100
-) {
-  safetyCounter++;
-
-    const remainingSlots =
-      QUESTION_COUNT - selected.length;
+  while (
+    selected.length < QUESTION_COUNT &&
+    safetyCounter < 200
+  ) {
+    safetyCounter++;
 
     const progress =
-      (selected.length - 6) /
-      Math.max(QUESTION_COUNT - 7, 1);
+      selected.length /
+      Math.max(QUESTION_COUNT - 1, 1);
 
-    let desiredGrade =
+    const desiredGrade = Math.round(
       currentGrade +
-      ((targetGrade - currentGrade) * progress);
-
-    desiredGrade = Math.round(desiredGrade);
-
-    const candidates = freshPool.filter(
-      question => {
-        const grade = questionGrade(question);
-
-        return (
-          grade !== null &&
-          grade >= currentGrade &&
-          grade <= targetGrade &&
-          !isDuplicate(question)
-        );
-      }
+      ((targetGrade - currentGrade) * progress)
     );
 
-    let chosen =
-      chooseBest(
-        candidates,
-        desiredGrade
-      );
-
-    /*
-      If there are not enough questions between
-      current and target grade, use nearby grades.
-    */
-    if (!chosen) {
-      const fallbackCandidates =
-        freshPool.filter(question => {
-          const grade = questionGrade(question);
-
-          return (
-            grade !== null &&
-            grade >= currentGrade - 1 &&
-            grade <= targetGrade + 1 &&
-            !isDuplicate(question)
-          );
-        });
-
-      chosen =
-        chooseBest(
-          fallbackCandidates,
-          desiredGrade
-        );
-    }
-
-    /*
-      Final fallback:
-      never repeat an actual question.
-      Repeated skills are allowed only if necessary.
-    */
-    if (!chosen) {
-      const finalCandidates =
-        freshPool.filter(
-          question => !isDuplicate(question)
-        );
-
-      chosen =
-        chooseBest(
-          finalCandidates,
-          targetGrade
-        );
-
-      if (chosen) {
-        addQuestion(chosen, true);
-      }
-    } else {
-  addQuestion(chosen);
-}
-
-    /*
-      Safety against an unexpected selection loop.
-    */
-    if (!chosen && remainingSlots > 0) {
-      break;
-    }
-  }
-
-  /*
-    STEP 3
-    Final fill if the bank does not contain enough
-    unique skills/subtopics.
-  */
-  if (selected.length < QUESTION_COUNT) {
-
-  const remaining =
-    freshPool
-      .filter(
-        question => !isDuplicate(question)
-      )
-      .sort(
-        (a, b) =>
-          gradeDistance(a, targetGrade) -
-          gradeDistance(b, targetGrade)
-      );
-
-  for (const question of remaining) {
-
-    if (
-      selected.length >= QUESTION_COUNT
-    ) {
-      break;
-    }
-
-    addQuestion(question);
-  }
-
-  /*
-    If fewer than 20 fresh questions remain,
-    safely reuse older questions to complete
-    the diagnostic.
-  */
-  if (selected.length < QUESTION_COUNT) {
-
-    const previousQuestions =
-  shuffle(
-    pool.filter(question => {
+    const candidates = freshPool.filter(question => {
       const grade = questionGrade(question);
 
       return (
@@ -1066,49 +868,56 @@ while (
         grade <= targetGrade &&
         !isDuplicate(question)
       );
-    })
-  );
+    });
 
-for (const question of previousQuestions) {
+    const chosen = chooseBest(candidates, desiredGrade);
 
-  if (
-    selected.length >= QUESTION_COUNT
-  ) {
-    break;
+    if (!chosen) {
+      break;
+    }
+
+    if (!addQuestion(chosen, false)) {
+      break;
+    }
   }
 
-  addQuestion(
-    question
-  );
-}
+  // Step 3: if unique subtopics/skills are exhausted, still fill from
+  // unused questions within the student's selected grade range.
+  if (selected.length < QUESTION_COUNT) {
+    const remaining = shuffle(
+      freshPool.filter(question => {
+        const grade = questionGrade(question);
 
-if (selected.length < QUESTION_COUNT) {
-  return {
-    questions: [],
-    error:
-      "There are not enough suitable questions in this diagnostic bank yet. Please try again later."
-  };
-}
+        return (
+          grade !== null &&
+          grade >= currentGrade &&
+          grade <= targetGrade &&
+          !isDuplicate(question)
+        );
+      })
+    );
 
+    for (const question of remaining) {
+      if (selected.length >= QUESTION_COUNT) {
+        break;
+      }
 
+      addQuestion(question, true);
+    }
+  }
+
+  // Do not silently reuse completed questions. A fresh diagnostic must
+  // contain 20 unused questions.
   if (selected.length < QUESTION_COUNT) {
     return {
       questions: [],
       error:
-        "There are not yet enough unique questions in this diagnostic bank. Please try again later."
+        "There are not enough unused suitable questions in this diagnostic bank yet. Please try again later."
     };
   }
 
-  /*
-    Randomise the final order so the six topics
-    are not always presented in the same sequence.
-  */
   return {
-    questions:
-      shuffle(selected).slice(
-        0,
-        QUESTION_COUNT
-      ),
+    questions: shuffle(selected).slice(0, QUESTION_COUNT),
     error: ""
   };
 }
@@ -1365,25 +1174,32 @@ async function startDiagnostic() {
 
       return;
     }
+
     elements.questionText.textContent =
-  "Loading your diagnostic...";
+      "Preparing your diagnostic...";
 
-elements.topicLabel.textContent =
-  "Connecting to Algevia";
+    elements.topicLabel.textContent =
+      "Loading question bank";
 
-const GITHUB_BANK_URL =
+        const GITHUB_BANK_URL =
   "https://raw.githubusercontent.com/Algevia/Algevia/refs/heads/main/data/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";
 
-let data = null;
+    let data = null;
 
-/* Try the deployed Vercel question bank first */
-try {
-  elements.topicLabel.textContent =
-    "Loading question bank...";
+    try {
+  const controller = new AbortController();
 
-  const response = await fetch(bankFile, {
-    cache: "no-store"
-  });
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 8000);
+
+  const response =
+    await fetch(bankFile, {
+      cache: "no-store",
+      signal: controller.signal
+    });
+
+  clearTimeout(timeout);
 
   if (response.ok) {
     data = await response.json();
@@ -1395,46 +1211,29 @@ try {
   );
 }
 
-/* If Vercel fails, try GitHub */
-if (!data || !Array.isArray(data.questions)) {
-  try {
-    elements.topicLabel.textContent =
-      "Using backup question bank...";
+    if (!data || !Array.isArray(data.questions)) {
+      try {
+        const githubResponse =
+          await fetch(GITHUB_BANK_URL, {
+            cache: "no-store"
+          });
 
-    const githubResponse =
-      await fetch(GITHUB_BANK_URL, {
-        cache: "no-store"
-      });
+        if (!githubResponse.ok) {
+          throw new Error(
+            "GitHub question bank could not be loaded."
+          );
+        }
 
-    if (!githubResponse.ok) {
-      throw new Error(
-        "GitHub question bank could not be loaded."
-      );
-    }
+        data =
+          await githubResponse.json();
+      } catch (error) {
+        console.error(
+          "GitHub question bank load failed:",
+          error
+        );
 
-    data = await githubResponse.json();
-
-  } catch (error) {
-    console.error(
-      "Question bank loading failed:",
-      error
-    );
-
-    throw new Error(
-      "Question bank could not be loaded."
-    );
-  }
-}
-
-if (!data || !Array.isArray(data.questions)) {
-  throw new Error(
-    "Question bank format is invalid."
-  );
-}
-
-elements.topicLabel.textContent =
-  "Building your diagnostic...";
-    "Question bank could not be loaded from Vercel or GitHub."
+        throw new Error(
+          "Question bank could not be loaded from Vercel or GitHub."
         );
       }
     }
@@ -1447,8 +1246,6 @@ elements.topicLabel.textContent =
 
     questionBank = data.questions;
 
-    console.log("ALGEVIA: question bank loaded", questionBank.length);
-    
     const result =
       buildDiagnostic(selection);
 
