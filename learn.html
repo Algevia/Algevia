@@ -3,1794 +3,365 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Algevia Learn by Yourself — Full Integrated Engine</title>
-
+<title>Algevia â€” Learn by Yourself | Integrated V10</title>
 <style>
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f7fa;
-    color: #222;
-  }
-
-  header {
-    background: #ffffff;
-    border-bottom: 1px solid #ddd;
-    padding: 18px 8%;
-  }
-
-  .nav {
-    max-width: 1100px;
-    margin: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-  }
-
-  .nav a {
-    text-decoration: none;
-    color: #222;
-    font-weight: bold;
-  }
-
-  main {
-    max-width: 1000px;
-    margin: auto;
-    padding: 30px 20px 60px;
-  }
-
-  .hero {
-    background: white;
-    text-align: center;
-    padding: 45px 25px;
-    border-radius: 14px;
-    margin-bottom: 25px;
-  }
-
-  .hero h1 {
-    margin-bottom: 8px;
-  }
-
-  .hero h2 {
-    margin-top: 0;
-  }
-
-  .card {
-    background: white;
-    padding: 25px;
-    border-radius: 14px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-
-  .progress {
-    height: 10px;
-    background: #e5e7eb;
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 15px 0 25px;
-  }
-
-  .progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #2563eb;
-    transition: width 0.3s ease;
-  }
-
-  .skill {
-    display: inline-block;
-    background: #eef2ff;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-
-  .example {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 18px;
-    margin: 20px 0;
-    border-radius: 6px;
-  }
-
-  .question-box {
-    margin-top: 20px;
-  }
-
-  .question {
-    font-size: 22px;
-    font-weight: bold;
-    margin: 20px 0;
-  }
-
-  input[type="text"] {
-    width: 100%;
-    max-width: 500px;
-    padding: 14px;
-    font-size: 18px;
-    border: 1px solid #bbb;
-    border-radius: 8px;
-  }
-
-  button,
-  .button {
-    display: inline-block;
-    border: none;
-    background: #2563eb;
-    color: white;
-    padding: 13px 22px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-    margin-top: 15px;
-  }
-
-  button:hover,
-  .button:hover {
-    opacity: 0.9;
-  }
-
-  button.secondary {
-    background: #64748b;
-  }
-
-  #voiceStatus {
-    color: #475569;
-    min-height: 24px;
-  }
-
-  #speakAnswerButton {
-    background: #0f766e;
-  }
-
-  .feedback {
-    padding: 18px;
-    border-radius: 8px;
-    margin-top: 20px;
-    display: none;
-  }
-
-  .correct {
-    background: #ecfdf5;
-    border: 1px solid #10b981;
-  }
-
-  .incorrect {
-    background: #fef2f2;
-    border: 1px solid #ef4444;
-  }
-
-  .hint {
-    background: #fff7ed;
-    border: 1px solid #f97316;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-    display: none;
-  }
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-top: 20px;
-  }
-
-  .stat {
-    background: #f8fafc;
-    padding: 18px;
-    border-radius: 10px;
-    text-align: center;
-  }
-
-  .stat strong {
-    display: block;
-    font-size: 24px;
-    margin-bottom: 5px;
-  }
-
-  .next-area {
-    display: none;
-    margin-top: 20px;
-  }
-
-  .learning-profile {
-    background: #eef6ff;
-    border: 1px solid #bfdbfe;
-  }
-
-  @media (max-width: 700px) {
-    .stats {
-      grid-template-columns: 1fr;
-    }
-
-    .hero {
-      padding: 30px 18px;
-    }
-
-    .question {
-      font-size: 19px;
-    }
-  }
-</style>
-
-<style id="algevia-enhanced-style">
-/* =========================================================
-   ALGEVIA FULL LEARNING ENGINE - ENHANCED LAYER
-   This layer extends the original Learn by Yourself page.
-   ========================================================= */
-.algevia-enhanced-card{background:#fff;padding:25px;border-radius:14px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.algevia-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.algevia-grid label{font-weight:bold;color:#334155}
-.algevia-grid select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px;margin-top:7px;background:#fff}
-.algevia-pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.algevia-pill{padding:7px 11px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:13px;font-weight:bold}
-.algevia-control-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.algevia-control-row button{margin-top:0}
-#enhancedProgressText{font-weight:bold;color:#475569}
-#enhancedMasteryText{font-weight:bold;color:#1d4ed8}
-#enhancedResumeNote{background:#f8fafc;border-left:4px solid #2563eb;padding:14px;border-radius:6px;margin-top:15px}
-.algevia-tutor-choice{background:#f8fafc!important;color:#1e293b!important;border:2px solid transparent!important}
-.algevia-tutor-choice.selected{border-color:#2563eb!important;background:#eff6ff!important}
-#enhancedTutorDialogue{background:#f0fdf4;border:1px solid #86efac;padding:16px;border-radius:10px;margin-top:15px;line-height:1.55}
-#enhancedHintPanel{background:#fff7ed;border:1px solid #fdba74;padding:16px;border-radius:10px;margin-top:15px;display:none}
-#enhancedHintStep{font-size:13px;font-weight:bold;color:#9a3412;margin-bottom:7px}
-#enhancedSkillStatus{font-size:14px;color:#475569;margin-top:8px}
-.algevia-topic-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.algevia-topic-button{background:#f1f5f9!important;color:#334155!important;border:1px solid #cbd5e1!important;margin-top:0!important}
-.algevia-topic-button.active{background:#2563eb!important;color:#fff!important;border-color:#2563eb!important}
-@media(max-width:700px){.algevia-grid{grid-template-columns:1fr}.algevia-control-row button{width:100%}}
-</style>
-
-<style id="algevia-v5-clean-layout">
-  #algeviaLearningControls, #algeviaTutorCard, #algeviaMasteryCard { box-sizing:border-box; width:100%; max-width:100%; }
-  #algeviaTutorCard { margin-bottom:20px; }
-  #algeviaTutorCard .algevia-control-row { display:flex; gap:12px; flex-wrap:wrap; }
-  #algeviaTutorCard .algevia-tutor-choice { min-width:160px; }
-  #algeviaTutorCard .algevia-tutor-choice.selected { outline:3px solid currentColor; font-weight:700; }
-  #algeviaLearningControls select { width:100%; box-sizing:border-box; }
-  #algeviaLearningControls .algevia-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
-  @media (max-width:700px){ #algeviaLearningControls .algevia-grid{grid-template-columns:1fr;} }
-  #algeviaLearningControls, #algeviaTutorCard, #algeviaMasteryCard { margin-top:20px; }
-  #algeviaTutorCard { order:0; }
-  #algeviaLearningControls { order:0; }
-  #algeviaMasteryCard { order:3; }
-</style>
-
-<style id="algevia-v6-layout">
-  #algeviaLearningControls { margin-top: 20px; }
-  #algeviaWorkedExamplesCard { margin-top: 20px; }
-  #algeviaWorkedExamples { display:grid; gap:16px; }
-  .algevia-worked-example { background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:18px; }
-  .algevia-worked-example h3 { margin-top:0; }
-  .algevia-question-tutor { margin:20px 0; padding:18px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; }
-  .algevia-question-tutor h3 { margin-top:0; }
-  #studentProgressCard, #algeviaMasteryCard { margin-top:20px; }
-  #algeviaTutorCard .algevia-control-row { display:flex; gap:10px; flex-wrap:wrap; }
-  #algeviaTutorCard .algevia-tutor-choice.selected { outline:3px solid currentColor; font-weight:700; }
+:root{--blue:#173b67;--light:#f5f8fc;--border:#d9e2ee;--green:#137333;--red:#b3261e;}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--light);color:#17202a;line-height:1.55}
+main{max-width:1000px;margin:0 auto;padding:28px 18px 60px}h1{color:var(--blue);margin:0 0 24px;font-size:32px}h2{color:var(--blue);margin-top:0}h3{color:var(--blue)}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;margin:18px 0;box-shadow:0 3px 12px rgba(0,0,0,.04)}
+label{font-weight:700;display:block;margin:12px 0 6px}select,input{width:100%;padding:12px;border:1px solid #b8c5d5;border-radius:8px;font-size:16px;background:#fff}
+button{border:0;border-radius:8px;padding:11px 16px;margin:5px 5px 5px 0;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}button.secondary{background:#e8eef6;color:var(--blue)}button.selected{outline:3px solid #9ab8dc;background:#0f4d86}
+button:disabled{opacity:.55;cursor:not-allowed}.row{display:flex;gap:10px;flex-wrap:wrap}.muted{color:#66778a}.question{font-size:24px;font-weight:700;background:#f7faff;border:1px solid var(--border);padding:20px;border-radius:10px;margin:15px 0}
+.example{background:#fbfcfe;border-left:5px solid #8ba8c7;padding:14px 18px;margin:12px 0;border-radius:8px}.step{margin:5px 0}.answer{font-weight:700}.feedback{padding:14px;border-radius:8px;margin-top:14px;display:none}.correct{background:#eaf7ee;color:var(--green)}.incorrect{background:#fff0ef;color:var(--red)}
+.progress-track{height:12px;background:#e8edf3;border-radius:20px;overflow:hidden}.progress-fill{height:100%;width:0;background:var(--blue);transition:width .2s}.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#f7f9fc;padding:16px;border-radius:10px;text-align:center}.stat strong{display:block;font-size:25px;color:var(--blue)}
+.tutor{border:1px solid var(--border);border-radius:10px;padding:16px;background:#fbfcfe}.dialogue{margin-top:12px;padding:13px;background:#eef5fc;border-radius:8px}.status{font-size:14px;font-weight:700;margin-top:8px}.saved{background:#eaf7ee;padding:14px;border-radius:8px;display:none}
+@media(max-width:650px){.stat-grid{grid-template-columns:1fr}.question{font-size:20px}}
+ .skill-row{padding:10px 0;border-bottom:1px solid #e6ebf1;display:flex;justify-content:space-between;gap:15px}.small{font-size:13px;color:#536478}.notice{background:#fff7e5;border-left:4px solid #d99510;padding:12px;border-radius:6px}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8caee0;outline-offset:2px}
 </style>
 </head>
-
 <body>
-
-<header>
-  <div class="nav">
-    <div class="logo">ALGEVIA</div>
-    <a href="education.html">Education</a>
-  </div>
-</header>
-
 <main>
+<h1>Learn by Yourself</h1>
+<p class="muted">GCSE Maths practice Â· personalised learning Â· progress saved on this device</p>
 
-  <section class="hero">
-    <h1>Learn by Yourself</h1>
-    <h2>GCSE Maths — AQA Higher</h2>
-    <p><strong>Learn Smarter. Achieve More.</strong></p>
-    <p>Choose what you want to practise. Algevia will teach the topic, show worked examples, then adapt the questions to your performance.</p>
-  </section>
+<section class="card" id="topicCard">
+<h2>Choose What You Want to Practise</h2>
+<p class="muted">Choose a topic and subtopic. Algevia will then select questions that match your current learning progress.</p>
+<label for="topicSelect">Topic</label><select id="topicSelect"></select>
+<label for="subtopicSelect">Subtopic</label><select id="subtopicSelect"></select>
+<div class="row"><button id="startBtn">Start Practice</button><button id="continueBtn" class="secondary">Continue Learning</button><button id="saveBtn" class="secondary">Save &amp; Exit</button></div>
+</section>
 
-  <!-- 1. TOPIC SELECTION -->
-  <section class="algevia-enhanced-card" id="algeviaLearningControls">
-    <h2>Choose What You Want to Practise</h2>
-    <p>Select a topic and subtopic. You choose the area; Algevia chooses the most useful question for your current level.</p>
-    <div class="algevia-grid">
-      <label>Topic
-        <select id="algeviaTopicSelect"></select>
-      </label>
-      <label>Subtopic
-        <select id="algeviaSubtopicSelect"></select>
-      </label>
-    </div>
-    <div class="algevia-pill-row" id="algeviaSkillPills"></div>
-    <div id="enhancedResumeNote">Your progress is saved automatically. You can leave at any time and continue later.</div>
-    <div class="algevia-control-row">
-      <button id="algeviaStartButton" type="button">Start Practice</button>
-      <button id="algeviaContinueButton" class="secondary" type="button">Continue Learning</button>
-      <button id="algeviaSaveExitButton" class="secondary" type="button">Save &amp; Exit</button>
-    </div>
-  </section>
+<section class="card" id="examplesCard">
+<h2>Worked Examples</h2>
+<p id="examplesIntro" class="muted">Select a topic and subtopic to see worked examples.</p>
+<div id="examples"></div><p class="muted" id="exampleNote"></p>
+</section>
 
-  <!-- 2. WORKED EXAMPLES FOR THE SELECTED TOPIC -->
-  <section class="algevia-enhanced-card" id="algeviaWorkedExamplesCard">
-    <h2>Worked Examples</h2>
-    <p id="algeviaWorkedExamplesIntro">Choose a topic above and Algevia will show worked examples before you start the questions.</p>
-    <div id="algeviaWorkedExamples"></div>
-  </section>
+<section class="card" id="questionCard">
+<h2>Now Try It Yourself</h2>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<p id="counter" class="muted">Question 1</p>
+<div class="question" id="question">Choose a topic to begin.</div>
 
-  <!-- 3. QUESTION -->
-  <section class="card" id="exerciseCard">
-    <h2>Now Try It Yourself</h2>
-    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-    <p id="questionCounter">Question 1</p>
-    <div class="question" id="question">Simplify: 3x + 5x</div>
+<div class="tutor">
+<h3>Your Algevia Tutor</h3>
+<p class="muted">Choose who guides you through the question.</p>
+<div class="row"><button id="femaleBtn" type="button">ðŸ‘© Female Tutor</button><button id="maleBtn" type="button">ðŸ‘¨ Male Tutor</button></div>
+<div id="selectedTutor">ðŸ‘© Female Tutor selected</div>
+<div id="dialogue" class="dialogue">Iâ€™m ready. Have a go at the question and Iâ€™ll help when you need me.</div>
+<div id="voiceStatus" class="status">Checking installed voicesâ€¦</div>
+</div>
 
-    <!-- Tutor selection belongs to the question, not elsewhere on the page. -->
-    <div class="algevia-question-tutor" id="algeviaTutorCard">
-      <h3>Your Algevia Tutor</h3>
-      <p>Choose who guides you through this question.</p>
-      <div class="algevia-control-row">
-        <button id="algeviaFemaleTutor" class="algevia-tutor-choice" type="button">👩 Female Tutor</button>
-        <button id="algeviaMaleTutor" class="algevia-tutor-choice" type="button">👨 Male Tutor</button>
-      </div>
-      <p id="algeviaSelectedTutor" style="font-weight:bold">👩 Female Tutor selected</p>
-      <div id="enhancedTutorDialogue">I’m ready. Have a go at the question and I’ll help when you need me.</div>
-    </div>
+<label for="answer">Your answer</label>
+<input id="answer" type="text" autocomplete="off" placeholder="Type your answer">
+<div class="row" style="margin-top:10px">
+<button id="checkBtn">Check Answer</button><button id="hintBtn" class="secondary">ðŸ’¡ Hint</button><button id="teachBtn" class="secondary">ðŸ‘©â€ðŸ« Teach me</button><button id="speakBtn" class="secondary">ðŸ”Š Speak</button><button id="stopBtn" class="secondary">â¹ Stop</button><button id="nextBtn" class="secondary">Next Question</button>
+</div>
+<div id="hint" class="example" style="display:none"></div><p id="questionStatus" class="muted" aria-live="polite"></p>
+<div id="feedback" class="feedback"></div>
+</section>
 
-    <div class="question-box">
-      <input type="text" id="answerInput" placeholder="Type your answer" autocomplete="off">
-      <br>
-      <button id="checkButton" type="button">Check Answer</button>
-      <button id="listenButton" class="secondary" type="button">🔊 Speak</button>
-      <button id="speakAnswerButton" class="secondary" type="button">🎙️ Speak Answer</button>
-      <button id="stopVoiceButton" class="secondary" type="button">⏹ Stop</button>
-      <button id="hintButton" class="secondary" type="button">💡 Hint</button>
-      <button id="algeviaTeachButton" class="secondary" type="button">👩‍🏫 Teach me</button>
-      <p id="voiceStatus" style="margin-top:12px;font-weight:bold">You can type or speak your answer.</p>
-    </div>
-    <div id="hint" class="hint"></div>
-    <div id="feedback" class="feedback"></div>
-    <div id="nextArea" class="next-area">
-      <button id="nextButton" type="button">Next Question</button>
-    </div>
-  </section>
+<section class="card">
+<h2>Student Progress</h2>
+<div class="stat-grid"><div class="stat"><strong id="correctStat">0</strong>Correct</div><div class="stat"><strong id="attemptStat">0</strong>Attempts</div><div class="stat"><strong id="accuracyStat">0%</strong>Accuracy</div></div>
+<p id="sessionMessage" class="muted">Algevia is learning how you learn.</p>
+</section>
 
-  <!-- 4. STUDENT PROGRESS -->
-  <section class="card" id="studentProgressCard">
-    <h2>Student Progress</h2>
-    <div class="stats">
-      <div class="stat"><strong id="correctCount">0</strong>Correct</div>
-      <div class="stat"><strong id="attemptCount">0</strong>Attempts</div>
-      <div class="stat"><strong id="accuracy">0%</strong>Accuracy</div>
-    </div>
-    <p id="adaptiveMessage" style="text-align:center;margin-top:20px;font-weight:bold">Algevia is learning how you learn.</p>
-  </section>
+<section class="card">
+<h2>Student Learning Progress</h2>
+<div class="stat-grid"><div class="stat"><strong id="masteryStat">0%</strong>Overall Mastery</div><div class="stat"><strong id="secureStat">0</strong>Secure Skills</div><div class="stat"><strong id="answeredStat">0</strong>Questions Answered</div></div>
+<p id="skillProgress" class="muted">Choose a topic to see your skill progress.</p><div id="allSkillProgress"></div>
+</section>
 
-  <!-- 5. STUDENT LEARNING PROGRESS -->
-  <section class="algevia-enhanced-card" id="algeviaMasteryCard">
-    <h2>Student Learning Progress</h2>
-    <div class="stats">
-      <div class="stat"><strong id="enhancedOverallMastery">0%</strong>Overall mastery</div>
-      <div class="stat"><strong id="enhancedSkillsSecure">0</strong>Skills secure</div>
-      <div class="stat"><strong id="enhancedTotalAnswered">0</strong>Questions answered</div>
-    </div>
-    <p id="enhancedProgressText">Algevia will build your personal learning profile as you practise.</p>
-    <p id="enhancedMasteryText">Current skill: Not started</p>
-  </section>
-
-  <section id="completionCard" class="card" style="display:none">
-    <h2>Progress Saved</h2>
-    <p id="completionMessage"></p>
-    <button id="algeviaResumeAfterSave" type="button">Continue Learning</button>
-  </section>
-
+<div id="saved" class="saved">Your progress has been saved. You can return later and continue from your saved learning state.</div>
 </main>
 
-
 <script>
-
-const questions = [
-
-  {
-    level: 1,
-    question: "Simplify: 3x + 5x",
-    answers: ["8x"],
-    hints: [
-      "Start by collecting the x terms.",
-      "The x terms are 3x and 5x.",
-      "Add the coefficients: 3 + 5 = 8.",
-      "So 3x + 5x = 8x."
-    ],
-    explanation: "3x + 5x = 8x because the terms are like terms."
-  },
-
-  {
-    level: 1,
-    question: "Simplify: 7x - 2x",
-    answers: ["5x"],
-    hints: [
-      "Start by collecting the x terms.",
-      "The x terms are 7x and -2x.",
-      "Subtract the coefficients: 7 - 2 = 5.",
-      "So 7x - 2x = 5x."
-    ],
-    explanation: "7x - 2x = 5x."
-  },
-
-  {
-    level: 1,
-    question: "Simplify: 4x + 3 + 2x",
-    answers: ["6x+3", "3+6x"],
-    hints: [
-      "First collect the x terms.",
-      "The x terms are 4x and 2x.",
-      "Add the coefficients: 4 + 2 = 6, giving 6x.",
-      "The 3 has no like term, so keep it.",
-      "Therefore the answer is 6x + 3."
-    ],
-    explanation: "4x + 2x = 6x, so the answer is 6x + 3."
-  },
-
-  {
-    level: 2,
-    question: "Simplify: 5x + 7 + 3x + 2",
-    answers: ["8x+9", "9+8x"],
-    hints: [
-      "First collect the x terms.",
-      "The x terms are 5x and 3x.",
-      "Add them: 5x + 3x = 8x.",
-      "Now collect the number terms: 7 and 2.",
-      "Add them: 7 + 2 = 9.",
-      "Therefore the answer is 8x + 9."
-    ],
-    explanation: "5x + 3x = 8x and 7 + 2 = 9."
-  },
-
-  {
-    level: 2,
-    question: "Simplify: 9a - 4 + 2a + 7",
-    answers: ["11a+3", "3+11a"],
-    hints: [
-      "First collect the a terms.",
-      "The a terms are 9a and 2a.",
-      "Add them: 9a + 2a = 11a.",
-      "Now collect the numbers: -4 and 7.",
-      "Add them: -4 + 7 = 3.",
-      "Therefore the answer is 11a + 3."
-    ],
-    explanation: "9a + 2a = 11a and -4 + 7 = 3."
-  },
-
-  {
-    level: 2,
-    question: "Simplify: 6y + 4 - 2y + 9",
-    answers: ["4y+13", "13+4y"],
-    hints: [
-      "First collect the y terms.",
-      "The y terms are 6y and -2y.",
-      "Subtract the coefficients: 6 - 2 = 4, giving 4y.",
-      "Now collect the numbers: 4 and 9.",
-      "Add them: 4 + 9 = 13.",
-      "Therefore the answer is 4y + 13."
-    ],
-    explanation: "6y - 2y = 4y and 4 + 9 = 13."
-  },
-
-  {
-    level: 3,
-    question: "Expand: 3(x + 4)",
-    answers: ["3x+12", "12+3x"],
-    hints: [
-      "Multiply the number outside the bracket by every term inside.",
-      "Multiply 3 by x: 3 × x = 3x.",
-      "Multiply 3 by 4: 3 × 4 = 12.",
-      "Put the two results together.",
-      "Therefore the answer is 3x + 12."
-    ],
-    explanation: "3 × x = 3x and 3 × 4 = 12."
-  },
-
-  {
-    level: 3,
-    question: "Expand: 5(2x - 3)",
-    answers: ["10x-15", "-15+10x"],
-    hints: [
-      "Multiply 5 by every term inside the bracket.",
-      "Multiply 5 by 2x: 5 × 2x = 10x.",
-      "Multiply 5 by -3: 5 × -3 = -15.",
-      "Put the two results together.",
-      "Therefore the answer is 10x - 15."
-    ],
-    explanation: "5 × 2x = 10x and 5 × -3 = -15."
-  },
-
-  {
-    level: 3,
-    question: "Expand: 2(3x + 5) + x",
-    answers: ["7x+10", "10+7x"],
-    hints: [
-      "First expand the bracket by multiplying 2 by both terms.",
-      "2 × 3x = 6x.",
-      "2 × 5 = 10, so the bracket becomes 6x + 10.",
-      "Now add the remaining x: 6x + x = 7x.",
-      "Therefore the answer is 7x + 10."
-    ],
-    explanation: "2(3x + 5) = 6x + 10. Adding x gives 7x + 10."
-  },
-
-  {
-    level: 4,
-    question: "Factorise: 6x + 12",
-    answers: ["6(x+2)", "6(2+x)"],
-    hints: [
-      "Look for the highest common factor of 6x and 12.",
-      "The highest common factor is 6.",
-      "Take 6 outside the bracket: 6(x + ?).",
-      "Divide 12 by 6 to find the number inside the bracket: 2.",
-      "Therefore the answer is 6(x + 2)."
-    ],
-    explanation: "Both terms have a factor of 6, giving 6(x + 2)."
-  },
-
-  {
-    level: 4,
-    question: "Factorise: 8x + 20",
-    answers: ["4(2x+5)", "4(5+2x)"],
-    hints: [
-      "Look for the highest common factor of 8x and 20.",
-      "The highest common factor is 4.",
-      "Take 4 outside the bracket: 4(2x + ?).",
-      "Divide 20 by 4 to find the remaining number: 5.",
-      "Therefore the answer is 4(2x + 5)."
-    ],
-    explanation: "The highest common factor is 4, so 8x + 20 = 4(2x + 5)."
-  },
-
-  {
-    level: 5,
-    question: "Simplify: 3(2x + 4) - 2(x - 5)",
-    answers: ["4x+22", "22+4x"],
-    hints: [
-      "Start by expanding both brackets carefully.",
-      "Expand the first bracket: 3 × 2x = 6x and 3 × 4 = 12.",
-      "Expand the second bracket: 2 × x = 2x and 2 × -5 = -10.",
-      "Remember that subtracting the second bracket changes -10 to +10.",
-      "Now collect the x terms: 6x - 2x = 4x.",
-      "Collect the numbers: 12 + 10 = 22.",
-      "Therefore the answer is 4x + 22."
-    ],
-    explanation: "3(2x + 4) = 6x + 12. 2(x - 5) = 2x - 10. Therefore 6x + 12 - 2x + 10 = 4x + 22."
-  }
-
+(() => {
+'use strict';
+const BANK = [
+{topic:'Algebra',subtopic:'Collecting like terms',skill:'Collecting like terms',difficulty:1,q:'Simplify: 3x + 5x',a:['8x'],h:['Look at the terms containing x.','The coefficients are 3 and 5.','Add 3 + 5.'],e:'3x + 5x = 8x because the terms are like terms.'},
+{topic:'Algebra',subtopic:'Collecting like terms',skill:'Collecting like terms',difficulty:1,q:'Simplify: 7x - 2x',a:['5x'],h:['Look at the x terms.','The coefficients are 7 and -2.','Calculate 7 - 2.'],e:'7x - 2x = 5x.'},
+{topic:'Algebra',subtopic:'Collecting like terms',skill:'Collecting like terms',difficulty:2,q:'Simplify: 4x + 3 + 2x',a:['6x+3','3+6x'],h:['Collect the x terms first.','4x + 2x gives 6x.','The 3 has no like term, so keep it.'],e:'4x + 2x = 6x, so the answer is 6x + 3.'},
+{topic:'Algebra',subtopic:'Collecting like terms',skill:'Collecting like terms',difficulty:2,q:'Simplify: 5x + 7 + 3x + 2',a:['8x+9','9+8x'],h:['Collect the x terms.','5x + 3x = 8x.','7 + 2 = 9.'],e:'5x + 3x = 8x and 7 + 2 = 9, giving 8x + 9.'},
+{topic:'Algebra',subtopic:'Collecting like terms',skill:'Collecting like terms',difficulty:2,q:'Simplify: 9a - 4 + 2a + 7',a:['11a+3','3+11a'],h:['Collect the a terms.','9a + 2a = 11a.','-4 + 7 = 3.'],e:'9a + 2a = 11a and -4 + 7 = 3, giving 11a + 3.'},
+{topic:'Algebra',subtopic:'Collecting like terms',skill:'Collecting like terms',difficulty:2,q:'Simplify: 6y + 4 - 2y + 9',a:['4y+13','13+4y'],h:['Collect the y terms.','6y - 2y = 4y.','4 + 9 = 13.'],e:'6y - 2y = 4y and 4 + 9 = 13, giving 4y + 13.'},
+{topic:'Algebra',subtopic:'Expanding single brackets',skill:'Expanding single brackets',difficulty:3,q:'Expand: 3(x + 4)',a:['3x+12','12+3x'],h:['Multiply the 3 by every term inside the bracket.','3 Ã— x = 3x.','3 Ã— 4 = 12.'],e:'3(x + 4) = 3x + 12.'},
+{topic:'Algebra',subtopic:'Expanding single brackets',skill:'Expanding single brackets',difficulty:3,q:'Expand: 5(2x - 3)',a:['10x-15','-15+10x'],h:['Multiply 5 by both terms.','5 Ã— 2x = 10x.','5 Ã— -3 = -15.'],e:'5(2x - 3) = 10x - 15.'},
+{topic:'Algebra',subtopic:'Expanding single brackets',skill:'Expanding single brackets',difficulty:3,q:'Expand: 2(3x + 5) + x',a:['7x+10','10+7x'],h:['Expand the bracket first.','2 Ã— 3x = 6x and 2 Ã— 5 = 10.','Then combine 6x with the remaining x.'],e:'2(3x + 5) = 6x + 10, then +x gives 7x + 10.'},
+{topic:'Algebra',subtopic:'Factorising',skill:'Factorising common factors',difficulty:4,q:'Factorise: 6x + 12',a:['6(x+2)','6(2+x)'],h:['Find the highest common factor.','The HCF of 6x and 12 is 6.','Divide each term by 6.'],e:'6x + 12 = 6(x + 2).'},
+{topic:'Algebra',subtopic:'Factorising',skill:'Factorising common factors',difficulty:4,q:'Factorise: 8x + 20',a:['4(2x+5)','4(5+2x)'],h:['Find the highest common factor.','The HCF of 8x and 20 is 4.','Divide each term by 4.'],e:'8x + 20 = 4(2x + 5).'},
+{topic:'Algebra',subtopic:'Factorising',skill:'Factorising common factors',difficulty:4,q:'Factorise: 12x + 20',a:['4(3x+5)','4(5+3x)'],h:['Find the highest common factor.','The HCF is 4.','Divide both terms by 4.'],e:'12x + 20 = 4(3x + 5).'},
+{topic:'Algebra',subtopic:'Equations',skill:'Solving linear equations',difficulty:2,q:'Solve: x + 7 = 12',a:['5'],h:['Undo the addition of 7.','Subtract 7 from both sides.','12 - 7 = 5.'],e:'x + 7 = 12, so x = 5.'},
+{topic:'Algebra',subtopic:'Equations',skill:'Solving linear equations',difficulty:3,q:'Solve: 3x = 21',a:['7'],h:['x is multiplied by 3.','Undo this by dividing by 3.','21 Ã· 3 = 7.'],e:'3x = 21, so x = 7.'},
+{topic:'Algebra',subtopic:'Equations',skill:'Solving linear equations',difficulty:3,q:'Solve: 2x + 5 = 17',a:['6'],h:['Remove the +5 first.','17 - 5 = 12.','Then divide by 2.'],e:'2x = 12, so x = 6.'},
+{topic:'Algebra',subtopic:'Equations',skill:'Solving linear equations',difficulty:4,q:'Solve: 5x - 4 = 21',a:['5'],h:['Undo the -4 by adding 4.','21 + 4 = 25.','Divide by 5.'],e:'5x = 25, so x = 5.'},
+{topic:'Algebra',subtopic:'Sequences',skill:'Linear sequences',difficulty:3,q:'Find the next term: 4, 7, 10, 13, ...',a:['16'],h:['Find the difference between consecutive terms.','The difference is +3.','Add 3 to 13.'],e:'The sequence increases by 3 each time, so the next term is 16.'},
+{topic:'Algebra',subtopic:'Sequences',skill:'Linear sequences',difficulty:4,q:'Find the nth term of: 5, 8, 11, 14, ...',a:['3n+2'],h:['Find the common difference.','The coefficient of n is 3.','Use the first term to find the constant.'],e:'The nth term is 3n + 2.'},
+{topic:'Algebra',subtopic:'Indices',skill:'Index laws',difficulty:3,q:'Simplify: x^3 Ã— x^2',a:['x^5','x5'],h:['The bases are the same.','When multiplying, add the indices.','3 + 2 = 5.'],e:'xÂ³ Ã— xÂ² = xâµ.'},
+{topic:'Algebra',subtopic:'Indices',skill:'Index laws',difficulty:4,q:'Simplify: x^7 Ã· x^3',a:['x^4','x4'],h:['The bases are the same.','When dividing, subtract the indices.','7 - 3 = 4.'],e:'xâ· Ã· xÂ³ = xâ´.'},
+{topic:'Algebra',subtopic:'Indices',skill:'Index laws',difficulty:4,q:'Simplify: (x^2)^3',a:['x^6','x6'],h:['A power is raised to another power.','Multiply the indices.','2 Ã— 3 = 6.'],e:'(xÂ²)Â³ = xâ¶.'},
+{topic:'Algebra',subtopic:'Inequalities',skill:'Linear inequalities',difficulty:4,q:'Solve: x + 3 > 8',a:['x>5','x > 5'],h:['Undo the addition of 3.','Subtract 3 from both sides.','8 - 3 = 5.'],e:'x + 3 > 8, so x > 5.'},
+{topic:'Algebra',subtopic:'Inequalities',skill:'Linear inequalities',difficulty:5,q:'Solve: 2x < 14',a:['x<7','x < 7'],h:['x is multiplied by 2.','Divide both sides by 2.','14 Ã· 2 = 7.'],e:'2x < 14, so x < 7.'},
+{topic:'Algebra',subtopic:'Rearranging formulae',skill:'Changing the subject',difficulty:4,q:'Make x the subject: y = x + 6',a:['x=y-6','x = y - 6'],h:['x has 6 added to it.','Undo this by subtracting 6.','Subtract 6 from both sides.'],e:'y = x + 6, so x = y - 6.'},
+{topic:'Algebra',subtopic:'Rearranging formulae',skill:'Changing the subject',difficulty:5,q:'Make x the subject: y = 3x + 2',a:['x=(y-2)/3','x=(yâˆ’2)/3'],h:['Remove the +2 first.','y - 2 = 3x.','Divide by 3.'],e:'y = 3x + 2, so x = (y - 2) / 3.'}
 ];
 
-// Expose the original bank to the integrated Algevia learning engine.
-window.questions = questions;
-
-let currentQuestion = 0;
-let correctCount = 0;
-let attemptCount = 0;
-
-let currentLevel = 1;
-let currentHintStep = 0;
-
-const questionElement =
-  document.getElementById("question");
-
-const answerInput =
-  document.getElementById("answerInput");
-
-const checkButton =
-  document.getElementById("checkButton");
-
-const hintButton =
-  document.getElementById("hintButton");
-
-const hintElement =
-  document.getElementById("hint");
-
-const feedbackElement =
-  document.getElementById("feedback");
-
-const nextArea =
-  document.getElementById("nextArea");
-
-const nextButton =
-  document.getElementById("nextButton");
-
-const questionCounter =
-  document.getElementById("questionCounter");
-
-const progressBar =
-  document.getElementById("progressBar");
-
-const correctCountElement =
-  document.getElementById("correctCount");
-
-const attemptCountElement =
-  document.getElementById("attemptCount");
-
-const accuracyElement =
-  document.getElementById("accuracy");
-
-const adaptiveMessage =
-  document.getElementById("adaptiveMessage");
-
-const completionCard =
-  document.getElementById("completionCard");
-
-const completionMessage =
-  document.getElementById("completionMessage");
-
-
-function getAvailableVoices() {
-  if (!("speechSynthesis" in window)) return [];
-  return window.speechSynthesis.getVoices() || [];
+// Additional original practice variants, each with its own verified arithmetic answer,
+// progressive hints and worked solution. These extend, rather than duplicate, the core bank.
+function addPracticeVariants(){
+ const add=(sub,skill,d,q,a,h,e)=>BANK.push({topic:'Algebra',subtopic:sub,skill,difficulty:d,q,a:[String(a)],h,e});
+ for(let i=1;i<=55;i++){
+  const a=2+(i%11),b=1+((i*7)%13),c=1+((i*3)%9);
+  add('Collecting like terms','Collecting like terms',i%3+1,
+   `Simplify: ${a}x + ${b}x + ${c}`,`${a+b}x+${c}`,
+   ['Identify the two x terms.','Add their coefficients, but keep the constant separate.',`${a} + ${b} = ${a+b}.`],
+   `${a}x + ${b}x = ${a+b}x; the constant ${c} remains. Answer: ${a+b}x + ${c}.`);
+ }
+ for(let i=1;i<=55;i++){
+  const a=2+(i%8),b=1+((i*5)%7),c=1+((i*3)%9),negative=i%4===0;
+  const sign=negative?'-':'+';const val=negative?-c:c;
+  add('Expanding single brackets','Expanding single brackets',2+i%3,
+   `Expand: ${a}(${b}x ${sign} ${c})`,`${a*b}x${val*a<0?'':'+'}${val*a}`,
+   ['Multiply the term outside the bracket by every term inside.',`${a} Ã— ${b}x = ${a*b}x.`,`${a} Ã— (${val}) = ${a*val}.`],
+   `${a}(${b}x ${sign} ${c}) = ${a*b}x ${a*val<0?'-':'+'} ${Math.abs(a*val)}.`);
+ }
+ for(let i=1;i<=55;i++){
+  const a=2+(i%7),b=1+((i*5)%9),c=2+(i%6);
+  add('Equations','Solving linear equations',2+i%3,
+   `Solve: ${a}x + ${b} = ${a*c+b}`,String(c),
+   [`Subtract ${b} from both sides.`,`That gives ${a}x = ${a*c}.`,`Divide both sides by ${a}.`],
+   `${a}x + ${b} = ${a*c+b}; subtract ${b} to get ${a}x = ${a*c}; divide by ${a}, so x = ${c}.`);
+ }
+ for(let i=1;i<=55;i++){
+  const a=2+(i%7),b=1+((i*3)%8),c=2+(i%6);
+  add('Factorising','Factorising common factors',3+i%3,
+   `Factorise: ${a*b}x + ${a*c}`,`${a}(${b}x+${c})`,
+   [`Find a common factor of ${a*b} and ${a*c}.`,`Both terms are divisible by ${a}.`,`Divide each term by ${a} and place the results in brackets.`],
+   `${a*b}x + ${a*c} = ${a}(${b}x + ${c}).`);
+ }
 }
+addPracticeVariants();
 
-function populateVoiceSelector() {
-  const select = document.getElementById("voiceSelect");
-  if (!select || !("speechSynthesis" in window)) return;
-
-  const voices = getAvailableVoices();
-  if (!voices.length) {
-    select.innerHTML = '<option value="">No browser voices available</option>';
-    return;
+const $ = id => document.getElementById(id);
+const STORAGE = 'algevia_integrated_v10';
+const LEGACY = 'algevia_clean_learning_v9';
+const fresh = () => ({skills:{},lastTopic:'Algebra',lastSubtopic:'Collecting like terms',currentId:null,history:[],tutor:'female',totalAnswered:0,drafts:{}});
+function readState(){
+  for(const name of [STORAGE,LEGACY]){
+    try {const v=JSON.parse(localStorage.getItem(name));if(v && typeof v==='object')return {...fresh(),...v,skills:v.skills||{}};}catch(e){}
   }
-
-  const previous = select.value;
-  select.innerHTML = "";
-
-  // Put British English voices first, then other English voices.
-  const ordered = voices.slice().sort(function(a, b) {
-    const aGB = /^en-GB$/i.test(a.lang) ? 0 : /^en-/i.test(a.lang) ? 1 : 2;
-    const bGB = /^en-GB$/i.test(b.lang) ? 0 : /^en-/i.test(b.lang) ? 1 : 2;
-    return aGB - bGB || a.name.localeCompare(b.name);
-  });
-
-  ordered.forEach(function(voice) {
-    const option = document.createElement("option");
-    option.value = voice.name + "|" + voice.lang;
-    option.textContent = voice.name + " (" + voice.lang + ")";
-    select.appendChild(option);
-  });
-
-  // Restore a saved choice, otherwise choose a British English voice.
-  const saved = localStorage.getItem("algeviaPreferredVoice");
-  const preferred =
-    saved && ordered.some(v => v.name + "|" + v.lang === saved)
-      ? saved
-      : (ordered.find(v => /^en-GB$/i.test(v.lang)) ||
-         ordered.find(v => /^en-/i.test(v.lang)) ||
-         ordered[0]).name + "|" +
-        (ordered.find(v => /^en-GB$/i.test(v.lang)) ||
-         ordered.find(v => /^en-/i.test(v.lang)) ||
-         ordered[0]).lang;
-
-  select.value = preferred;
+  return fresh();
 }
-
-function getSelectedVoice() {
-  const voices = getAvailableVoices();
-  const select = document.getElementById("voiceSelect");
-
-  if (select && select.value) {
-    const parts = select.value.split("|");
-    const chosen = voices.find(function(v) {
-      return v.name === parts[0] && v.lang === parts[1];
-    });
-    if (chosen) return chosen;
-  }
-
-  // Female gender is not exposed reliably by the Web Speech API.
-  // Prefer British English; the student can choose the exact voice.
-  return (
-    voices.find(v => /^en-GB$/i.test(v.lang)) ||
-    voices.find(v => /^en-/i.test(v.lang)) ||
-    voices[0] ||
-    null
-  );
+let state=readState();
+let current=null;
+let hintIndex=0;
+let answered=false;
+let attemptsThisQuestion=0;
+let session={attempts:0,correct:0};
+let voices=[];
+let speechToken=0;
+let tutor=state.tutor==='male'?'male':'female';
+const allQuestions=BANK.map((q,i)=>({...q,id:'q'+i}));
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const normalize = s => String(s).toLowerCase().trim().replace(/[âˆ’â€“]/g,'-').replace(/Â²/g,'^2').replace(/Â³/g,'^3').replace(/Ã—/g,'*').replace(/\s+/g,'');
+const skillKey = q => [q.topic,q.subtopic,q.skill].join('|');
+function record(q){const k=skillKey(q);return state.skills[k] ||= {mastery:0,attempts:0,correct:0,hints:0,errors:0,lastSeen:0,lastQuestionId:null,dueAt:0};}
+function save(){state.tutor=tutor;localStorage.setItem(STORAGE,JSON.stringify(state));updateProgress();}
+function topics(){return [...new Set(allQuestions.map(q=>q.topic))];}
+function subtopics(t){return [...new Set(allQuestions.filter(q=>q.topic===t).map(q=>q.subtopic))];}
+function pool(){return allQuestions.filter(q=>q.topic===$('topicSelect').value&&q.subtopic===$('subtopicSelect').value);}
+function setSelects(){
+ $('topicSelect').innerHTML=topics().map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+ $('topicSelect').value=topics().includes(state.lastTopic)?state.lastTopic:topics()[0];
+ setSubtopics();
+ $('subtopicSelect').value=subtopics($('topicSelect').value).includes(state.lastSubtopic)?state.lastSubtopic:subtopics($('topicSelect').value)[0];
 }
-
-function speakText(text) {
-  if (!("speechSynthesis" in window)) {
-    setVoiceStatus("Voice playback is not available on this device. Written text is still available.");
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  const voice = getSelectedVoice();
-
-  if (voice) {
-    utterance.voice = voice;
-    utterance.lang = voice.lang;
-  } else {
-    utterance.lang = "en-GB";
-  }
-
-  // Slightly slower and clearer for maths teaching.
-  utterance.rate = 0.82;
-  utterance.pitch = 1.0;
-  utterance.volume = 1.0;
-
-  utterance.onstart = function() {
-    setVoiceStatus("🔊 Algevia is speaking…");
-  };
-
-  utterance.onend = function() {
-    setVoiceStatus("Voice finished. You can replay it or continue.");
-  };
-
-  utterance.onerror = function() {
-    setVoiceStatus("Voice playback could not be completed. Written text is still available.");
-  };
-
-  window.speechSynthesis.speak(utterance);
+function setSubtopics(){
+ $('subtopicSelect').innerHTML=subtopics($('topicSelect').value).map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
 }
-
-const voiceSelect = document.getElementById("voiceSelect");
-
-if ("speechSynthesis" in window) {
-  populateVoiceSelector();
-
-  if ("onvoiceschanged" in window.speechSynthesis) {
-    window.speechSynthesis.onvoiceschanged = populateVoiceSelector;
-  }
-
-  if (voiceSelect) {
-    voiceSelect.addEventListener("change", function() {
-      localStorage.setItem("algeviaPreferredVoice", voiceSelect.value);
-      setVoiceStatus("Voice selected. Press Listen to hear the new voice.");
-    });
-  }
+function exampleHTML(q){
+ return `<div class="example"><strong>${esc(q.q)}</strong>${q.h.map((step,i)=>`<div class="step">${i+1}. ${esc(step)}</div>`).join('')}<div class="answer">${esc(q.e)}</div></div>`;
 }
-
-function normaliseAnswer(value) {
-
-  return value
-    .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/−/g, "-");
-
+function showExamples(){
+ const candidates=pool().filter(q=>!current || q.id!==current.id);
+ const byDifficulty=candidates.sort((a,b)=>Math.abs(a.difficulty-(current?.difficulty||2))-Math.abs(b.difficulty-(current?.difficulty||2)));
+ $('examplesIntro').textContent=current?`Examples for ${current.subtopic}, the same skill as the question below.`:`Examples for ${$('subtopicSelect').value}.`;
+ $('examples').innerHTML=byDifficulty.slice(0,2).map(exampleHTML).join('') || '<p>Additional worked examples for this skill are being prepared.</p>';
+ $('exampleNote').textContent='Examples use different questions from the one you are answering.';
 }
-
-
-function isCorrect(userAnswer, acceptedAnswers) {
-
-  const normalisedUserAnswer =
-    normaliseAnswer(userAnswer);
-
-  return acceptedAnswers.some(answer =>
-    normaliseAnswer(answer) === normalisedUserAnswer
-  );
-
+function chooseQuestion(previousId=null){
+ const items=pool();if(!items.length)return null;
+ const now=Date.now();
+ const candidates=items.filter(q=>q.id!==previousId);
+ const list=candidates.length?candidates:items;
+ return list.map(q=>{
+  const st=record(q);
+  const seen=state.history.filter(x=>x===q.id).length;
+  const due=st.dueAt>0 && st.dueAt<=now;
+  const recent=state.history.slice(-Math.min(items.length,5)).includes(q.id);
+  return {q,score:seen*20+(recent?100:0)+(st.mastery/10)+(Math.abs(q.difficulty-(st.mastery<25?2:st.mastery<60?3:4))*3)-(due?20:0)+Math.random()*2};
+ }).sort((a,b)=>a.score-b.score)[0].q;
 }
-
-
-function getCurrentQuestion() {
-
-  return questions[currentQuestion];
-
+function showQuestion(){
+ if(!current){$('question').textContent='No questions available for this selection.';return;}
+ state.currentId=current.id;state.lastTopic=current.topic;state.lastSubtopic=current.subtopic;
+ answered=false;hintIndex=0;attemptsThisQuestion=0;
+ $('question').textContent=current.q;
+ $('counter').textContent=`${current.topic} Â· ${current.subtopic} Â· Difficulty ${current.difficulty}`;
+ $('answer').value=state.drafts?.[current.id]||'';$('feedback').style.display='none';$('hint').style.display='none';
+ $('checkBtn').disabled=false;$('hintBtn').disabled=false;
+ $('questionStatus').textContent='You may leave and return to this question later.';
+ $('dialogue').textContent=`Have a go at this question: ${current.q} I can give you a hint or work through it with you.`;
+ $('saved').style.display='none';
+ $('progressFill').style.width=record(current).mastery+'%';
+ showExamples();save();
 }
-
-
-function displayQuestion() {
-
-  const question =
-    getCurrentQuestion();
-
-  questionElement.textContent =
-    question.question;
-
-  questionCounter.textContent =
-    "Question " +
-    (currentQuestion + 1) +
-    " of " +
-    questions.length;
-
-  progressBar.style.width =
-    ((currentQuestion / questions.length) * 100) +
-    "%";
-
-  answerInput.value = "";
-
-  feedbackElement.style.display = "none";
-
-  currentHintStep = 0;
-
-  hintElement.textContent = "";
-  hintElement.style.display = "none";
-
-  nextArea.style.display = "none";
-
-  checkButton.disabled = false;
-
-  hintButton.disabled = false;
-
-  answerInput.focus();
-
+function startPractice(resume=false){
+ stopSpeech();
+ if(resume && state.currentId){
+  const saved=allQuestions.find(q=>q.id===state.currentId);
+  if(saved){$('topicSelect').value=saved.topic;setSubtopics();$('subtopicSelect').value=saved.subtopic;current=saved;showQuestion();return;}
+ }
+ current=chooseQuestion(current?.id||null);showQuestion();
 }
-
-
-function showHint() {
-
-  const question =
-    getCurrentQuestion();
-
-  const hints =
-    Array.isArray(question.hints)
-      ? question.hints
-      : [];
-
-  if (!hints.length) {
-    return;
-  }
-
-  if (currentHintStep >= hints.length) {
-    currentHintStep = hints.length - 1;
-  }
-
-  hintElement.textContent =
-    hints[currentHintStep];
-
-  hintElement.style.display =
-    "block";
-
-  speakHint(hints[currentHintStep]);
-
-  if (currentHintStep < hints.length - 1) {
-    currentHintStep++;
-  }
-
+function updateSelection(){
+ stopSpeech();current=null;state.currentId=null;
+ state.lastTopic=$('topicSelect').value;state.lastSubtopic=$('subtopicSelect').value;
+ $('question').textContent='Press Start Practice to begin this subtopic.';
+ $('counter').textContent=$('subtopicSelect').value;
+ $('answer').value='';$('feedback').style.display='none';$('hint').style.display='none';
+ $('questionStatus').textContent='Press Start Practice to begin.';
+ showExamples();save();
 }
-
-
-function updateStats() {
-
-  correctCountElement.textContent =
-    correctCount;
-
-  attemptCountElement.textContent =
-    attemptCount;
-
-  const percentage =
-    attemptCount === 0
-      ? 0
-      : Math.round(
-          (correctCount / attemptCount) * 100
-        );
-
-  accuracyElement.textContent =
-    percentage + "%";
-
+function correctAnswer(v,q){
+ const a=normalize(v);
+ return q.a.some(x=>normalize(x)===a || (q.q.startsWith('Solve:') && normalize(x)===a.replace(/^x=/,'')));
 }
-
-
-function updateAdaptiveMessage() {
-
-  if (attemptCount < 2) {
-
-    adaptiveMessage.textContent =
-      "Algevia is learning how you learn.";
-
-    return;
-
-  }
-
-  const accuracy =
-    correctCount / attemptCount;
-
-  if (accuracy >= 0.8) {
-
-    adaptiveMessage.textContent =
-      "You're showing strong understanding. Algevia will increase the challenge.";
-
-  } else if (accuracy >= 0.5) {
-
-    adaptiveMessage.textContent =
-      "You're developing this skill. Algevia will keep building your understanding.";
-
-  } else {
-
-    adaptiveMessage.textContent =
-      "Let's strengthen the foundations before increasing the difficulty.";
-
-  }
-
+function sayText(message){$('dialogue').textContent=message;speak(message);}
+function feedback(text,ok){$('feedback').className='feedback '+(ok?'correct':'incorrect');$('feedback').textContent=text;$('feedback').style.display='block';}
+function checkAnswer(){
+ if(!current || answered)return;
+ const entered=$('answer').value.trim();
+ if(!entered){$('questionStatus').textContent='Enter your answer before checking.';return;}
+ const st=record(current),ok=correctAnswer(entered,current);
+ attemptsThisQuestion++;session.attempts++;st.attempts++;
+ if(ok){
+  session.correct++;st.correct++;st.errors=0;
+  st.mastery=Math.min(100,st.mastery+(hintIndex?9:16));
+  st.dueAt=Date.now()+Math.max(1,Math.floor(st.mastery/25))*86400000;
+  state.totalAnswered++;
+  state.history.push(current.id);state.history=state.history.slice(-120);
+  st.lastQuestionId=current.id;st.lastSeen=Date.now();
+  const message=`That's correct. ${current.e} Well done â€” you're building confidence with ${current.skill.toLowerCase()}.`;
+  feedback(message,true);sayText(message);
+  answered=true;if(state.drafts)delete state.drafts[current.id];$('checkBtn').disabled=true;$('hintBtn').disabled=true;
+  $('questionStatus').textContent='Correct. Choose Next Question when you are ready.';
+ }else{
+  st.errors++;st.mastery=Math.max(0,st.mastery-4);
+  const n=Math.min(st.errors-1,current.h.length-1);
+  const message=st.errors>1?`Let's look again at ${current.q} ${current.h[n]}`:`Not quite. For ${current.q}, ${current.h[0]}`;
+  feedback(message,false);sayText(message);
+  $('questionStatus').textContent='Try again, or select Hint or Teach me.';
+ }
+ save();
 }
-
-
-function checkAnswer() {
-
-  const userAnswer =
-    answerInput.value.trim();
-
-  if (!userAnswer) {
-
-    feedbackElement.className =
-      "feedback incorrect";
-
-    feedbackElement.textContent =
-      "Please enter an answer first.";
-
-    feedbackElement.style.display =
-      "block";
-
-    return;
-
-  }
-
-  const question =
-    getCurrentQuestion();
-
-  attemptCount++;
-
-  const correct =
-    isCorrect(
-      userAnswer,
-      question.answers
-    );
-
-  if (correct) {
-
-    correctCount++;
-
-    feedbackElement.className =
-      "feedback correct";
-
-    feedbackElement.innerHTML =
-      "<strong>Correct!</strong><br><br>" +
-      question.explanation;
-
-    if (question.level < 5) {
-      currentLevel = question.level + 1;
-    }
-
-  } else {
-
-    feedbackElement.className =
-      "feedback incorrect";
-
-    feedbackElement.innerHTML =
-      "<strong>Not quite.</strong><br><br>" +
-      question.explanation;
-
-    if (question.level > 1) {
-      currentLevel = question.level - 1;
-    }
-
-  }
-
-  feedbackElement.style.display =
-    "block";
-
-  /*
-    Voice and written feedback are deliberately simultaneous.
-  */
-  speakFeedback(
-    question.explanation,
-    correct
-  );
-
-  checkButton.disabled = true;
-
-  hintButton.disabled = true;
-
-  nextArea.style.display =
-    "block";
-
-  updateStats();
-
-  updateAdaptiveMessage();
-
+function hint(){
+ if(!current || answered)return;
+ const n=Math.min(hintIndex,current.h.length-1);
+ const text=current.h[n];hintIndex++;record(current).hints++;
+ $('hint').style.display='block';$('hint').textContent=`Hint ${Math.min(hintIndex,current.h.length)}: ${text}`;
+ sayText(`For ${current.q}, here's a clue. ${text}`);save();
 }
-
-
-function nextQuestion() {
-
-  currentQuestion++;
-
-  if (currentQuestion >= questions.length) {
-
-    finishModule();
-
-    return;
-
-  }
-
-  displayQuestion();
-
+function teach(){
+ if(!current)return;
+ const text=`Let's work through ${current.q} together. ${current.h.join(' ')} ${current.e}`;
+ $('hint').style.display='block';$('hint').textContent=text;sayText(text);
 }
-
-
-function finishModule() {
-
-  progressBar.style.width =
-    "100%";
-
-  document.querySelector(
-    ".question-box"
-  ).style.display = "none";
-
-  feedbackElement.style.display =
-    "none";
-
-  nextArea.style.display =
-    "none";
-
-  const percentage =
-    attemptCount === 0
-      ? 0
-      : Math.round(
-          (correctCount / attemptCount) * 100
-        );
-
-  if (percentage >= 80) {
-
-    completionMessage.textContent =
-      "Excellent work. You have demonstrated strong understanding of this Algebraic Expressions module.";
-
-  } else if (percentage >= 50) {
-
-    completionMessage.textContent =
-      "Good progress. You have developed a useful foundation, but there are still areas worth practising.";
-
-  } else {
-
-    completionMessage.textContent =
-      "This skill needs more practice. Algevia would recommend returning to the explanation and worked examples before moving on.";
-
-  }
-
-  completionCard.style.display =
-    "block";
-
+function nextQuestion(){
+ stopSpeech();
+ if(!current){startPractice();return;}
+ if(!answered && ($('answer').value.trim() || hintIndex)){
+  $('questionStatus').textContent='Your current question is saved. Select Next Question again to skip it.';
+  if(!$('nextBtn').dataset.confirm){$('nextBtn').dataset.confirm='1';return;}
+ }
+ delete $('nextBtn').dataset.confirm;
+ const previous=current.id;
+ current=chooseQuestion(previous);
+ showQuestion();
 }
-
-
-checkButton.addEventListener(
-  "click",
-  checkAnswer
-);
-
-
-hintButton.addEventListener(
-  "click",
-  showHint
-);
-
-
-nextButton.addEventListener(
-  "click",
-  nextQuestion
-);
-
-
-answerInput.addEventListener(
-  "keydown",
-  function(event) {
-
-    if (event.key === "Enter") {
-
-      checkAnswer();
-
-    }
-
-  }
-);
-
-
-
-/* =========================================================
-   ALGEVIA VOICE INTERACTION
-   Two tutor choices only: Female Tutor / Male Tutor.
-   Voice and written text work together.
-   ========================================================= */
-
-const listenButton = document.getElementById("listenButton");
-const speakAnswerButton = document.getElementById("speakAnswerButton");
-const stopVoiceButton = document.getElementById("stopVoiceButton");
-const voiceStatus = document.getElementById("voiceStatus");
-const femaleTutorButton = document.getElementById("femaleTutorButton");
-const maleTutorButton = document.getElementById("maleTutorButton");
-const selectedTutorLabel = document.getElementById("selectedTutor");
-
-const SpeechRecognitionAPI =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
-
-let recognition = null;
-let isListening = false;
-
-let selectedTutor =
-  localStorage.getItem("algeviaTutorVoice") || "female";
-
-function setVoiceStatus(message) {
-  if (voiceStatus) {
-    voiceStatus.textContent = message;
-  }
+function updateProgress(){
+ const rows=Object.entries(state.skills);
+ const stats=rows.map(([,s])=>s);
+ const average=stats.length?Math.round(stats.reduce((a,s)=>a+s.mastery,0)/stats.length):0;
+ $('masteryStat').textContent=average+'%';
+ $('secureStat').textContent=stats.filter(s=>s.mastery>=65).length;
+ $('answeredStat').textContent=state.totalAnswered||stats.reduce((a,s)=>a+s.correct,0);
+ $('correctStat').textContent=session.correct;
+ $('attemptStat').textContent=session.attempts;
+ $('accuracyStat').textContent=session.attempts?Math.round(100*session.correct/session.attempts)+'%':'0%';
+ $('skillProgress').textContent=current?`Current skill: ${current.skill} Â· ${record(current).mastery}% mastery`:'Progress is tracked separately for every subtopic.';
+ $('allSkillProgress').innerHTML=rows.map(([name,s])=>`<div class="skill-row"><span>${esc(name.split('|').slice(1).join(' Â· '))}</span><strong>${s.mastery}%</strong></div>`).join('');
 }
-
-function updateTutorButtons() {
-  if (femaleTutorButton) {
-    femaleTutorButton.style.fontWeight =
-      selectedTutor === "female" ? "bold" : "normal";
-    femaleTutorButton.style.border =
-      selectedTutor === "female"
-        ? "2px solid currentColor"
-        : "";
-  }
-
-  if (maleTutorButton) {
-    maleTutorButton.style.fontWeight =
-      selectedTutor === "male" ? "bold" : "normal";
-    maleTutorButton.style.border =
-      selectedTutor === "male"
-        ? "2px solid currentColor"
-        : "";
-  }
-
-  if (selectedTutorLabel) {
-    selectedTutorLabel.textContent =
-      selectedTutor === "female"
-        ? "👩 Female Tutor selected"
-        : "👨 Male Tutor selected";
-  }
+function voiceCandidates(gender){
+ const english=voices.filter(v=>/^en([-_]|$)/i.test(v.lang));
+ const female=/samantha|karen|moira|susan|hazel|libby|sonia|serena|kate|amy|victoria|aria|ava|jenny|zira|allison|fiona|tessa|female/i;
+ const male=/daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|male/i;
+ const yes=gender==='female'?female:male;const no=gender==='female'?male:female;
+ return english.filter(v=>yes.test(v.name)&&!no.test(v.name)).sort((a,b)=>Number(/en-GB/i.test(b.lang))-Number(/en-GB/i.test(a.lang)));
 }
-
-function setTutorVoice(tutor) {
-  selectedTutor = tutor;
-  localStorage.setItem("algeviaTutorVoice", tutor);
-  updateTutorButtons();
-
-  setVoiceStatus(
-    tutor === "female"
-      ? "Female Tutor selected. Press Listen to hear Algevia."
-      : "Male Tutor selected. Press Listen to hear Algevia."
-  );
+function selectedVoice(){return voiceCandidates(tutor)[0]||null;}
+function voiceStatus(){
+ const v=selectedVoice();
+ $('voiceStatus').textContent=v?`Installed voice: ${v.name} (${v.lang})`:`No clearly identified ${tutor} English voice is installed. Speech is disabled for this selection rather than using the wrong voice.`;
 }
-
-if (femaleTutorButton) {
-  femaleTutorButton.addEventListener("click", function() {
-    setTutorVoice("female");
-  });
+function loadVoices(){voices=window.speechSynthesis?.getVoices()||[];voiceStatus();}
+function stopSpeech(){speechToken++;if('speechSynthesis'in window)window.speechSynthesis.cancel();voiceStatus();}
+function speak(text){
+ if(!('speechSynthesis'in window)){$('voiceStatus').textContent='Speech is not supported in this browser.';return;}
+ stopSpeech();const v=selectedVoice();
+ if(!v){voiceStatus();return;}
+ const utterance=new SpeechSynthesisUtterance(text);utterance.voice=v;utterance.lang=v.lang;utterance.rate=.92;utterance.pitch=1;
+ const token=++speechToken;
+ utterance.onend=()=>{if(token===speechToken)voiceStatus();};
+ utterance.onerror=()=>{if(token===speechToken)$('voiceStatus').textContent='The installed voice could not play audio.';};
+ $('voiceStatus').textContent=`Speaking with ${v.name}â€¦`;
+ window.speechSynthesis.speak(utterance);
 }
-
-if (maleTutorButton) {
-  maleTutorButton.addEventListener("click", function() {
-    setTutorVoice("male");
-  });
+function chooseTutor(gender){stopSpeech();tutor=gender;
+ $('femaleBtn').classList.toggle('selected',gender==='female');
+ $('maleBtn').classList.toggle('selected',gender==='male');
+ $('femaleBtn').setAttribute('aria-pressed',String(gender==='female'));
+ $('maleBtn').setAttribute('aria-pressed',String(gender==='male'));
+ $('selectedTutor').textContent=gender==='female'?'ðŸ‘© Female Tutor selected':'ðŸ‘¨ Male Tutor selected';
+ voiceStatus();save();
 }
-
-updateTutorButtons();
-
-/*
-  The browser does not reliably expose voice gender.
-  We therefore keep the interface to two simple choices and
-  choose the closest available English voice behind the scenes.
-*/
-function getAvailableVoices() {
-  if (!("speechSynthesis" in window)) return [];
-  return window.speechSynthesis.getVoices() || [];
-}
-
-function scoreTutorVoice(voice, tutor) {
-  const name = (voice.name || "").toLowerCase();
-  const lang = (voice.lang || "").toLowerCase();
-
-  if (!/^en-/.test(lang)) return -1000;
-
-  let score = 0;
-
-  if (/^en-gb$/i.test(lang)) score += 100;
-  else score += 40;
-
-  const femaleNames =
-    /susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|female/;
-
-  const maleNames =
-    /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|male/;
-
-  if (
-    tutor === "female" &&
-    femaleNames.test(name)
-  ) {
-    score += 50;
-  }
-
-  if (
-    tutor === "male" &&
-    maleNames.test(name)
-  ) {
-    score += 50;
-  }
-
-  return score;
-}
-
-function getSelectedVoice() {
-  const voices = getAvailableVoices();
-
-  if (!voices.length) return null;
-
-  return voices
-    .slice()
-    .sort(function(a, b) {
-      return (
-        scoreTutorVoice(b, selectedTutor) -
-        scoreTutorVoice(a, selectedTutor)
-      );
-    })[0];
-}
-
-function makeMathsSpeakable(text) {
-  return String(text)
-    .replace(/(\d+)x\b/gi, "$1 x")
-    .replace(/\+/g, " plus ")
-    .replace(/=/g, " equals ")
-    .replace(/\*/g, " times ")
-    .replace(/−/g, " minus ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-/*
-  Make the tutor sound like a teacher rather than a statement reader.
-  The written text remains unchanged.
-*/
-function teacherSpeak(text, context) {
-  let spoken = makeMathsSpeakable(text);
-
-  let opening = "";
-
-  if (context === "question") {
-    opening =
-      selectedTutor === "female"
-        ? "Okay, let's work through this one together. "
-        : "Alright, let's work through this one together. ";
-  } else if (context === "hint") {
-    opening =
-      selectedTutor === "female"
-        ? "Let's take this one step at a time. "
-        : "Let's work through this step together. ";
-  } else if (context === "correct") {
-    opening =
-      selectedTutor === "female"
-        ? "Yes, that's right. Well done. "
-        : "That's right. Well done. ";
-  } else if (context === "incorrect") {
-    opening =
-      selectedTutor === "female"
-        ? "Not quite, but that's absolutely fine. Let's look at it together. "
-        : "Not quite, but that's okay. Let's look at it together. ";
-  } else {
-    opening =
-      selectedTutor === "female"
-        ? "Okay, let's work through this together. "
-        : "Alright, let's work through this together. ";
-  }
-
-  speakText(opening + spoken);
-}
-
-function speakText(text) {
-  if (!("speechSynthesis" in window)) {
-    setVoiceStatus(
-      "Voice playback is not available on this device. The written text is still available."
-    );
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-
-  const utterance =
-    new SpeechSynthesisUtterance(text);
-
-  const voice = getSelectedVoice();
-
-  if (voice) {
-    utterance.voice = voice;
-    utterance.lang = voice.lang;
-  } else {
-    utterance.lang = "en-GB";
-  }
-
-  /* Slower, clearer and more teacher-like for maths. */
-  utterance.rate = 0.82;
-  utterance.pitch =
-    selectedTutor === "female"
-      ? 1.04
-      : 0.96;
-  utterance.volume = 1.0;
-
-  utterance.onstart = function() {
-    setVoiceStatus("🔊 Algevia is speaking…");
-  };
-
-  utterance.onend = function() {
-    setVoiceStatus(
-      "Voice finished. You can replay it or continue."
-    );
-  };
-
-  utterance.onerror = function() {
-    setVoiceStatus(
-      "Voice playback could not be completed. The written text is still available."
-    );
-  };
-
-  window.speechSynthesis.speak(utterance);
-}
-
-function speakQuestion() {
-  const question = getCurrentQuestion();
-
-  teacherSpeak(
-    "Here is the question. " +
-      question.question +
-      ". Take your time, have a go, and remember you can speak your answer or type it.",
-    "question"
-  );
-}
-
-function speakFeedback(text, correct) {
-  teacherSpeak(
-    text +
-      (
-        correct
-          ? " You're doing really well."
-          : " You're learning from the mistake, and that's what matters."
-      ),
-    correct ? "correct" : "incorrect"
-  );
-}
-
-/* Progressive hints: every press moves the student one step closer. */
-function speakHint(text) {
-  teacherSpeak(text, "hint");
-}
-
-if (
-  "speechSynthesis" in window &&
-  "onvoiceschanged" in window.speechSynthesis
-) {
-  window.speechSynthesis.onvoiceschanged = function() {};
-}
-
-function mathsSpeechToText(text) {
-  let value = text.toLowerCase().trim();
-
-  const replacements = [
-    [/\bminus\b/g, "-"],
-    [/\bnegative\b/g, "-"],
-    [/\bplus\b/g, "+"],
-    [/\btimes\b/g, "*"],
-    [/\bmultiplied by\b/g, "*"],
-    [/\bdivided by\b/g, "/"],
-    [/\bequals\b/g, "="],
-    [/\bpoint\b/g, "."],
-    [/\bzero\b/g, "0"],
-    [/\bone\b/g, "1"],
-    [/\btwo\b/g, "2"],
-    [/\bthree\b/g, "3"],
-    [/\bfour\b/g, "4"],
-    [/\bfive\b/g, "5"],
-    [/\bsix\b/g, "6"],
-    [/\bseven\b/g, "7"],
-    [/\beight\b/g, "8"],
-    [/\bnine\b/g, "9"],
-    [/\bten\b/g, "10"],
-    [/\btwenty\b/g, "20"],
-    [/\bthirty\b/g, "30"],
-    [/\bforty\b/g, "40"],
-    [/\bfifty\b/g, "50"],
-    [/\bsixty\b/g, "60"],
-    [/\bseventy\b/g, "70"],
-    [/\beighty\b/g, "80"],
-    [/\bninety\b/g, "90"]
-  ];
-
-  replacements.forEach(function(pair) {
-    value = value.replace(pair[0], pair[1]);
-  });
-
-  value = value
-    .replace(/\b20\s*2\b/g, "22")
-    .replace(/\b20\s*3\b/g, "23")
-    .replace(/\b20\s*4\b/g, "24")
-    .replace(/\b20\s*5\b/g, "25")
-    .replace(/(\d)\s*x\b/g, "$1x")
-    .replace(/\bx\s+(\d)/g, "x*$1")
-    .replace(/[?.,]+$/g, "");
-
-  return value.trim();
-}
-
-function startSpeechRecognition() {
-  if (!SpeechRecognitionAPI) {
-    setVoiceStatus(
-      "🎙️ Speech input is not available in this browser. You can still type your answer."
-    );
-    return;
-  }
-
-  if (recognition) {
-    try {
-      recognition.stop();
-    } catch (error) {}
-  }
-
-  recognition = new SpeechRecognitionAPI();
-  recognition.lang = "en-GB";
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 3;
-  recognition.continuous = false;
-
-  recognition.onstart = function() {
-    isListening = true;
-    speakAnswerButton.textContent =
-      "🎙️ Listening…";
-    setVoiceStatus(
-      "🎙️ Listening — speak your answer."
-    );
-  };
-
-  recognition.onresult = function(event) {
-    let finalTranscript = "";
-    let interimTranscript = "";
-
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
-      const transcript =
-        event.results[i][0].transcript || "";
-
-      if (event.results[i].isFinal) {
-        finalTranscript +=
-          transcript + " ";
-      } else {
-        interimTranscript += transcript;
-      }
-    }
-
-    const combined =
-      (
-        finalTranscript +
-        interimTranscript
-      ).trim();
-
-    if (combined) {
-      answerInput.value =
-        mathsSpeechToText(combined);
-
-      setVoiceStatus(
-        "🎙️ Hearing: " + combined
-      );
-
-      answerInput.focus();
-    }
-  };
-
-  recognition.onerror = function(event) {
-    isListening = false;
-    speakAnswerButton.textContent =
-      "🎙️ Speak Answer";
-
-    if (event.error === "not-allowed") {
-      setVoiceStatus(
-        "Microphone access was not allowed. You can type your answer instead."
-      );
-    } else if (event.error === "no-speech") {
-      setVoiceStatus(
-        "I couldn't hear that clearly. Please try again or type your answer."
-      );
-    } else {
-      setVoiceStatus(
-        "I couldn't hear that clearly. Please try again or type your answer."
-      );
-    }
-  };
-
-  recognition.onend = function() {
-    isListening = false;
-    speakAnswerButton.textContent =
-      "🎙️ Speak Answer";
-
-    if (answerInput.value.trim()) {
-      setVoiceStatus(
-        "Your spoken answer has been typed into the answer box. Check it, edit it if needed, then press Check Answer."
-      );
-    } else {
-      setVoiceStatus(
-        "You can try speaking again or type your answer."
-      );
-    }
-  };
-
-  try {
-    recognition.start();
-  } catch (error) {
-    isListening = false;
-    speakAnswerButton.textContent =
-      "🎙️ Speak Answer";
-    setVoiceStatus(
-      "Please try Speak Answer again."
-    );
-  }
-}
-
-function stopVoice() {
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-
-  if (recognition) {
-    try {
-      recognition.stop();
-    } catch (error) {}
-  }
-
-  isListening = false;
-
-  if (speakAnswerButton) {
-    speakAnswerButton.textContent =
-      "🎙️ Speak Answer";
-  }
-
-  setVoiceStatus("Voice stopped.");
-}
-
-listenButton.addEventListener(
-  "click",
-  function() {
-    speakQuestion();
-  }
-);
-
-speakAnswerButton.addEventListener(
-  "click",
-  startSpeechRecognition
-);
-
-stopVoiceButton.addEventListener(
-  "click",
-  stopVoice
-);
-</script>
-
-
-<script id="algevia-enhanced-engine">
-/* =========================================================
-   ALGEVIA ENHANCED ENGINE
-   Preserves the original page and adds:
-   - topic/subtopic choice
-   - persistent skill mastery
-   - adaptive selection
-   - progressive hints
-   - teach-me mode
-   - save/exit and resume
-   - spaced review
-   - two tutor choices
-   - speech controls
-   ========================================================= */
-(function(){
-  'use strict';
-  // Topic-specific worked examples appear before the first question.
-  const workedExamples = {
-    "Algebra": [
-      {title:"Collecting like terms", body:"Simplify 7x + 3 + 2x + 5. Collect the x terms: 7x + 2x = 9x. Collect the numbers: 3 + 5 = 8. Answer: <strong>9x + 8</strong>."},
-      {title:"Expanding brackets", body:"Expand 3(x + 4). Multiply 3 by both terms: 3×x + 3×4. Answer: <strong>3x + 12</strong>."}
-    ],
-    "Expanding & Factorising": [
-      {title:"Single brackets", body:"Expand 4(x + 3). Multiply 4 by x and by 3: 4x + 12. Answer: <strong>4x + 12</strong>."},
-      {title:"Factorising", body:"Factorise 6x + 12. The highest common factor is 6, so 6x + 12 = <strong>6(x + 2)</strong>."}
-    ],
-    "Equations": [
-      {title:"Linear equation", body:"Solve 3x + 5 = 17. Subtract 5: 3x = 12. Divide by 3: <strong>x = 4</strong>."},
-      {title:"Checking", body:"Substitute x = 4 back into 3x + 5: 3(4) + 5 = 17, so the answer is correct."}
-    ],
-    "Sequences": [
-      {title:"Finding the nth term", body:"For 5, 8, 11, 14, the common difference is 3. Start with 3n, then adjust to make the first term 5: <strong>3n + 2</strong>."},
-      {title:"Checking a rule", body:"Put n = 4 into 3n + 2: 3(4) + 2 = <strong>14</strong>, matching the fourth term."}
-    ],
-    "Indices": [
-      {title:"Multiplying powers", body:"When multiplying powers with the same base, add the indices: x² × x³ = <strong>x⁵</strong>."},
-      {title:"Power of a power", body:"When raising a power to another power, multiply the indices: (x²)³ = <strong>x⁶</strong>."}
-    ],
-    "Inequalities": [
-      {title:"Solving an inequality", body:"Solve 2x + 3 > 9. Subtract 3: 2x > 6. Divide by 2: <strong>x > 3</strong>."},
-      {title:"Reversing the sign", body:"If you multiply or divide an inequality by a negative number, reverse the inequality sign."}
-    ],
-    "Rearranging Formulae": [
-      {title:"Changing the subject", body:"From y = 3x + 5, subtract 5: y − 5 = 3x. Divide by 3: <strong>x = (y − 5)/3</strong>."},
-      {title:"Keep operations balanced", body:"Whatever operation you perform on one side of an equation, perform the same operation on the other side."}
-    ]
-  };
-
-  function renderWorkedExamples(topic) {
-    const box=$('algeviaWorkedExamples');
-    const intro=$('algeviaWorkedExamplesIntro');
-    if(!box) return;
-    const examples=workedExamples[topic] || [
-      {title:"Worked example",body:"Choose a subtopic above. Algevia will use examples matched to the selected area before you practise."},
-      {title:"What to look for",body:"Pay attention to the method, the mathematical steps and why each step works. Then try the question yourself."}
-    ];
-    if(intro) intro.textContent=`Here are worked examples for ${topic}. Study the method before attempting the question.`;
-    box.innerHTML=examples.map((e,i)=>`<div class="algevia-worked-example"><h3>Example ${i+1}: ${e.title}</h3><p>${e.body}</p></div>`).join('');
-  }
-  const KEY='algeviaFullLearningStateV3';
-  const $=id=>document.getElementById(id);
-  const originalQuestions=Array.isArray(window.questions)?window.questions:[];
-  const bank=[];
-  let tutor=localStorage.getItem('algeviaTutorVoice')||'female';
-  let current=null;
-  let hintIndex=0;
-  let answered=false;
-  let session={attempts:0,correct:0,index:0,started:0,used:[]};
-
-  /* The original questions remain part of the full bank. */
-  originalQuestions.forEach((q,i)=>{
-    bank.push({
-      id:'original-'+i,
-      topic:'Algebra',
-      subtopic:i<6?'Collecting like terms':i<9?'Expanding brackets':'Factorising',
-      skill:i<6?'Collecting like terms':i<9?'Expanding single brackets':'Factorising common factors',
-      difficulty:Number(q.level)||1,
-      q:q.question,
-      answers:q.answers||[],
-      hints:q.hints||[],
-      explain:q.explanation||'',
-      teach:'Identify the mathematical operation the question is testing before you start calculating.',
-      example:q.explanation||''
-    });
-  });
-
-  /* Additional original Algevia-style questions. These are not copied exam-board questions. */
-  const extra=[
-    ['Algebra','Collecting like terms','Collecting like terms',1,'Simplify: 6x + 2x',['8x'],'Combine coefficients of like terms.'],
-    ['Algebra','Collecting like terms','Collecting like terms',1,'Simplify: 11x - 4x',['7x'],'Subtract the coefficients.'],
-    ['Algebra','Collecting like terms','Collecting like terms',2,'Simplify: 3x + 7 + 4x - 2',['7x+5','5+7x'],'Collect the x terms and constants separately.'],
-    ['Algebra','Collecting like terms','Collecting like terms',2,'Simplify: 8a + 3 - 5a + 9',['3a+12','12+3a'],'Look for the a terms first.'],
-    ['Algebra','Collecting like terms','Collecting like terms',2,'Simplify: 12y - 7 + 3y + 1',['15y-6','-6+15y'],'Be careful with the negative constant.'],
-    ['Algebra','Collecting like terms','Collecting like terms',3,'Simplify: 4p - 3 + 6p - 8',['10p-11','-11+10p'],'Combine p terms and number terms.'],
-    ['Algebra','Expanding brackets','Expanding single brackets',2,'Expand: 4(x + 3)',['4x+12','12+4x'],'Multiply 4 by every term inside.'],
-    ['Algebra','Expanding brackets','Expanding single brackets',2,'Expand: 7(x - 2)',['7x-14','-14+7x'],'Remember that 7 multiplied by negative 2 is negative 14.'],
-    ['Algebra','Expanding brackets','Expanding single brackets',3,'Expand: -3(x + 5)',['-3x-15','-15-3x'],'The negative outside the bracket affects both terms.'],
-    ['Algebra','Expanding brackets','Expanding single brackets',3,'Expand: 2(4x - 7)',['8x-14','-14+8x'],'Multiply 2 by both terms.'],
-    ['Algebra','Expanding brackets','Expanding double brackets',4,'Expand: (x + 3)(x + 2)',['x^2+5x+6','x2+5x+6'],'Multiply every term in the first bracket by every term in the second.'],
-    ['Algebra','Expanding brackets','Expanding double brackets',5,'Expand: (x + 5)(x - 2)',['x^2+3x-10','x2+3x-10'],'Look carefully at the negative product.'],
-    ['Algebra','Factorising','Factorising common factors',3,'Factorise: 9x + 18',['9(x+2)','9(2+x)'],'Find the highest common factor.'],
-    ['Algebra','Factorising','Factorising common factors',3,'Factorise: 12x + 20',['4(3x+5)','4(5+3x)'],'The highest common factor is 4.'],
-    ['Algebra','Factorising','Factorising common factors',4,'Factorise: 15x - 25',['5(3x-5)','5(-5+3x)'],'Take the common factor outside the bracket.'],
-    ['Algebra','Factorising','Factorising common factors',4,'Factorise: 18x + 24',['6(3x+4)','6(4+3x)'],'Check what remains after dividing each term by 6.'],
-    ['Algebra','Equations','Solving linear equations',2,'Solve: x + 7 = 12',['5'],'Undo the addition of 7.'],
-    ['Algebra','Equations','Solving linear equations',3,'Solve: 3x = 21',['7'],'Divide both sides by 3.'],
-    ['Algebra','Equations','Solving linear equations',3,'Solve: 2x + 5 = 17',['6'],'First remove 5, then divide by 2.'],
-    ['Algebra','Equations','Solving linear equations',4,'Solve: 5x - 4 = 21',['5'],'Add 4, then divide by 5.'],
-    ['Algebra','Equations','Solving linear equations',4,'Solve: 3x + 8 = 2x + 15',['7'],'Get the x terms on one side and constants on the other.'],
-    ['Algebra','Sequences','Linear sequences',3,'Find the next term: 4, 7, 10, 13, ...',['16'],'Look for the constant difference.'],
-    ['Algebra','Sequences','Linear sequences',4,'Find the nth term of: 5, 8, 11, 14, ...',['3n+2'],'The difference gives the coefficient of n.'],
-    ['Algebra','Indices','Index laws',3,'Simplify: x^3 × x^2',['x^5','x5'],'When multiplying powers with the same base, add the indices.'],
-    ['Algebra','Indices','Index laws',4,'Simplify: x^7 ÷ x^3',['x^4','x4'],'When dividing powers with the same base, subtract the indices.'],
-    ['Algebra','Indices','Index laws',4,'Simplify: (x^2)^3',['x^6','x6'],'When a power is raised to another power, multiply the indices.'],
-    ['Algebra','Inequalities','Linear inequalities',4,'Solve: x + 3 > 8',['x>5','x > 5'],'Undo the addition of 3.'],
-    ['Algebra','Inequalities','Linear inequalities',5,'Solve: 2x < 14',['x<7','x < 7'],'Divide both sides by 2.'],
-    ['Algebra','Rearranging formulae','Changing the subject',4,'Make x the subject: y = x + 6',['x=y-6','x = y - 6'],'Undo the addition of 6.'],
-    ['Algebra','Rearranging formulae','Changing the subject',5,'Make x the subject: y = 3x + 2',['x=(y-2)/3','x=(y−2)/3'],'Remove 2 first, then divide by 3.']
-  ];
-  extra.forEach((a,i)=>bank.push({id:'extra-'+i,topic:a[0],subtopic:a[1],skill:a[2],difficulty:a[3],q:a[4],answers:a[5],hints:[a[6],'Write down the operation you need to undo or apply.',a[6],'Now carry out that step carefully.'],teach:a[6],explain:a[6],example:a[4]+' → '+a[5][0]}));
-
-  let state;
-  try{state=JSON.parse(localStorage.getItem(KEY)||'null')||{};}catch(e){state={};}
-  state.skills=state.skills||{};state.history=state.history||[];state.lastTopic=state.lastTopic||'Algebra';state.lastSubtopic=state.lastSubtopic||'Collecting like terms';state.lastQuestionId=state.lastQuestionId||null;
-  const skills=()=>bank.map(q=>q.skill).filter((v,i,a)=>a.indexOf(v)===i);
-  const topicNames=()=>bank.map(q=>q.topic).filter((v,i,a)=>a.indexOf(v)===i);
-  const subs=t=>bank.filter(q=>q.topic===t).map(q=>q.subtopic).filter((v,i,a)=>a.indexOf(v)===i);
-  const getSkill=q=>{const k=q.topic+'|'+q.subtopic+'|'+q.skill;if(!state.skills[k])state.skills[k]={mastery:0,correct:0,attempts:0,streak:0,errors:0,hints:0,reviewDue:0,lastSeen:0};return state.skills[k];};
-  const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));renderProfile();};
-  const label=m=>m>=90?'Mastered':m>=75?'Strong':m>=55?'Secure':m>=30?'Developing':'Introduced';
-  const renderProfile=()=>{const vals=Object.values(state.skills);const avg=vals.length?Math.round(vals.reduce((a,s)=>a+s.mastery,0)/vals.length):0;if($('enhancedOverallMastery'))$('enhancedOverallMastery').textContent=avg+'%';if($('enhancedSkillsSecure'))$('enhancedSkillsSecure').textContent=vals.filter(s=>s.mastery>=55).length;if($('enhancedTotalAnswered'))$('enhancedTotalAnswered').textContent=vals.reduce((a,s)=>a+s.attempts,0);if($('enhancedProgressText'))$('enhancedProgressText').textContent=vals.length?'Algevia is tracking your strengths, weaknesses, recent errors and skills due for review.':'Start practising and Algevia will build your personal learning profile.';};
-  const saveContext=()=>{state.lastTopic=$('algeviaTopicSelect').value;state.lastSubtopic=$('algeviaSubtopicSelect').value;if(current)state.lastQuestionId=current.id;save();};
-  function populate(){const t=$('algeviaTopicSelect'),s=$('algeviaSubtopicSelect');if(!t||!s)return;t.innerHTML=topicNames().map(x=>'<option>'+x+'</option>').join('');t.value=topicNames().includes(state.lastTopic)?state.lastTopic:topicNames()[0];s.innerHTML=subs(t.value).map(x=>'<option>'+x+'</option>').join('');s.value=subs(t.value).includes(state.lastSubtopic)?state.lastSubtopic:subs(t.value)[0];renderSubSkills();renderWorkedExamples(t.value);}
-  function renderSubSkills(){const t=$('algeviaTopicSelect').value,s=$('algeviaSubtopicSelect').value;renderWorkedExamples(t);const rows=bank.filter(q=>q.topic===t&&q.subtopic===s).map(q=>q.skill).filter((v,i,a)=>a.indexOf(v)===i);$('algeviaSkillPills').innerHTML=rows.map(x=>{const q=bank.find(z=>z.skill===x);const st=getSkill(q);return '<span class="algevia-pill">'+x+': '+label(st.mastery)+'</span>';}).join('');}
-  function score(q){const s=getSkill(q),now=Date.now();let v=(100-s.mastery)*2+s.errors*10+(s.reviewDue&&s.reviewDue<=now?70:0);if(s.attempts===0)v+=35;if(session.used.includes(q.id))v-=60;v+=(q.difficulty>=4&&s.mastery<55?12:0);v+=Math.random()*8;return v;}
-  function choose(t,s){const pool=bank.filter(q=>q.topic===t&&q.subtopic===s);if(!pool.length)return null;return pool.slice().sort((a,b)=>score(b)-score(a))[0];}
-  function tutorText(kind,q){const female=tutor==='female';const n=(arr)=>arr[Math.floor(Math.random()*arr.length)];if(kind==='correct')return n(['Brilliant! You spotted that straight away.','Yes — exactly right. Nice work.','That’s it. You handled that really well.','Perfect. You’ve got the idea.']);if(kind==='wrong')return n(['Not quite — but you’re close. Let’s look at the part that needs changing.','Nearly. There’s one step to fix, so let’s slow it down and look at it together.','Good attempt. I think we’ve found the bit that’s causing trouble. Let’s focus on that.']);if(kind==='repeat')return 'I’ve noticed this skill is proving a little tricky. Let’s pause and practise the key idea before we move on.';if(kind==='hint')return female?'Okay, let’s have a look at this together.':'Alright, let’s have a look at this together.';return female?'Okay, let’s work through this one together.':'Alright, let’s work through this one together.';}
-  function speak(text){if(!('speechSynthesis'in window)){if($('voiceStatus'))$('voiceStatus').textContent='Voice playback is not available in this browser. Written tutor guidance remains available.';return;}window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text).replace(/(\d+)x\b/gi,'$1 x').replace(/\^2/g,' squared ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/\*/g,' times ').replace(/−/g,' minus '));const vs=window.speechSynthesis.getVoices();const female=/samantha|karen|moira|susan|hazel|libby|sonia|serena|kate|amy|victoria|aria|ava|jenny|zira|siri.*female|female/i;const male=/daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|siri.*male|male/i;const pool=vs.filter(v=>/^en-/i.test(v.lang));const femalePool=pool.filter(v=>female.test(v.name)&&!male.test(v.name));const malePool=pool.filter(v=>male.test(v.name)&&!female.test(v.name));const ranked=(arr)=>arr.slice().sort((a,b)=>(/^en-GB$/i.test(a.lang)?20:0)-(/^en-GB$/i.test(b.lang)?20:0)||a.name.localeCompare(b.name));let v=tutor==='female'?(ranked(femalePool)[0]||ranked(pool.filter(x=>!male.test(x.name)))[0]):(ranked(malePool)[0]||ranked(pool)[0]);v=v||vs[0];if(v){u.voice=v;u.lang=v.lang;}else u.lang='en-GB';u.rate=.86;u.pitch=tutor==='female'?1.02:.96;u.onstart=()=>{if($('voiceStatus'))$('voiceStatus').textContent='🔊 Algevia is speaking…';};u.onend=()=>{if($('voiceStatus'))$('voiceStatus').textContent='Voice finished.';};window.speechSynthesis.speak(u);}
-  function setTutor(t){tutor=t;localStorage.setItem('algeviaTutorVoice',t);$('algeviaFemaleTutor').classList.toggle('selected',t==='female');$('algeviaMaleTutor').classList.toggle('selected',t==='male');$('algeviaSelectedTutor').textContent=t==='female'?'👩 Female Tutor selected':'👨 Male Tutor selected';if($('selectedTutor'))$('selectedTutor').textContent=t==='female'?'👩 Female Tutor selected':'👨 Male Tutor selected';}
-  function render(q){current=q;hintIndex=0;answered=false;const st=getSkill(q);if($('question'))$('question').textContent=q.q;if($('questionCounter'))$('questionCounter').textContent='Question — adaptive practice';if($('progressBar'))$('progressBar').style.width='0%';if($('answerInput')){$('answerInput').value='';$('answerInput').focus();}if($('feedback'))$('feedback').style.display='none';if($('hint'))$('hint').style.display='none';if($('nextArea'))$('nextArea').style.display='none';if($('checkButton'))$('checkButton').disabled=false;if($('hintButton'))$('hintButton').disabled=false;if($('teachButton'))$('teachButton').disabled=false;if($('enhancedMasteryText'))$('enhancedMasteryText').textContent='Current skill: '+q.skill+' — '+label(st.mastery)+' ('+st.mastery+'%)';if($('enhancedTutorDialogue'))$('enhancedTutorDialogue').textContent=tutorText('question',q)+' '+q.q;saveContext();}
-  function start(){const topicEl=$('algeviaTopicSelect'),subEl=$('algeviaSubtopicSelect');if(!topicEl||!subEl||!bank.length)return;const t=topicEl.value,s=subEl.value;if(!t||!s)return;state.lastTopic=t;state.lastSubtopic=s;session={attempts:0,correct:0,index:0,started:Date.now(),used:[]};current=choose(t,s);if(!current)return;session.used.push(current.id);if($('completionCard'))$('completionCard').style.display='none';render(current);const step3=Array.from(document.querySelectorAll('main > section.card')).find(sec=>{const h=sec.querySelector('h2');return h&&/Step 3/i.test(h.textContent);});if(step3)step3.style.display='block';}
-  function next(){if(!current)return;const t=$('algeviaTopicSelect').value,s=$('algeviaSubtopicSelect').value;session.index++;current=choose(t,s)||current;session.used.push(current.id);render(current);}
-  function hint(){if(!current)return;const h=current.hints||[];if(!h.length)return;const i=Math.min(hintIndex,h.length-1);hintIndex++;if($('hint')){$('hint').textContent='Hint '+(i+1)+' of '+h.length+': '+h[i];$('hint').style.display='block';}getSkill(current).hints++;save();speak(tutorText('hint',current)+' '+h[i]);if(hintIndex>=h.length&&$('hintButton'))$('hintButton').disabled=true;}
-  function teach(){if(!current)return;const st=getSkill(current);let txt=current.teach+' '+current.explain;if(st.errors>=2)txt+=' '+tutorText('repeat',current);if($('hint')){$('hint').textContent=txt;$('hint').style.display='block';}if($('enhancedTutorDialogue'))$('enhancedTutorDialogue').textContent=txt;speak(tutorText('hint',current)+' '+txt);}
-  function normal(v){return String(v).toLowerCase().trim().replace(/−/g,'-').replace(/²/g,'^2').replace(/\s+/g,'').replace(/£/g,'');}
-  function correct(v,q){const n=normal(v);return q.answers.some(a=>normal(a)===n||normal(a).replace(/\^/g,'')===n.replace(/\^/g,''));}
-  function check(){if(answered||!current)return;const input=$('answerInput').value.trim();if(!input){$('feedback').className='feedback incorrect';$('feedback').textContent='Please enter an answer first.';$('feedback').style.display='block';return;}const st=getSkill(current),ok=correct(input,current);session.attempts++;st.attempts++;state.history.push({id:current.id,time:Date.now(),correct:ok,hints:hintIndex});if(ok){session.correct++;st.correct++;st.streak++;st.errors=Math.max(0,st.errors-1);st.mastery=Math.min(100,Math.round(st.mastery+Math.max(7,18-st.hints*2)+(st.streak>=3?3:0)));st.reviewDue=Date.now()+Math.max(2,Math.round(st.mastery/100*14))*86400000;$('feedback').className='feedback correct';$('feedback').innerHTML='<strong>'+tutorText('correct',current)+'</strong><br><br>'+current.explain;speak(tutorText('correct',current)+' '+current.explain);if($('enhancedTutorDialogue'))$('enhancedTutorDialogue').textContent=tutorText('correct',current)+' '+current.explain;}else{st.errors++;st.streak=0;st.mastery=Math.max(0,st.mastery-4);st.reviewDue=Date.now()+86400000;const line=st.errors>=2?tutorText('repeat',current):tutorText('wrong',current);$('feedback').className='feedback incorrect';$('feedback').innerHTML='<strong>'+line+'</strong><br><br>'+current.explain;speak(line+' '+current.explain);if($('enhancedTutorDialogue'))$('enhancedTutorDialogue').textContent=line+' '+current.explain;}$('feedback').style.display='block';$('checkButton').disabled=true;$('hintButton').disabled=true;if($('nextArea'))$('nextArea').style.display='block';answered=true;state.lastQuestionId=current.id;save();if($('correctCount'))$('correctCount').textContent=session.correct;if($('attemptCount'))$('attemptCount').textContent=session.attempts;if($('accuracy'))$('accuracy').textContent=Math.round(session.correct/session.attempts*100)+'%';renderSubSkills();}
-  function saveExit(){saveContext();if($('exerciseCard'))$('exerciseCard').style.display='none';if($('completionCard')){$('completionCard').style.display='block';$('completionMessage').textContent='Your progress has been saved. When you return, Continue Learning will select the next useful question for your current skill.';}}
-  function continueLearning(){const t=topicNames().includes(state.lastTopic)?state.lastTopic:topicNames()[0];$('algeviaTopicSelect').value=t;$('algeviaSubtopicSelect').innerHTML=subs(t).map(x=>'<option>'+x+'</option>').join('');$('algeviaSubtopicSelect').value=subs(t).includes(state.lastSubtopic)?state.lastSubtopic:subs(t)[0];start();}
-  function speakCurrent(){if(current)speak(tutorText('question',current)+' '+current.q);}
-  function stop(){if('speechSynthesis'in window)window.speechSynthesis.cancel();if(window._algeviaRecognition){try{window._algeviaRecognition.stop();}catch(e){}}if($('voiceStatus'))$('voiceStatus').textContent='Voice stopped.';}
-  function intercept(id,fn){const el=$(id);if(!el)return;el.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();fn();},true);}
-  function moveEnhancedControls(){
-    const controls=$('algeviaLearningControls');
-    const tutorCard=$('algeviaTutorCard');
-    const mastery=$('algeviaMasteryCard');
-    const sections=Array.from(document.querySelectorAll('main > section.card'));
-    const step3=sections.find(sec=>{const h=sec.querySelector('h2');return h&&/Step 3/i.test(h.textContent);});
-    if(step3&&controls){step3.parentNode.insertBefore(controls,step3);if(tutorCard)step3.parentNode.insertBefore(tutorCard,step3);if(mastery)step3.parentNode.insertBefore(mastery,step3);}
-  }
-  function init(){
-    // v5: there must be exactly one visible tutor selector. Remove any legacy selector block.
-    document.querySelectorAll('#femaleTutorButton, #maleTutorButton, #selectedTutor').forEach(function(el){
-      const legacy=el.closest('div[style*="margin-top:15px"]');
-      if(legacy) legacy.remove(); else el.remove();
-    });
-    moveEnhancedControls();
-    populate();
-    renderProfile();
-    setTutor(tutor);
-    const topic=$('algeviaTopicSelect');
-    const subtopic=$('algeviaSubtopicSelect');
-    if(topic)topic.addEventListener('change',function(){const t=this.value;if(subtopic){subtopic.innerHTML=subs(t).map(x=>'<option>'+x+'</option>').join('');}renderSubSkills();start();});
-    if(subtopic)subtopic.addEventListener('change',function(){renderSubSkills();start();});
-    $('algeviaFemaleTutor').addEventListener('click',()=>setTutor('female'));
-    $('algeviaMaleTutor').addEventListener('click',()=>setTutor('male'));
-    $('algeviaTopicSelect').addEventListener('change',()=>{const t=$('algeviaTopicSelect').value;$('algeviaSubtopicSelect').innerHTML=subs(t).map(x=>'<option>'+x+'</option>').join('');renderSubSkills();renderWorkedExamples(t);});
-  $('algeviaSubtopicSelect').addEventListener('change',()=>renderWorkedExamples($('algeviaTopicSelect').value));
-  $('algeviaStartButton').addEventListener('click',start);
-    $('algeviaContinueButton').addEventListener('click',continueLearning);
-    $('algeviaSaveExitButton').addEventListener('click',saveExit);
-    $('algeviaSpeakButton').addEventListener('click',speakCurrent);
-    $('algeviaStopButton').addEventListener('click',stop);
-    $('algeviaTeachButton').addEventListener('click',teach);
-    $('algeviaHintButton').addEventListener('click',hint);
-    intercept('checkButton',check);
-    intercept('hintButton',hint);
-    intercept('nextButton',next);
-    intercept('teachButton',teach);
-    intercept('listenButton',speakCurrent);
-    intercept('stopVoiceButton',stop);
-    if($('saveExitButton'))intercept('saveExitButton',saveExit);
-    if($('answerInput'))$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check();}},true);
-    // Always show a real first question on entry. The student can then change topic/subtopic at any time.
-    // The question is rendered explicitly here so the page never opens with a blank question box.
-    if(bank.length){
-      const firstTopic = $('algeviaTopicSelect').value || topicNames()[0];
-      const firstSubs = subs(firstTopic);
-      const firstSubtopic = $('algeviaSubtopicSelect').value || firstSubs[0];
-      $('algeviaTopicSelect').value = firstTopic;
-      $('algeviaSubtopicSelect').innerHTML = firstSubs.map(x=>'<option>'+x+'</option>').join('');
-      $('algeviaSubtopicSelect').value = firstSubtopic;
-      state.lastTopic = firstTopic;
-      state.lastSubtopic = firstSubtopic;
-      session = {attempts:0,correct:0,index:0,started:Date.now(),used:[]};
-      current = choose(firstTopic, firstSubtopic);
-      if(current){
-        session.used.push(current.id);
-        render(current);
-      }
-    }
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+$('topicSelect').addEventListener('change',()=>{setSubtopics();updateSelection();});
+$('subtopicSelect').addEventListener('change',updateSelection);
+$('startBtn').addEventListener('click',()=>startPractice(false));
+$('continueBtn').addEventListener('click',()=>startPractice(true));
+$('saveBtn').addEventListener('click',()=>{save();stopSpeech();$('saved').style.display='block';});
+$('femaleBtn').addEventListener('click',()=>chooseTutor('female'));
+$('maleBtn').addEventListener('click',()=>chooseTutor('male'));
+$('checkBtn').addEventListener('click',checkAnswer);
+$('hintBtn').addEventListener('click',hint);
+$('teachBtn').addEventListener('click',teach);
+$('speakBtn').addEventListener('click',()=>{if(current)speak(`Your question is ${current.q}`);});
+$('stopBtn').addEventListener('click',stopSpeech);
+$('nextBtn').addEventListener('click',nextQuestion);
+$('answer').addEventListener('keydown',e=>{if(e.key==='Enter')checkAnswer();});
+$('answer').addEventListener('input',()=>{if(current){state.drafts ||= {};state.drafts[current.id]=$('answer').value;save();}});
+if('speechSynthesis'in window){loadVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadVoices);}
+setSelects();chooseTutor(tutor);
+const savedQuestion=allQuestions.find(q=>q.id===state.currentId);
+if(savedQuestion){current=savedQuestion;showQuestion();}
+else{current=chooseQuestion();showQuestion();}
+updateProgress();
 })();
 </script>
-
 </body>
 </html>
+
+
+
