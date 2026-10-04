@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Algevia Learn by Yourself</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    color: #222;
+  }
+
+  header {
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 18px 8%;
+  }
+
+  .nav {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .nav a {
+    text-decoration: none;
+    color: #222;
+    font-weight: bold;
+  }
+
+  main {
+    max-width: 1000px;
+    margin: auto;
+    padding: 30px 20px 60px;
+  }
+
+  .hero {
+    background: white;
+    text-align: center;
+    padding: 45px 25px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+  }
+
+  .hero h1 {
+    margin-bottom: 8px;
+  }
+
+  .hero h2 {
+    margin-top: 0;
+  }
+
+  .card {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .progress {
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 15px 0 25px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #2563eb;
+    transition: width 0.3s ease;
+  }
+
+  .skill {
+    display: inline-block;
+    background: #eef2ff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .example {
+    background: #f8fafc;
+    border-left: 4px solid #2563eb;
+    padding: 18px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+
+  .question-box {
+    margin-top: 20px;
+  }
+
+  .question {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 20px 0;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    max-width: 500px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+  }
+
+  button,
+  .button {
+    display: inline-block;
+    border: none;
+    background: #2563eb;
+    color: white;
+    padding: 13px 22px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 15px;
+  }
+
+  button:hover,
+  .button:hover {
+    opacity: 0.9;
+  }
+
+  button.secondary {
+    background: #64748b;
+  }
+
+  .feedback {
+    padding: 18px;
+    border-radius: 8px;
+    margin-top: 20px;
+    display: none;
+  }
+
+  .correct {
+    background: #ecfdf5;
+    border: 1px solid #10b981;
+  }
+
+  .incorrect {
+    background: #fef2f2;
+    border: 1px solid #ef4444;
+  }
+
+  .hint {
+    background: #fff7ed;
+    border: 1px solid #f97316;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: none;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .stat {
+    background: #f8fafc;
+    padding: 18px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .stat strong {
+    display: block;
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .next-area {
+    display: none;
+    margin-top: 20px;
+  }
+
+  .learning-profile {
+    background: #eef6ff;
+    border: 1px solid #bfdbfe;
+  }
+
+  @media (max-width: 700px) {
+    .stats {
+      grid-template-columns: 1fr;
+    }
+
+    .hero {
+      padding: 30px 18px;
+    }
+
+    .question {
+      font-size: 19px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">ALGEVIA</div>
+    <a href="education.html">Education</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>Learn by Yourself</h1>
+
+    <h2>GCSE Maths — AQA Higher</h2>
+
+    <p>
+      <strong>Learn Smarter. Achieve More.</strong>
+    </p>
+
+    <p>
+      Algevia teaches you the skill, shows you how it works,
+      lets you try it yourself and adapts what comes next.
+    </p>
+  </section>
+
+
+  <section class="card learning-profile">
+
+    <h2>Your Learning Profile</h2>
+
+    <p>
+      Your learning journey starts with the areas that need the
+      most attention.
+    </p>
+
+    <p>
+      <strong>Current module:</strong>
+      Algebraic Expressions
+    </p>
+
+    <p>
+      <strong>Learning approach:</strong>
+      Learn by Yourself
+    </p>
+
+  </section>
+
+
+  <section class="card">
+
+    <span class="skill">
+      Algebraic Expressions
+    </span>
+
+    <h2>Step 1 — Understand</h2>
+
+    <p>
+      Algebra uses letters to represent numbers.
+      An algebraic expression can contain numbers, letters and
+      mathematical operations.
+    </p>
+
+    <p>
+      For example:
+    </p>
+
+    <div class="example">
+      <strong>3x + 5x = 8x</strong>
+      <br><br>
+      The terms contain the same variable, <strong>x</strong>,
+      so we can add their coefficients:
+      <br><br>
+      3 + 5 = 8
+    </div>
+
+    <p>
+      The key idea is:
+      <strong>only like terms can be collected together.</strong>
+    </p>
+
+    <p>
+      For example:
+    </p>
+
+    <div class="example">
+      <strong>4x + 3x = 7x</strong>
+      <br><br>
+      but
+      <br><br>
+      <strong>4x + 3y</strong>
+      cannot be simplified to 7xy.
+    </div>
+
+  </section>
+
+
+  <section class="card">
+
+    <h2>Step 2 — Worked Example</h2>
+
+    <p>
+      Simplify:
+    </p>
+
+    <div class="example">
+
+      <strong>7x + 3 + 2x + 5</strong>
+
+      <br><br>
+
+      First collect the x terms:
+
+      <br><br>
+
+      7x + 2x = 9x
+
+      <br><br>
+
+      Then collect the numbers:
+
+      <br><br>
+
+      3 + 5 = 8
+
+      <br><br>
+
+      Therefore:
+
+      <br><br>
+
+      <strong>9x + 8</strong>
+
+    </div>
+
+    <p>
+      Notice that we kept the x terms and number terms separate.
+    </p>
+
+  </section>
+
+
+  <section class="card">
+
+    <h2>Step 3 — Your Turn</h2>
+
+    <div class="progress">
+      <div
+        class="progress-bar"
+        id="progressBar">
+      </div>
+    </div>
+
+    <p id="questionCounter">
+      Question 1
+    </p>
+
+    <div
+      class="question"
+      id="question">
+    </div>
+
+    <div class="question-box">
+
+      <input
+        type="text"
+        id="answerInput"
+        placeholder="Type your answer"
+        autocomplete="off"
+      >
+
+      <br>
+
+      <button
+        id="checkButton"
+        type="button">
+        Check Answer
+      </button>
+
+      <button
+        id="hintButton"
+        class="secondary"
+        type="button">
+        Show Hint
+      </button>
+
+    </div>
+
+    <div
+      id="hint"
+      class="hint">
+    </div>
+
+    <div
+      id="feedback"
+      class="feedback">
+    </div>
+
+    <div
+      id="nextArea"
+      class="next-area">
+
+      <button
+        id="nextButton"
+        type="button">
+        Next Question
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <section class="card">
+
+    <h2>Your Progress</h2>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong id="correctCount">0</strong>
+        Correct
+      </div>
+
+      <div class="stat">
+        <strong id="attemptCount">0</strong>
+        Attempts
+      </div>
+
+      <div class="stat">
+        <strong id="accuracy">0%</strong>
+        Accuracy
+      </div>
+
+    </div>
+
+    <p
+      id="adaptiveMessage"
+      style="text-align:center; margin-top:20px; font-weight:bold;">
+      Algevia is learning how you learn.
+    </p>
+
+  </section>
+
+
+  <section
+    id="completionCard"
+    class="card"
+    style="display:none;">
+
+    <h2>Module Complete</h2>
+
+    <p id="completionMessage"></p>
+
+    <p>
+      Algevia will use your performance to decide what you
+      should practise next.
+    </p>
+
+    <a
+      href="education.html"
+      class="button">
+      Back to Education
+    </a>
+
+  </section>
+
+</main>
+
+
+<script>
+
+const questions = [
+
+  {
+    level: 1,
+    question: "Simplify: 3x + 5x",
+    answers: ["8x"],
+    hint: "Collect the two x terms.",
+    explanation: "3x + 5x = 8x because the terms are like terms."
+  },
+
+  {
+    level: 1,
+    question: "Simplify: 7x - 2x",
+    answers: ["5x"],
+    hint: "Subtract the coefficients of x.",
+    explanation: "7x - 2x = 5x."
+  },
+
+  {
+    level: 1,
+    question: "Simplify: 4x + 3 + 2x",
+    answers: ["6x+3", "3+6x"],
+    hint: "Collect the x terms first.",
+    explanation: "4x + 2x = 6x, so the answer is 6x + 3."
+  },
+
+  {
+    level: 2,
+    question: "Simplify: 5x + 7 + 3x + 2",
+    answers: ["8x+9", "9+8x"],
+    hint: "Collect the x terms and then the numbers.",
+    explanation: "5x + 3x = 8x and 7 + 2 = 9."
+  },
+
+  {
+    level: 2,
+    question: "Simplify: 9a - 4 + 2a + 7",
+    answers: ["11a+3", "3+11a"],
+    hint: "Combine the a terms and the constants.",
+    explanation: "9a + 2a = 11a and -4 + 7 = 3."
+  },
+
+  {
+    level: 2,
+    question: "Simplify: 6y + 4 - 2y + 9",
+    answers: ["4y+13", "13+4y"],
+    hint: "6y - 2y gives the coefficient of y.",
+    explanation: "6y - 2y = 4y and 4 + 9 = 13."
+  },
+
+  {
+    level: 3,
+    question: "Expand: 3(x + 4)",
+    answers: ["3x+12", "12+3x"],
+    hint: "Multiply 3 by everything inside the bracket.",
+    explanation: "3 × x = 3x and 3 × 4 = 12."
+  },
+
+  {
+    level: 3,
+    question: "Expand: 5(2x - 3)",
+    answers: ["10x-15", "-15+10x"],
+    hint: "Multiply both terms inside the bracket by 5.",
+    explanation: "5 × 2x = 10x and 5 × -3 = -15."
+  },
+
+  {
+    level: 3,
+    question: "Expand: 2(3x + 5) + x",
+    answers: ["7x+10", "10+7x"],
+    hint: "Expand first, then collect like terms.",
+    explanation: "2(3x + 5) = 6x + 10. Adding x gives 7x + 10."
+  },
+
+  {
+    level: 4,
+    question: "Factorise: 6x + 12",
+    answers: ["6(x+2)", "6(2+x)"],
+    hint: "Find the highest common factor of 6x and 12.",
+    explanation: "Both terms have a factor of 6, giving 6(x + 2)."
+  },
+
+  {
+    level: 4,
+    question: "Factorise: 8x + 20",
+    answers: ["4(2x+5)", "4(5+2x)"],
+    hint: "What is the highest common factor of 8 and 20?",
+    explanation: "The highest common factor is 4, so 8x + 20 = 4(2x + 5)."
+  },
+
+  {
+    level: 5,
+    question: "Simplify: 3(2x + 4) - 2(x - 5)",
+    answers: ["4x+22", "22+4x"],
+    hint: "Expand both brackets carefully, especially the minus sign.",
+    explanation: "3(2x + 4) = 6x + 12. 2(x - 5) = 2x - 10. Therefore 6x + 12 - 2x + 10 = 4x + 22."
+  }
+
+];
+
+
+let currentQuestion = 0;
+let correctCount = 0;
+let attemptCount = 0;
+
+let currentLevel = 1;
+
+const questionElement =
+  document.getElementById("question");
+
+const answerInput =
+  document.getElementById("answerInput");
+
+const checkButton =
+  document.getElementById("checkButton");
+
+const hintButton =
+  document.getElementById("hintButton");
+
+const hintElement =
+  document.getElementById("hint");
+
+const feedbackElement =
+  document.getElementById("feedback");
+
+const nextArea =
+  document.getElementById("nextArea");
+
+const nextButton =
+  document.getElementById("nextButton");
+
+const questionCounter =
+  document.getElementById("questionCounter");
+
+const progressBar =
+  document.getElementById("progressBar");
+
+const correctCountElement =
+  document.getElementById("correctCount");
+
+const attemptCountElement =
+  document.getElementById("attemptCount");
+
+const accuracyElement =
+  document.getElementById("accuracy");
+
+const adaptiveMessage =
+  document.getElementById("adaptiveMessage");
+
+const completionCard =
+  document.getElementById("completionCard");
+
+const completionMessage =
+  document.getElementById("completionMessage");
+
+
+function normaliseAnswer(value) {
+
+  return value
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/−/g, "-");
+
+}
+
+
+function isCorrect(userAnswer, acceptedAnswers) {
+
+  const normalisedUserAnswer =
+    normaliseAnswer(userAnswer);
+
+  return acceptedAnswers.some(answer =>
+    normaliseAnswer(answer) === normalisedUserAnswer
+  );
+
+}
+
+
+function getCurrentQuestion() {
+
+  return questions[currentQuestion];
+
+}
+
+
+function displayQuestion() {
+
+  const question =
+    getCurrentQuestion();
+
+  questionElement.textContent =
+    question.question;
+
+  questionCounter.textContent =
+    "Question " +
+    (currentQuestion + 1) +
+    " of " +
+    questions.length;
+
+  progressBar.style.width =
+    ((currentQuestion / questions.length) * 100) +
+    "%";
+
+  answerInput.value = "";
+
+  feedbackElement.style.display = "none";
+
+  hintElement.style.display = "none";
+
+  nextArea.style.display = "none";
+
+  checkButton.disabled = false;
+
+  hintButton.disabled = false;
+
+  answerInput.focus();
+
+}
+
+
+function showHint() {
+
+  const question =
+    getCurrentQuestion();
+
+  hintElement.textContent =
+    question.hint;
+
+  hintElement.style.display =
+    "block";
+
+}
+
+
+function updateStats() {
+
+  correctCountElement.textContent =
+    correctCount;
+
+  attemptCountElement.textContent =
+    attemptCount;
+
+  const percentage =
+    attemptCount === 0
+      ? 0
+      : Math.round(
+          (correctCount / attemptCount) * 100
+        );
+
+  accuracyElement.textContent =
+    percentage + "%";
+
+}
+
+
+function updateAdaptiveMessage() {
+
+  if (attemptCount < 2) {
+
+    adaptiveMessage.textContent =
+      "Algevia is learning how you learn.";
+
+    return;
+
+  }
+
+  const accuracy =
+    correctCount / attemptCount;
+
+  if (accuracy >= 0.8) {
+
+    adaptiveMessage.textContent =
+      "You're showing strong understanding. Algevia will increase the challenge.";
+
+  } else if (accuracy >= 0.5) {
+
+    adaptiveMessage.textContent =
+      "You're developing this skill. Algevia will keep building your understanding.";
+
+  } else {
+
+    adaptiveMessage.textContent =
+      "Let's strengthen the foundations before increasing the difficulty.";
+
+  }
+
+}
+
+
+function checkAnswer() {
+
+  const userAnswer =
+    answerInput.value.trim();
+
+  if (!userAnswer) {
+
+    feedbackElement.className =
+      "feedback incorrect";
+
+    feedbackElement.textContent =
+      "Please enter an answer first.";
+
+    feedbackElement.style.display =
+      "block";
+
+    return;
+
+  }
+
+  const question =
+    getCurrentQuestion();
+
+  attemptCount++;
+
+  const correct =
+    isCorrect(
+      userAnswer,
+      question.answers
+    );
+
+  if (correct) {
+
+    correctCount++;
+
+    feedbackElement.className =
+      "feedback correct";
+
+    feedbackElement.innerHTML =
+      "<strong>Correct!</strong><br><br>" +
+      question.explanation;
+
+    if (question.level < 5) {
+      currentLevel = question.level + 1;
+    }
+
+  } else {
+
+    feedbackElement.className =
+      "feedback incorrect";
+
+    feedbackElement.innerHTML =
+      "<strong>Not quite.</strong><br><br>" +
+      question.explanation;
+
+    if (question.level > 1) {
+      currentLevel = question.level - 1;
+    }
+
+  }
+
+  feedbackElement.style.display =
+    "block";
+
+  checkButton.disabled = true;
+
+  hintButton.disabled = true;
+
+  nextArea.style.display =
+    "block";
+
+  updateStats();
+
+  updateAdaptiveMessage();
+
+}
+
+
+function nextQuestion() {
+
+  currentQuestion++;
+
+  if (currentQuestion >= questions.length) {
+
+    finishModule();
+
+    return;
+
+  }
+
+  displayQuestion();
+
+}
+
+
+function finishModule() {
+
+  progressBar.style.width =
+    "100%";
+
+  document.querySelector(
+    ".question-box"
+  ).style.display = "none";
+
+  feedbackElement.style.display =
+    "none";
+
+  nextArea.style.display =
+    "none";
+
+  const percentage =
+    attemptCount === 0
+      ? 0
+      : Math.round(
+          (correctCount / attemptCount) * 100
+        );
+
+  if (percentage >= 80) {
+
+    completionMessage.textContent =
+      "Excellent work. You have demonstrated strong understanding of this Algebraic Expressions module.";
+
+  } else if (percentage >= 50) {
+
+    completionMessage.textContent =
+      "Good progress. You have developed a useful foundation, but there are still areas worth practising.";
+
+  } else {
+
+    completionMessage.textContent =
+      "This skill needs more practice. Algevia would recommend returning to the explanation and worked examples before moving on.";
+
+  }
+
+  completionCard.style.display =
+    "block";
+
+}
+
+
+checkButton.addEventListener(
+  "click",
+  checkAnswer
+);
+
+
+hintButton.addEventListener(
+  "click",
+  showHint
+);
+
+
+nextButton.addEventListener(
+  "click",
+  nextQuestion
+);
+
+
+answerInput.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key === "Enter") {
+
+      checkAnswer();
+
+    }
+
+  }
+);
+
+
+displayQuestion();
+
+</script>
+
+</body>
+</html>
