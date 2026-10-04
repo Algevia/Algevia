@@ -1331,32 +1331,31 @@ function scoreTutorVoice(voice, tutor) {
   const name = (voice.name || "").toLowerCase();
   const lang = (voice.lang || "").toLowerCase();
 
-  if (!/^en-/.test(lang)) return -1000;
+  if (!/^en-/.test(lang)) return -10000;
+
+  const femaleNames =
+    /susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|sara|sarah|emma|female|google uk english female|microsoft.*female/;
+
+  const maleNames =
+    /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|david|male|google uk english male|microsoft.*male/;
+
+  const looksFemale = femaleNames.test(name);
+  const looksMale = maleNames.test(name);
 
   let score = 0;
 
+  // Gender/tutor match must dominate the decision.
+  if (tutor === "female") {
+    if (looksFemale) score += 1000;
+    if (looksMale) score -= 1000;
+  } else {
+    if (looksMale) score += 1000;
+    if (looksFemale) score -= 1000;
+  }
+
+  // Prefer British English when available.
   if (/^en-gb$/i.test(lang)) score += 100;
-  else score += 40;
-
-  const femaleNames =
-    /susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|female/;
-
-  const maleNames =
-    /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|male/;
-
-  if (
-    tutor === "female" &&
-    femaleNames.test(name)
-  ) {
-    score += 50;
-  }
-
-  if (
-    tutor === "male" &&
-    maleNames.test(name)
-  ) {
-    score += 50;
-  }
+  else if (/^en-/i.test(lang)) score += 40;
 
   return score;
 }
@@ -1366,14 +1365,41 @@ function getSelectedVoice() {
 
   if (!voices.length) return null;
 
-  return voices
+  const ranked = voices
+    .filter(function(voice) {
+      return /^en-/i.test(voice.lang || "");
+    })
     .slice()
     .sort(function(a, b) {
       return (
         scoreTutorVoice(b, selectedTutor) -
         scoreTutorVoice(a, selectedTutor)
       );
-    })[0];
+    });
+
+  if (!ranked.length) return null;
+
+  const best = ranked[0];
+  const bestName = (best.name || "").toLowerCase();
+
+  const femalePattern =
+    /susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|sara|sarah|emma|female|google uk english female|microsoft.*female/;
+
+  const malePattern =
+    /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|david|male|google uk english male|microsoft.*male/;
+
+  // If a recognisable tutor voice exists, use it.
+  if (
+    (selectedTutor === "female" && femalePattern.test(bestName)) ||
+    (selectedTutor === "male" && malePattern.test(bestName))
+  ) {
+    return best;
+  }
+
+  // Some browsers do not expose gender in voice metadata.
+  // In that case use the best available English voice and let pitch
+  // provide a small additional distinction.
+  return best;
 }
 
 function makeMathsSpeakable(text) {
@@ -1452,8 +1478,8 @@ function speakText(text) {
   utterance.rate = 0.82;
   utterance.pitch =
     selectedTutor === "female"
-      ? 1.04
-      : 0.96;
+      ? 1.08
+      : 0.92;
   utterance.volume = 1.0;
 
   utterance.onstart = function() {
