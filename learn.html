@@ -270,6 +270,19 @@
   #algeviaLearningControls { order:0; }
   #algeviaMasteryCard { order:3; }
 </style>
+
+<style id="algevia-v6-layout">
+  #algeviaLearningControls { margin-top: 20px; }
+  #algeviaWorkedExamplesCard { margin-top: 20px; }
+  #algeviaWorkedExamples { display:grid; gap:16px; }
+  .algevia-worked-example { background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:18px; }
+  .algevia-worked-example h3 { margin-top:0; }
+  .algevia-question-tutor { margin:20px 0; padding:18px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; }
+  .algevia-question-tutor h3 { margin-top:0; }
+  #studentProgressCard, #algeviaMasteryCard { margin-top:20px; }
+  #algeviaTutorCard .algevia-control-row { display:flex; gap:10px; flex-wrap:wrap; }
+  #algeviaTutorCard .algevia-tutor-choice.selected { outline:3px solid currentColor; font-weight:700; }
+</style>
 </head>
 
 <body>
@@ -285,338 +298,104 @@
 
   <section class="hero">
     <h1>Learn by Yourself</h1>
-
     <h2>GCSE Maths — AQA Higher</h2>
-
-    <p>
-      <strong>Learn Smarter. Achieve More.</strong>
-    </p>
-
-    <p>
-      Algevia teaches you the skill, shows you how it works,
-      lets you try it yourself and adapts what comes next.
-    </p>
+    <p><strong>Learn Smarter. Achieve More.</strong></p>
+    <p>Choose what you want to practise. Algevia will teach the topic, show worked examples, then adapt the questions to your performance.</p>
   </section>
 
-
-  <section class="card learning-profile">
-
-    <h2>Your Learning Profile</h2>
-
-    <p>
-      Your learning journey starts with the areas that need the
-      most attention.
-    </p>
-
-    <p>
-      <strong>Current module:</strong>
-      Algebraic Expressions
-    </p>
-
-    <p>
-      <strong>Learning approach:</strong>
-      Learn by Yourself
-    </p>
-
-  </section>
-
-
-  <section class="card">
-
-    <span class="skill">
-      Algebraic Expressions
-    </span>
-
-    <h2>Step 1 — Understand</h2>
-
-    <p>
-      Algebra uses letters to represent numbers.
-      An algebraic expression can contain numbers, letters and
-      mathematical operations.
-    </p>
-
-    <p>
-      For example:
-    </p>
-
-    <div class="example">
-      <strong>3x + 5x = 8x</strong>
-      <br><br>
-      The terms contain the same variable, <strong>x</strong>,
-      so we can add their coefficients:
-      <br><br>
-      3 + 5 = 8
+  <!-- 1. TOPIC SELECTION -->
+  <section class="algevia-enhanced-card" id="algeviaLearningControls">
+    <h2>Choose What You Want to Practise</h2>
+    <p>Select a topic and subtopic. You choose the area; Algevia chooses the most useful question for your current level.</p>
+    <div class="algevia-grid">
+      <label>Topic
+        <select id="algeviaTopicSelect"></select>
+      </label>
+      <label>Subtopic
+        <select id="algeviaSubtopicSelect"></select>
+      </label>
     </div>
-
-    <p>
-      The key idea is:
-      <strong>only like terms can be collected together.</strong>
-    </p>
-
-    <p>
-      For example:
-    </p>
-
-    <div class="example">
-      <strong>4x + 3x = 7x</strong>
-      <br><br>
-      but
-      <br><br>
-      <strong>4x + 3y</strong>
-      cannot be simplified to 7xy.
+    <div class="algevia-pill-row" id="algeviaSkillPills"></div>
+    <div id="enhancedResumeNote">Your progress is saved automatically. You can leave at any time and continue later.</div>
+    <div class="algevia-control-row">
+      <button id="algeviaStartButton" type="button">Start Practice</button>
+      <button id="algeviaContinueButton" class="secondary" type="button">Continue Learning</button>
+      <button id="algeviaSaveExitButton" class="secondary" type="button">Save &amp; Exit</button>
     </div>
-
   </section>
 
-
-  <section class="card">
-
-    <h2>Step 2 — Worked Example</h2>
-
-    <p>
-      Simplify:
-    </p>
-
-    <div class="example">
-
-      <strong>7x + 3 + 2x + 5</strong>
-
-      <br><br>
-
-      First collect the x terms:
-
-      <br><br>
-
-      7x + 2x = 9x
-
-      <br><br>
-
-      Then collect the numbers:
-
-      <br><br>
-
-      3 + 5 = 8
-
-      <br><br>
-
-      Therefore:
-
-      <br><br>
-
-      <strong>9x + 8</strong>
-
-    </div>
-
-    <p>
-      Notice that we kept the x terms and number terms separate.
-    </p>
-
+  <!-- 2. WORKED EXAMPLES FOR THE SELECTED TOPIC -->
+  <section class="algevia-enhanced-card" id="algeviaWorkedExamplesCard">
+    <h2>Worked Examples</h2>
+    <p id="algeviaWorkedExamplesIntro">Choose a topic above and Algevia will show worked examples before you start the questions.</p>
+    <div id="algeviaWorkedExamples"></div>
   </section>
 
+  <!-- 3. QUESTION -->
+  <section class="card" id="exerciseCard">
+    <h2>Now Try It Yourself</h2>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <p id="questionCounter">Question 1</p>
+    <div class="question" id="question"></div>
 
-  <section class="card">
-
-    <h2>Step 3 — Your Turn</h2>
-
-    <div class="progress">
-      <div
-        class="progress-bar"
-        id="progressBar">
+    <!-- Tutor selection belongs to the question, not elsewhere on the page. -->
+    <div class="algevia-question-tutor" id="algeviaTutorCard">
+      <h3>Your Algevia Tutor</h3>
+      <p>Choose who guides you through this question.</p>
+      <div class="algevia-control-row">
+        <button id="algeviaFemaleTutor" class="algevia-tutor-choice" type="button">👩 Female Tutor</button>
+        <button id="algeviaMaleTutor" class="algevia-tutor-choice" type="button">👨 Male Tutor</button>
       </div>
-    </div>
-
-    <p id="questionCounter">
-      Question 1
-    </p>
-
-    <div
-      class="question"
-      id="question">
+      <p id="algeviaSelectedTutor" style="font-weight:bold">👩 Female Tutor selected</p>
+      <div id="enhancedTutorDialogue">I’m ready. Have a go at the question and I’ll help when you need me.</div>
     </div>
 
     <div class="question-box">
-
-      <input
-        type="text"
-        id="answerInput"
-        placeholder="Type your answer"
-        autocomplete="off"
-      >
-
+      <input type="text" id="answerInput" placeholder="Type your answer" autocomplete="off">
       <br>
-
-      <button
-        id="checkButton"
-        type="button">
-        Check Answer
-      </button>
-
-      <button
-        id="listenButton"
-        class="secondary"
-        type="button">
-        🔊 Listen
-      </button>
-
-      <button
-        id="speakAnswerButton"
-        class="secondary"
-        type="button">
-        🎙️ Speak Answer
-      </button>
-
-      <button
-        id="stopVoiceButton"
-        class="secondary"
-        type="button">
-        ⏹ Stop Voice
-      </button>
-
-      <p
-        id="voiceStatus"
-        style="margin-top:12px; font-weight:bold;">
-        You can type or speak your answer.
-      </p>
-
-      <button
-        id="hintButton"
-        class="secondary"
-        type="button">
-        Show Hint
-      </button>
-
+      <button id="checkButton" type="button">Check Answer</button>
+      <button id="listenButton" class="secondary" type="button">🔊 Speak</button>
+      <button id="speakAnswerButton" class="secondary" type="button">🎙️ Speak Answer</button>
+      <button id="stopVoiceButton" class="secondary" type="button">⏹ Stop</button>
+      <button id="hintButton" class="secondary" type="button">💡 Hint</button>
+      <button id="algeviaTeachButton" class="secondary" type="button">👩‍🏫 Teach me</button>
+      <p id="voiceStatus" style="margin-top:12px;font-weight:bold">You can type or speak your answer.</p>
     </div>
-
-    <div
-      id="hint"
-      class="hint">
+    <div id="hint" class="hint"></div>
+    <div id="feedback" class="feedback"></div>
+    <div id="nextArea" class="next-area">
+      <button id="nextButton" type="button">Next Question</button>
     </div>
-
-    <div
-      id="feedback"
-      class="feedback">
-    </div>
-
-    <div
-      id="nextArea"
-      class="next-area">
-
-      <button
-        id="nextButton"
-        type="button">
-        Next Question
-      </button>
-
-    </div>
-
   </section>
 
-
-  <section class="card">
-
-    <h2>Your Progress</h2>
-
+  <!-- 4. STUDENT PROGRESS -->
+  <section class="card" id="studentProgressCard">
+    <h2>Student Progress</h2>
     <div class="stats">
-
-      <div class="stat">
-        <strong id="correctCount">0</strong>
-        Correct
-      </div>
-
-      <div class="stat">
-        <strong id="attemptCount">0</strong>
-        Attempts
-      </div>
-
-      <div class="stat">
-        <strong id="accuracy">0%</strong>
-        Accuracy
-      </div>
-
+      <div class="stat"><strong id="correctCount">0</strong>Correct</div>
+      <div class="stat"><strong id="attemptCount">0</strong>Attempts</div>
+      <div class="stat"><strong id="accuracy">0%</strong>Accuracy</div>
     </div>
-
-    <p
-      id="adaptiveMessage"
-      style="text-align:center; margin-top:20px; font-weight:bold;">
-      Algevia is learning how you learn.
-    </p>
-
+    <p id="adaptiveMessage" style="text-align:center;margin-top:20px;font-weight:bold">Algevia is learning how you learn.</p>
   </section>
 
+  <!-- 5. STUDENT LEARNING PROGRESS -->
+  <section class="algevia-enhanced-card" id="algeviaMasteryCard">
+    <h2>Student Learning Progress</h2>
+    <div class="stats">
+      <div class="stat"><strong id="enhancedOverallMastery">0%</strong>Overall mastery</div>
+      <div class="stat"><strong id="enhancedSkillsSecure">0</strong>Skills secure</div>
+      <div class="stat"><strong id="enhancedTotalAnswered">0</strong>Questions answered</div>
+    </div>
+    <p id="enhancedProgressText">Algevia will build your personal learning profile as you practise.</p>
+    <p id="enhancedMasteryText">Current skill: Not started</p>
+  </section>
 
-  <section
-    id="completionCard"
-    class="card"
-    style="display:none;">
-
-    <h2>Module Complete</h2>
-
+  <section id="completionCard" class="card" style="display:none">
+    <h2>Progress Saved</h2>
     <p id="completionMessage"></p>
-
-    <p>
-      Algevia will use your performance to decide what you
-      should practise next.
-    </p>
-
-    <a
-      href="education.html"
-      class="button">
-      Back to Education
-    </a>
-
+    <button id="algeviaResumeAfterSave" type="button">Continue Learning</button>
   </section>
-
-
-<!-- =========================================================
-     ALGEVIA ENHANCED LEARNING CONTROLS
-     ========================================================= -->
-<section class="algevia-enhanced-card" id="algeviaLearningControls">
-  <h2>Choose What You Want to Practise</h2>
-  <p>Choose a topic and subtopic. You decide what you want to practise; Algevia decides which question is most useful next.</p>
-  <div class="algevia-grid">
-    <label>Topic
-      <select id="algeviaTopicSelect"></select>
-    </label>
-    <label>Subtopic
-      <select id="algeviaSubtopicSelect"></select>
-    </label>
-  </div>
-  <div class="algevia-pill-row" id="algeviaSkillPills"></div>
-  <div id="enhancedResumeNote">Your progress is saved automatically. You can leave an exercise at any time and continue later.</div>
-  <div class="algevia-control-row">
-    <button id="algeviaStartButton" type="button">Start Practice</button>
-    <button id="algeviaContinueButton" class="secondary" type="button">Continue Learning</button>
-    <button id="algeviaSaveExitButton" class="secondary" type="button">Save &amp; Exit</button>
-  </div>
-</section>
-
-<section class="algevia-enhanced-card" id="algeviaTutorCard">
-  <h2>Your Algevia Tutor</h2>
-  <p>Choose your tutor. Female Tutor is selected by default. The student sees only these two choices.</p>
-  <div class="algevia-control-row">
-    <button id="algeviaFemaleTutor" class="algevia-tutor-choice" type="button">👩 Female Tutor</button>
-    <button id="algeviaMaleTutor" class="algevia-tutor-choice" type="button">👨 Male Tutor</button>
-  </div>
-  <p id="algeviaSelectedTutor" style="font-weight:bold">👩 Female Tutor selected</p>
-  <div id="enhancedTutorDialogue">I’m ready when you are. Choose a topic, then we’ll work through the questions together.</div>
-  <div class="algevia-control-row" aria-label="Tutor controls">
-    <button id="algeviaSpeakButton" class="secondary" type="button">🔊 Speak</button>
-    <button id="algeviaStopButton" class="secondary" type="button">⏹ Stop</button>
-    <button id="algeviaTeachButton" class="secondary" type="button">👩‍🏫 Teach me</button>
-    <button id="algeviaHintButton" class="secondary" type="button">💡 Hint</button>
-  </div>
-</section>
-
-<section class="algevia-enhanced-card" id="algeviaMasteryCard">
-  <h2>Your Learning Progress</h2>
-  <div class="stats">
-    <div class="stat"><strong id="enhancedOverallMastery">0%</strong>Overall mastery</div>
-    <div class="stat"><strong id="enhancedSkillsSecure">0</strong>Skills secure</div>
-    <div class="stat"><strong id="enhancedTotalAnswered">0</strong>Questions answered</div>
-  </div>
-  <p id="enhancedProgressText">Algevia will build your learning profile as you practise.</p>
-  <p id="enhancedMasteryText">Current skill: Not started</p>
-</section>
 
 </main>
 
@@ -1813,6 +1592,49 @@ stopVoiceButton.addEventListener(
    ========================================================= */
 (function(){
   'use strict';
+  // Topic-specific worked examples appear before the first question.
+  const workedExamples = {
+    "Algebra": [
+      {title:"Collecting like terms", body:"Simplify 7x + 3 + 2x + 5. Collect the x terms: 7x + 2x = 9x. Collect the numbers: 3 + 5 = 8. Answer: <strong>9x + 8</strong>."},
+      {title:"Expanding brackets", body:"Expand 3(x + 4). Multiply 3 by both terms: 3×x + 3×4. Answer: <strong>3x + 12</strong>."}
+    ],
+    "Expanding & Factorising": [
+      {title:"Single brackets", body:"Expand 4(x + 3). Multiply 4 by x and by 3: 4x + 12. Answer: <strong>4x + 12</strong>."},
+      {title:"Factorising", body:"Factorise 6x + 12. The highest common factor is 6, so 6x + 12 = <strong>6(x + 2)</strong>."}
+    ],
+    "Equations": [
+      {title:"Linear equation", body:"Solve 3x + 5 = 17. Subtract 5: 3x = 12. Divide by 3: <strong>x = 4</strong>."},
+      {title:"Checking", body:"Substitute x = 4 back into 3x + 5: 3(4) + 5 = 17, so the answer is correct."}
+    ],
+    "Sequences": [
+      {title:"Finding the nth term", body:"For 5, 8, 11, 14, the common difference is 3. Start with 3n, then adjust to make the first term 5: <strong>3n + 2</strong>."},
+      {title:"Checking a rule", body:"Put n = 4 into 3n + 2: 3(4) + 2 = <strong>14</strong>, matching the fourth term."}
+    ],
+    "Indices": [
+      {title:"Multiplying powers", body:"When multiplying powers with the same base, add the indices: x² × x³ = <strong>x⁵</strong>."},
+      {title:"Power of a power", body:"When raising a power to another power, multiply the indices: (x²)³ = <strong>x⁶</strong>."}
+    ],
+    "Inequalities": [
+      {title:"Solving an inequality", body:"Solve 2x + 3 > 9. Subtract 3: 2x > 6. Divide by 2: <strong>x > 3</strong>."},
+      {title:"Reversing the sign", body:"If you multiply or divide an inequality by a negative number, reverse the inequality sign."}
+    ],
+    "Rearranging Formulae": [
+      {title:"Changing the subject", body:"From y = 3x + 5, subtract 5: y − 5 = 3x. Divide by 3: <strong>x = (y − 5)/3</strong>."},
+      {title:"Keep operations balanced", body:"Whatever operation you perform on one side of an equation, perform the same operation on the other side."}
+    ]
+  };
+
+  function renderWorkedExamples(topic) {
+    const box=$('algeviaWorkedExamples');
+    const intro=$('algeviaWorkedExamplesIntro');
+    if(!box) return;
+    const examples=workedExamples[topic] || [
+      {title:"Worked example",body:"Choose a subtopic above. Algevia will use examples matched to the selected area before you practise."},
+      {title:"What to look for",body:"Pay attention to the method, the mathematical steps and why each step works. Then try the question yourself."}
+    ];
+    if(intro) intro.textContent=`Here are worked examples for ${topic}. Study the method before attempting the question.`;
+    box.innerHTML=examples.map((e,i)=>`<div class="algevia-worked-example"><h3>Example ${i+1}: ${e.title}</h3><p>${e.body}</p></div>`).join('');
+  }
   const KEY='algeviaFullLearningStateV3';
   const $=id=>document.getElementById(id);
   const originalQuestions=Array.isArray(window.questions)?window.questions:[];
@@ -1886,8 +1708,8 @@ stopVoiceButton.addEventListener(
   const label=m=>m>=90?'Mastered':m>=75?'Strong':m>=55?'Secure':m>=30?'Developing':'Introduced';
   const renderProfile=()=>{const vals=Object.values(state.skills);const avg=vals.length?Math.round(vals.reduce((a,s)=>a+s.mastery,0)/vals.length):0;if($('enhancedOverallMastery'))$('enhancedOverallMastery').textContent=avg+'%';if($('enhancedSkillsSecure'))$('enhancedSkillsSecure').textContent=vals.filter(s=>s.mastery>=55).length;if($('enhancedTotalAnswered'))$('enhancedTotalAnswered').textContent=vals.reduce((a,s)=>a+s.attempts,0);if($('enhancedProgressText'))$('enhancedProgressText').textContent=vals.length?'Algevia is tracking your strengths, weaknesses, recent errors and skills due for review.':'Start practising and Algevia will build your personal learning profile.';};
   const saveContext=()=>{state.lastTopic=$('algeviaTopicSelect').value;state.lastSubtopic=$('algeviaSubtopicSelect').value;if(current)state.lastQuestionId=current.id;save();};
-  function populate(){const t=$('algeviaTopicSelect'),s=$('algeviaSubtopicSelect');if(!t||!s)return;t.innerHTML=topicNames().map(x=>'<option>'+x+'</option>').join('');t.value=topicNames().includes(state.lastTopic)?state.lastTopic:topicNames()[0];s.innerHTML=subs(t.value).map(x=>'<option>'+x+'</option>').join('');s.value=subs(t.value).includes(state.lastSubtopic)?state.lastSubtopic:subs(t.value)[0];renderSubSkills();}
-  function renderSubSkills(){const t=$('algeviaTopicSelect').value,s=$('algeviaSubtopicSelect').value;const rows=bank.filter(q=>q.topic===t&&q.subtopic===s).map(q=>q.skill).filter((v,i,a)=>a.indexOf(v)===i);$('algeviaSkillPills').innerHTML=rows.map(x=>{const q=bank.find(z=>z.skill===x);const st=getSkill(q);return '<span class="algevia-pill">'+x+': '+label(st.mastery)+'</span>';}).join('');}
+  function populate(){const t=$('algeviaTopicSelect'),s=$('algeviaSubtopicSelect');if(!t||!s)return;t.innerHTML=topicNames().map(x=>'<option>'+x+'</option>').join('');t.value=topicNames().includes(state.lastTopic)?state.lastTopic:topicNames()[0];s.innerHTML=subs(t.value).map(x=>'<option>'+x+'</option>').join('');s.value=subs(t.value).includes(state.lastSubtopic)?state.lastSubtopic:subs(t.value)[0];renderSubSkills();renderWorkedExamples(t.value);}
+  function renderSubSkills(){const t=$('algeviaTopicSelect').value,s=$('algeviaSubtopicSelect').value;renderWorkedExamples(t);const rows=bank.filter(q=>q.topic===t&&q.subtopic===s).map(q=>q.skill).filter((v,i,a)=>a.indexOf(v)===i);$('algeviaSkillPills').innerHTML=rows.map(x=>{const q=bank.find(z=>z.skill===x);const st=getSkill(q);return '<span class="algevia-pill">'+x+': '+label(st.mastery)+'</span>';}).join('');}
   function score(q){const s=getSkill(q),now=Date.now();let v=(100-s.mastery)*2+s.errors*10+(s.reviewDue&&s.reviewDue<=now?70:0);if(s.attempts===0)v+=35;if(session.used.includes(q.id))v-=60;v+=(q.difficulty>=4&&s.mastery<55?12:0);v+=Math.random()*8;return v;}
   function choose(t,s){const pool=bank.filter(q=>q.topic===t&&q.subtopic===s);if(!pool.length)return null;return pool.slice().sort((a,b)=>score(b)-score(a))[0];}
   function tutorText(kind,q){const female=tutor==='female';const n=(arr)=>arr[Math.floor(Math.random()*arr.length)];if(kind==='correct')return n(['Brilliant! You spotted that straight away.','Yes — exactly right. Nice work.','That’s it. You handled that really well.','Perfect. You’ve got the idea.']);if(kind==='wrong')return n(['Not quite — but you’re close. Let’s look at the part that needs changing.','Nearly. There’s one step to fix, so let’s slow it down and look at it together.','Good attempt. I think we’ve found the bit that’s causing trouble. Let’s focus on that.']);if(kind==='repeat')return 'I’ve noticed this skill is proving a little tricky. Let’s pause and practise the key idea before we move on.';if(kind==='hint')return female?'Okay, let’s have a look at this together.':'Alright, let’s have a look at this together.';return female?'Okay, let’s work through this one together.':'Alright, let’s work through this one together.';}
@@ -1930,7 +1752,9 @@ stopVoiceButton.addEventListener(
     if(subtopic)subtopic.addEventListener('change',function(){renderSubSkills();start();});
     $('algeviaFemaleTutor').addEventListener('click',()=>setTutor('female'));
     $('algeviaMaleTutor').addEventListener('click',()=>setTutor('male'));
-    $('algeviaStartButton').addEventListener('click',start);
+    $('algeviaTopicSelect').addEventListener('change',()=>{const t=$('algeviaTopicSelect').value;$('algeviaSubtopicSelect').innerHTML=subs(t).map(x=>'<option>'+x+'</option>').join('');renderSubSkills();renderWorkedExamples(t);});
+  $('algeviaSubtopicSelect').addEventListener('change',()=>renderWorkedExamples($('algeviaTopicSelect').value));
+  $('algeviaStartButton').addEventListener('click',start);
     $('algeviaContinueButton').addEventListener('click',continueLearning);
     $('algeviaSaveExitButton').addEventListener('click',saveExit);
     $('algeviaSpeakButton').addEventListener('click',speakCurrent);
