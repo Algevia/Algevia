@@ -542,7 +542,7 @@
 
 
 <script>
-
+// Algevia Learn by Yourself — clean adaptive tutor engine
 const questions = [
 
   {
@@ -721,430 +721,249 @@ const questions = [
 let currentQuestion = 0;
 let correctCount = 0;
 let attemptCount = 0;
-
-let currentLevel = 1;
 let currentHintStep = 0;
+let selectedTutor = "female"; // Female Tutor is always the default.
+let questionAttempts = 0;
+let hintUsed = 0;
+let sessionHistory = [];
+let recognition = null;
+let isListening = false;
 
-// Live tutor memory: the tutor adapts to each student's behaviour.
-const tutorState = questions.map(() => ({
-  attempts: 0, wrongAttempts: 0, correctAttempts: 0, hintsUsed: 0,
-  lastResult: null, lastResponseTime: null, mastered: false
-}));
-let questionStartedAt = Date.now();
-let sessionStreak = 0;
+const $ = id => document.getElementById(id);
+const questionElement = $("question");
+const answerInput = $("answerInput");
+const checkButton = $("checkButton");
+const hintButton = $("hintButton");
+const hintElement = $("hint");
+const feedbackElement = $("feedback");
+const nextArea = $("nextArea");
+const nextButton = $("nextButton");
+const questionCounter = $("questionCounter");
+const progressBar = $("progressBar");
+const correctCountElement = $("correctCount");
+const attemptCountElement = $("attemptCount");
+const accuracyElement = $("accuracy");
+const adaptiveMessage = $("adaptiveMessage");
+const completionCard = $("completionCard");
+const completionMessage = $("completionMessage");
+const listenButton = $("listenButton");
+const speakAnswerButton = $("speakAnswerButton");
+const stopVoiceButton = $("stopVoiceButton");
+const femaleTutorButton = $("femaleTutorButton");
+const maleTutorButton = $("maleTutorButton");
+const selectedTutorLabel = $("selectedTutor");
+const voiceStatus = $("voiceStatus");
 
-const femaleOpeners = [
-  "Have a look at this part.", "You're close — look at this bit.",
-  "Here's a clue to help you spot it.", "Think about what you already know here.",
-  "Let's see if you can spot the pattern.", "Try looking at the terms a little more closely.",
-  "You're on the right track. Now focus on this."
-];
-const maleOpeners = [
-  "Have another look at this part.", "You're close — focus on this bit.",
-  "Here's a clue to help you spot it.", "Think about what you already know here.",
-  "See if you can spot the pattern.", "Look closely at the terms here.",
-  "You're on the right track. Now focus on this."
-];
-const encouragements = {
-  female:{firstCorrect:["Yes — you've got it!","That's it. Nicely done!","Exactly right. Great job!","Brilliant — you spotted that well."],repeatCorrect:["You're getting the hang of this.","Nice work — that was confident.","You're building some good momentum now.","Excellent. You're starting to see the pattern."],corrected:["Yes! That's much better.","There you go — you found it.","Exactly. The second look did the trick.","Yes, that's the idea."],gentle:["No worries — mistakes are part of learning.","That's okay. Let's use that mistake to make the idea clearer.","You're learning it, so let's work out what got in the way.","No problem. We'll figure out the tricky part together."]},
-  male:{firstCorrect:["Yes — you've got it!","That's it. Nicely done!","Exactly right. Great work!","Brilliant — good spotting."],repeatCorrect:["You're getting the hang of this.","Nice work — that was confident.","You're building good momentum.","Excellent. You're seeing the pattern."],corrected:["Yes! That's much better.","There you go — you've got it.","Exactly. That second look helped.","Yes, that's the idea."],gentle:["No worries — mistakes are part of learning.","That's okay. Let's use that mistake to make the idea clearer.","You're learning it, so let's work out what got in the way.","No problem. We'll figure out the tricky part together."]}
-};
-function pick(list){ return list[Math.floor(Math.random()*list.length)]; }
-function buildAdaptiveHint(raw, index, student){
-  const opener=pick(selectedTutor==='female'?femaleOpeners:maleOpeners);
-  if(index===0) return opener+' '+raw;
-  if(student.wrongAttempts>=2) return opener+' '+raw;
-  if(index===1) return 'Good start. '+raw;
-  return 'Let me give you a little more to work with. '+raw;
-}
-function buildTutorResponse(correct, student, responseTime){
-  const b=encouragements[selectedTutor];
-  if(correct){
-    if(student.wrongAttempts>0) return pick(b.corrected);
-    if(responseTime<7000 || sessionStreak>=2) return pick(b.repeatCorrect);
-    return pick(b.firstCorrect);
-  }
-  if(student.wrongAttempts>=2) return "I can see what is making this one tricky. Let's slow it down and look at the key idea together.";
-  return pick(b.gentle);
-}
-function buildNextStepMessage(student, correct){
-  if(!correct && student.wrongAttempts>=2) return "I've noticed this part is proving tricky, so the next question will give you another chance to practise the same idea.";
-  if(correct && student.hintsUsed===0 && student.attempts===1) return "You solved that independently. I can stretch you a little on the next question.";
-  if(correct && sessionStreak>=2) return "You're building a good run. The next question can be a little more challenging.";
-  return correct ? "Good progress. Let's see what you can do with the next one." : "Let's use the next question to reinforce that idea.";
-}
-
-
-const questionElement =
-  document.getElementById("question");
-
-const answerInput =
-  document.getElementById("answerInput");
-
-const checkButton =
-  document.getElementById("checkButton");
-
-const hintButton =
-  document.getElementById("hintButton");
-
-const hintElement =
-  document.getElementById("hint");
-
-const feedbackElement =
-  document.getElementById("feedback");
-
-const nextArea =
-  document.getElementById("nextArea");
-
-const nextButton =
-  document.getElementById("nextButton");
-
-const questionCounter =
-  document.getElementById("questionCounter");
-
-const progressBar =
-  document.getElementById("progressBar");
-
-const correctCountElement =
-  document.getElementById("correctCount");
-
-const attemptCountElement =
-  document.getElementById("attemptCount");
-
-const accuracyElement =
-  document.getElementById("accuracy");
-
-const adaptiveMessage =
-  document.getElementById("adaptiveMessage");
-
-const completionCard =
-  document.getElementById("completionCard");
-
-const completionMessage =
-  document.getElementById("completionMessage");
-
-
-function normaliseAnswer(value) {
-
-  return value
-    .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/−/g, "-");
-
-}
-
-
+function setVoiceStatus(message) { if (voiceStatus) voiceStatus.textContent = message; }
+function getCurrentQuestion() { return questions[currentQuestion]; }
+function normaliseAnswer(value) { return String(value).toLowerCase().replace(/\s+/g, "").replace(/−/g, "-"); }
 function isCorrect(userAnswer, acceptedAnswers) {
-
-  const normalisedUserAnswer =
-    normaliseAnswer(userAnswer);
-
-  return acceptedAnswers.some(answer =>
-    normaliseAnswer(answer) === normalisedUserAnswer
-  );
-
+  const value = normaliseAnswer(userAnswer);
+  return acceptedAnswers.some(answer => normaliseAnswer(answer) === value);
 }
 
-
-function getCurrentQuestion() {
-
-  return questions[currentQuestion];
-
+function updateTutorButtons() {
+  [femaleTutorButton, maleTutorButton].forEach(btn => {
+    if (!btn) return;
+    btn.style.fontWeight = "bold";
+    btn.style.opacity = "0.72";
+    btn.style.border = "2px solid transparent";
+  });
+  const active = selectedTutor === "female" ? femaleTutorButton : maleTutorButton;
+  if (active) { active.style.opacity = "1"; active.style.border = "2px solid currentColor"; }
+  if (selectedTutorLabel) selectedTutorLabel.textContent = selectedTutor === "female" ? "👩 Female Tutor selected" : "👨 Male Tutor selected";
 }
 
+function availableVoices() {
+  return "speechSynthesis" in window ? (window.speechSynthesis.getVoices() || []) : [];
+}
+function chooseVoice(gender) {
+  const voices = availableVoices().filter(v => /^en(-|_)/i.test(v.lang || ""));
+  if (!voices.length) return null;
+  const female = /susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|female/i;
+  const male = /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|male/i;
+  const names = gender === "female" ? female : male;
+  return voices.slice().sort((a,b) => {
+    const score = v => (v.lang.toLowerCase() === "en-gb" ? 100 : 40) + (names.test(v.name) ? 80 : 0);
+    return score(b) - score(a);
+  })[0];
+}
+function mathsSpeakable(text) {
+  return String(text).replace(/(\d+)x\b/gi, "$1 x").replace(/\+/g," plus ").replace(/=/g," equals ").replace(/\*/g," times ").replace(/−/g," minus ").replace(/\s+/g," ").trim();
+}
+
+const tutorPhrases = {
+  female: {
+    question: ["Alright, have a look at this one.", "Okay, let's see what you can do with this one.", "Here's your next one. Take a moment and work it through.", "Let's have a go at this together."] ,
+    hint: ["Here's a little nudge.", "Have a look at this part first.", "This is the bit I'd focus on.", "Try this idea and see where it takes you."],
+    correct: ["Yes, that's it! Nice work.", "Exactly right. You spotted it.", "Brilliant — that's correct.", "Well done. You've got that one."] ,
+    wrong: ["Not quite — and that's okay. Let's look at what happened.", "You're close. Let's find the part that's causing the problem.", "That's not the answer yet, but we can work it out together.", "Good attempt. Let's slow it down and check the key step."]
+  },
+  male: {
+    question: ["Alright, have a look at this one.", "Okay, let's see how you get on with this.", "Here's the next one. Take your time.", "Let's work this one out together."] ,
+    hint: ["Here's a useful clue.", "Focus on this part first.", "Try looking at it this way.", "This should help you get started."] ,
+    correct: ["That's right. Nicely done.", "Exactly. You've got it.", "Good work — that's correct.", "Yes, that's the one."] ,
+    wrong: ["Not quite. Let's see where it went off track.", "You're close. Let's check the important step.", "Good try. Let's work through the tricky part.", "That's not quite there yet, but we can fix it."]
+  }
+};
+function phrase(type) { const list = tutorPhrases[selectedTutor][type]; return list[(currentQuestion + questionAttempts + hintUsed) % list.length]; }
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) { setVoiceStatus("Voice playback is not available in this browser. You can still learn using the written tutor guidance."); return; }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(mathsSpeakable(text));
+  const voice = chooseVoice(selectedTutor);
+  if (voice) { utterance.voice = voice; utterance.lang = voice.lang; } else utterance.lang = "en-GB";
+  utterance.rate = 0.88;
+  utterance.pitch = selectedTutor === "female" ? 1.04 : 0.96;
+  utterance.volume = 1;
+  utterance.onstart = () => setVoiceStatus("🔊 Algevia is speaking…");
+  utterance.onend = () => setVoiceStatus("You can replay the tutor or continue.");
+  utterance.onerror = () => setVoiceStatus("The browser could not play the tutor voice. The written guidance is still available.");
+  window.speechSynthesis.speak(utterance);
+}
+function speakQuestion() {
+  const q = getCurrentQuestion();
+  speak(`${phrase("question")} ${q.question}. Take your time, then type your answer or use Speak Answer.`);
+}
+function speakHint(text) { speak(`${phrase("hint")} ${text}`); }
+function speakFeedback(text, correct) { speak(`${phrase(correct ? "correct" : "wrong")} ${text}`); }
 
 function displayQuestion() {
-
-  const question =
-    getCurrentQuestion();
-
-  questionElement.textContent =
-    question.question;
-
-  questionCounter.textContent =
-    "Question " +
-    (currentQuestion + 1) +
-    " of " +
-    questions.length;
-
-  progressBar.style.width =
-    ((currentQuestion / questions.length) * 100) +
-    "%";
-
+  const q = getCurrentQuestion();
+  questionElement.textContent = q.question;
+  questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+  progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
   answerInput.value = "";
-
   feedbackElement.style.display = "none";
-
-  currentHintStep = 0;
-
-  hintElement.textContent = "";
   hintElement.style.display = "none";
-
+  hintElement.textContent = "";
   nextArea.style.display = "none";
-
   checkButton.disabled = false;
-
   hintButton.disabled = false;
-
+  currentHintStep = 0;
+  questionAttempts = 0;
+  hintUsed = 0;
   answerInput.focus();
-
-}
-
-
-function showHint() {
-  const question=getCurrentQuestion();
-  const hints=Array.isArray(question.hints)?question.hints:[];
-  if(!hints.length) return;
-  const student=tutorState[currentQuestion];
-  const index=Math.min(student.hintsUsed,hints.length-1);
-  const text=buildAdaptiveHint(hints[index],index,student);
-  student.hintsUsed++;
-  hintElement.textContent=text;
-  hintElement.style.display='block';
-  speakTutor(text,'hint');
 }
 
 function updateStats() {
-
-  correctCountElement.textContent =
-    correctCount;
-
-  attemptCountElement.textContent =
-    attemptCount;
-
-  const percentage =
-    attemptCount === 0
-      ? 0
-      : Math.round(
-          (correctCount / attemptCount) * 100
-        );
-
-  accuracyElement.textContent =
-    percentage + "%";
-
+  correctCountElement.textContent = correctCount;
+  attemptCountElement.textContent = attemptCount;
+  accuracyElement.textContent = attemptCount ? `${Math.round(correctCount / attemptCount * 100)}%` : "0%";
 }
-
-
 function updateAdaptiveMessage() {
-
-  if (attemptCount < 2) {
-
-    adaptiveMessage.textContent =
-      "Algevia is learning how you learn.";
-
-    return;
-
-  }
-
-  const accuracy =
-    correctCount / attemptCount;
-
-  if (accuracy >= 0.8) {
-
-    adaptiveMessage.textContent =
-      "You're showing strong understanding. Algevia will increase the challenge.";
-
-  } else if (accuracy >= 0.5) {
-
-    adaptiveMessage.textContent =
-      "You're developing this skill. Algevia will keep building your understanding.";
-
-  } else {
-
-    adaptiveMessage.textContent =
-      "Let's strengthen the foundations before increasing the difficulty.";
-
-  }
-
+  if (attemptCount < 2) { adaptiveMessage.textContent = "Algevia is learning how you learn."; return; }
+  const accuracy = correctCount / attemptCount;
+  adaptiveMessage.textContent = accuracy >= .8 ? "You're showing strong understanding. Algevia will increase the challenge." : accuracy >= .5 ? "You're building the skill. Algevia will give you support where you need it." : "Let's strengthen the foundations before increasing the difficulty.";
 }
 
+function showHint() {
+  const q = getCurrentQuestion();
+  if (!q.hints || !q.hints.length) return;
+  const index = Math.min(currentHintStep, q.hints.length - 1);
+  const text = q.hints[index];
+  hintElement.textContent = text;
+  hintElement.style.display = "block";
+  hintUsed++;
+  speakHint(text);
+  if (currentHintStep < q.hints.length - 1) currentHintStep++;
+}
 
 function checkAnswer() {
-  const userAnswer=answerInput.value.trim();
-  if(!userAnswer){
-    feedbackElement.className='feedback incorrect';
-    feedbackElement.textContent='Have a go first — type or say your answer, and we'll check it together.';
-    feedbackElement.style.display='block';
-    speakTutor('Have a go first. Type or say your answer, and we'll check it together.','prompt');
+  const userAnswer = answerInput.value.trim();
+  if (!userAnswer) {
+    feedbackElement.className = "feedback incorrect";
+    feedbackElement.textContent = "Have a go first — type an answer and I'll check it with you.";
+    feedbackElement.style.display = "block";
     return;
   }
-  const question=getCurrentQuestion();
-  const student=tutorState[currentQuestion];
-  const responseTime=Date.now()-questionStartedAt;
-  student.lastResponseTime=responseTime; student.attempts++; attemptCount++;
-  const correct=isCorrect(userAnswer,question.answers);
-  if(correct){
-    correctCount++; student.correctAttempts++; student.lastResult='correct'; student.mastered=student.hintsUsed===0||student.wrongAttempts===0; sessionStreak++;
-    feedbackElement.className='feedback correct';
-    feedbackElement.innerHTML='<strong>'+buildTutorResponse(true,student,responseTime)+'</strong><br><br>'+question.explanation;
-    if(question.level<5 && student.wrongAttempts===0) currentLevel=Math.min(5,question.level+1);
+  const q = getCurrentQuestion();
+  questionAttempts++;
+  attemptCount++;
+  const correct = isCorrect(userAnswer, q.answers);
+  if (correct) correctCount++;
+  sessionHistory.push({ question: q.question, correct, attempts: questionAttempts, hints: hintUsed, level: q.level });
+  feedbackElement.className = `feedback ${correct ? "correct" : "incorrect"}`;
+  if (correct) {
+    let message = hintUsed ? "Yes! The hint helped you spot it." : "Yes! That's exactly right.";
+    if (questionAttempts === 1 && hintUsed === 0) message += " You're ready for the next challenge.";
+    feedbackElement.innerHTML = `<strong>${message}</strong><br><br>${q.explanation}`;
+    speakFeedback(`${message} ${q.explanation}`, true);
+    checkButton.disabled = true;
+    hintButton.disabled = true;
+    nextArea.style.display = "block";
   } else {
-    student.wrongAttempts++; student.lastResult='incorrect'; sessionStreak=0;
-    feedbackElement.className='feedback incorrect';
-    feedbackElement.innerHTML='<strong>'+buildTutorResponse(false,student,responseTime)+'</strong><br><br>'+question.explanation;
-    if(question.level>1) currentLevel=Math.max(1,question.level-1);
+    let message;
+    if (questionAttempts === 1) message = "Not quite — but you're close. Look at the terms and check which ones can be combined.";
+    else if (questionAttempts === 2) message = "Let's pause here. I think we've found the part that's making this question tricky.";
+    else message = "I've noticed this is a sticking point, so let's focus on the key idea rather than rushing to the answer.";
+    feedbackElement.innerHTML = `<strong>${message}</strong><br><br>${q.explanation}`;
+    speakFeedback(`${message} ${q.explanation}`, false);
+    if (questionAttempts >= 2) showHint();
   }
-  feedbackElement.style.display='block';
-  speakTutor(buildTutorResponse(correct,student,responseTime)+' '+question.explanation+' '+buildNextStepMessage(student,correct),correct?'correct':'incorrect');
-  checkButton.disabled=true; hintButton.disabled=true; nextArea.style.display='block';
-  updateStats(); updateAdaptiveMessage();
+  updateStats();
+  updateAdaptiveMessage();
 }
 
 function nextQuestion() {
-
-  currentQuestion++;
-
-  if (currentQuestion >= questions.length) {
-
-    finishModule();
-
+  if (currentQuestion >= questions.length - 1) {
+    progressBar.style.width = "100%";
+    completionCard.style.display = "block";
+    completionMessage.textContent = `You completed all ${questions.length} questions with ${correctCount} correct answers from ${attemptCount} attempts. Algevia will use this session to guide what you practise next.`;
+    nextArea.style.display = "none";
     return;
-
   }
-
+  currentQuestion++;
   displayQuestion();
-
 }
 
-
-function finishModule() {
-
-  progressBar.style.width =
-    "100%";
-
-  document.querySelector(
-    ".question-box"
-  ).style.display = "none";
-
-  feedbackElement.style.display =
-    "none";
-
-  nextArea.style.display =
-    "none";
-
-  const percentage =
-    attemptCount === 0
-      ? 0
-      : Math.round(
-          (correctCount / attemptCount) * 100
-        );
-
-  if (percentage >= 80) {
-
-    completionMessage.textContent =
-      "Excellent work. You have demonstrated strong understanding of this Algebraic Expressions module.";
-
-  } else if (percentage >= 50) {
-
-    completionMessage.textContent =
-      "Good progress. You have developed a useful foundation, but there are still areas worth practising.";
-
-  } else {
-
-    completionMessage.textContent =
-      "This skill needs more practice. Algevia would recommend returning to the explanation and worked examples before moving on.";
-
-  }
-
-  completionCard.style.display =
-    "block";
-
+function setTutor(tutor) {
+  selectedTutor = tutor;
+  updateTutorButtons();
+  setVoiceStatus(tutor === "female" ? "Female Tutor selected. Press Listen to hear her." : "Male Tutor selected. Press Listen to hear him.");
 }
 
+femaleTutorButton.addEventListener("click", () => setTutor("female"));
+maleTutorButton.addEventListener("click", () => setTutor("male"));
+checkButton.addEventListener("click", checkAnswer);
+hintButton.addEventListener("click", showHint);
+nextButton.addEventListener("click", nextQuestion);
+listenButton.addEventListener("click", speakQuestion);
+stopVoiceButton.addEventListener("click", () => { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); if (recognition) { try { recognition.stop(); } catch(e){} } setVoiceStatus("Voice stopped."); });
+answerInput.addEventListener("keydown", e => { if (e.key === "Enter") checkAnswer(); });
 
-checkButton.addEventListener(
-  "click",
-  checkAnswer
-);
-
-
-hintButton.addEventListener(
-  "click",
-  showHint
-);
-
-
-nextButton.addEventListener(
-  "click",
-  nextQuestion
-);
-
-
-answerInput.addEventListener(
-  "keydown",
-  function(event) {
-
-    if (event.key === "Enter") {
-
-      checkAnswer();
-
-    }
-
-  }
-);
-
-
-
-/* =========================================================
-   ALGEVIA ADAPTIVE TUTOR ENGINE
-   Only two student-facing choices: Female Tutor / Male Tutor.
-   ========================================================= */
-const listenButton=document.getElementById('listenButton');
-const speakAnswerButton=document.getElementById('speakAnswerButton');
-const stopVoiceButton=document.getElementById('stopVoiceButton');
-const voiceStatus=document.getElementById('voiceStatus');
-const femaleTutorButton=document.getElementById('femaleTutorButton');
-const maleTutorButton=document.getElementById('maleTutorButton');
-const selectedTutorLabel=document.getElementById('selectedTutor');
-const SpeechRecognitionAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
-let recognition=null; let isListening=false;
-let selectedTutor=localStorage.getItem('algeviaTutorVoice')||'female';
-function setVoiceStatus(m){if(voiceStatus)voiceStatus.textContent=m;}
-function updateTutorButtons(){
-  if(femaleTutorButton){femaleTutorButton.style.fontWeight=selectedTutor==='female'?'bold':'normal';femaleTutorButton.style.border=selectedTutor==='female'?'2px solid currentColor':'';femaleTutorButton.setAttribute('aria-pressed',selectedTutor==='female');}
-  if(maleTutorButton){maleTutorButton.style.fontWeight=selectedTutor==='male'?'bold':'normal';maleTutorButton.style.border=selectedTutor==='male'?'2px solid currentColor':'';maleTutorButton.setAttribute('aria-pressed',selectedTutor==='male');}
-  if(selectedTutorLabel)selectedTutorLabel.textContent=selectedTutor==='female'?'👩 Female Tutor selected':'👨 Male Tutor selected';
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+function mathsSpeechToText(text) {
+  let v = text.toLowerCase().trim();
+  const map = [[/\bminus\b/g,"-"],[/\bnegative\b/g,"-"],[/\bplus\b/g,"+"],[/\btimes\b/g,"*"],[/\bmultiplied by\b/g,"*"],[/\bdivided by\b/g,"/"],[/\bequals\b/g,"="],[/\bzero\b/g,"0"],[/\bone\b/g,"1"],[/\btwo\b/g,"2"],[/\bthree\b/g,"3"],[/\bfour\b/g,"4"],[/\bfive\b/g,"5"],[/\bsix\b/g,"6"],[/\bseven\b/g,"7"],[/\beight\b/g,"8"],[/\bnine\b/g,"9"],[/\bten\b/g,"10"],[/\btwenty\b/g,"20"],[/\bthirty\b/g,"30"],[/\bforty\b/g,"40"],[/\bfifty\b/g,"50"]];
+  map.forEach(([a,b]) => v=v.replace(a,b));
+  return v.replace(/(\d)\s*x\b/g,"$1x").replace(/[?.,]+$/g,"").trim();
 }
-function setTutorVoice(tutor){selectedTutor=tutor;localStorage.setItem('algeviaTutorVoice',tutor);if('speechSynthesis'in window)window.speechSynthesis.cancel();updateTutorButtons();setVoiceStatus(tutor==='female'?'Female Tutor selected. I'll adapt my teaching to you.':'Male Tutor selected. I'll adapt my teaching to you.');}
-femaleTutorButton?.addEventListener('click',()=>setTutorVoice('female')); maleTutorButton?.addEventListener('click',()=>setTutorVoice('male')); updateTutorButtons();
-const femaleVoiceNames=['samantha','karen','moira','fiona','kate','hazel','susan','serena','victoria','aria','ava','jenny','zira','sara','sarah','emma','libby','sonia','tessa','veena','female'];
-const maleVoiceNames=['daniel','george','oliver','ryan','alex','arthur','fred','guy','james','thomas','william','david','mark','matthew','male'];
-function getAvailableVoices(){return 'speechSynthesis'in window?window.speechSynthesis.getVoices()||[]:[];}
-function voiceGenderScore(name,tutor){const n=(name||'').toLowerCase(),list=tutor==='female'?femaleVoiceNames:maleVoiceNames;for(let i=0;i<list.length;i++)if(n.includes(list[i]))return 1000-i;return 0;}
-function scoreTutorVoice(v,tutor){const lang=(v.lang||'').toLowerCase();if(!/^en-/.test(lang))return-10000;let s=voiceGenderScore(v.name,tutor);if(/^en-gb$/i.test(lang))s+=250;else if(/^en-ie$/i.test(lang)||/^en-au$/i.test(lang))s+=100;else s+=50;if(/natural|neural|premium|enhanced/i.test(v.name||''))s+=80;return s;}
-function getSelectedVoice(){const voices=getAvailableVoices();if(!voices.length)return null;return voices.slice().sort((a,b)=>scoreTutorVoice(b,selectedTutor)-scoreTutorVoice(a,selectedTutor))[0]||null;}
-function makeMathsSpeakable(t){return String(t).replace(/(\d+)x\b/gi,'$1 x').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/\*/g,' times ').replace(/−/g,' minus ').replace(/\s+/g,' ').trim();}
-function speakTutor(text,context){
-  if(!('speechSynthesis'in window)){setVoiceStatus('Voice playback is not available on this device. The written tutor is still available.');return;}
-  window.speechSynthesis.cancel();
-  let spoken=makeMathsSpeakable(text).replace(/\. /g,'.  ').replace(/: /g,':  ');
-  const u=new SpeechSynthesisUtterance(spoken),v=getSelectedVoice();
-  if(v){u.voice=v;u.lang=v.lang;}else u.lang='en-GB';
-  const rates={question:.88,hint:.86,correct:.90,incorrect:.84,prompt:.88};
-  u.rate=rates[context]||.87; u.pitch=selectedTutor==='female'?1.03:.98; u.volume=1;
-  u.onstart=()=>setVoiceStatus('🔊 Algevia is speaking…');
-  u.onend=()=>setVoiceStatus('You can continue when you're ready.');
-  u.onerror=()=>setVoiceStatus('Voice playback could not be completed. The written tutor is still available.');
-  window.speechSynthesis.speak(u);
+function startSpeechRecognition() {
+  if (!SpeechRecognitionAPI) { setVoiceStatus("🎙️ Speech input is not available in this browser. Type your answer instead."); return; }
+  if (recognition) { try { recognition.stop(); } catch(e){} }
+  recognition = new SpeechRecognitionAPI();
+  recognition.lang = "en-GB"; recognition.interimResults = true; recognition.maxAlternatives = 3; recognition.continuous = false;
+  recognition.onstart = () => { isListening = true; speakAnswerButton.textContent = "🎙️ Listening…"; setVoiceStatus("🎙️ Listening — speak your answer."); };
+  recognition.onresult = event => {
+    let text = "";
+    for (let i=event.resultIndex;i<event.results.length;i++) text += event.results[i][0].transcript + " ";
+    if (text.trim()) { answerInput.value = mathsSpeechToText(text); setVoiceStatus(`🎙️ Heard: ${text.trim()}`); }
+  };
+  recognition.onerror = event => { isListening=false; speakAnswerButton.textContent="🎙️ Speak Answer"; setVoiceStatus(event.error === "not-allowed" ? "Microphone access was not allowed. You can type instead." : "I couldn't hear that clearly. Please try again or type your answer."); };
+  recognition.onend = () => { isListening=false; speakAnswerButton.textContent="🎙️ Speak Answer"; if (answerInput.value.trim()) setVoiceStatus("Your spoken answer is in the box. Check it, edit it if needed, then press Check Answer."); };
+  try { recognition.start(); } catch(e) { setVoiceStatus("Please try Speak Answer again."); }
 }
-function speakQuestion(){const q=getCurrentQuestion();speakTutor('Alright, let's have a look at this one. '+q.question+'. Take your time and have a go. If you get stuck, I'm here to help.','question');}
-function mathsSpeechToText(text){let v=text.toLowerCase().trim();[[/\bminus\b/g,'-'],[/\bnegative\b/g,'-'],[/\bplus\b/g,'+'],[/\btimes\b/g,'*'],[/\bmultiplied by\b/g,'*'],[/\bdivided by\b/g,'/'],[/\bequals\b/g,'='],[/\bzero\b/g,'0'],[/\bone\b/g,'1'],[/\btwo\b/g,'2'],[/\bthree\b/g,'3'],[/\bfour\b/g,'4'],[/\bfive\b/g,'5'],[/\bsix\b/g,'6'],[/\bseven\b/g,'7'],[/\beight\b/g,'8'],[/\bnine\b/g,'9'],[/\bten\b/g,'10']].forEach(p=>v=v.replace(p[0],p[1]));return v.replace(/(\d)\s*x\b/g,'$1x').replace(/[?.,]+$/g,'').trim();}
-function startSpeechRecognition(){
-  if(!SpeechRecognitionAPI){setVoiceStatus('🎙️ Speech input is not available in this browser. You can still type your answer.');return;}
-  if(recognition)try{recognition.stop();}catch(e){}
-  recognition=new SpeechRecognitionAPI(); recognition.lang='en-GB'; recognition.interimResults=true; recognition.maxAlternatives=3; recognition.continuous=false;
-  recognition.onstart=()=>{isListening=true;speakAnswerButton.textContent='🎙️ Listening…';setVoiceStatus('🎙️ Listening — speak your answer.');};
-  recognition.onresult=e=>{let f='',i='';for(let n=e.resultIndex;n<e.results.length;n++){const t=e.results[n][0].transcript||'';e.results[n].isFinal?f+=t+' ':i+=t;}const c=(f+i).trim();if(c){answerInput.value=mathsSpeechToText(c);setVoiceStatus('🎙️ Hearing: '+c);answerInput.focus();}};
-  recognition.onerror=e=>{isListening=false;speakAnswerButton.textContent='🎙️ Speak Answer';setVoiceStatus(e.error==='not-allowed'?'Microphone access was not allowed. You can type your answer instead.':'I couldn't hear that clearly. Please try again or type your answer.');};
-  recognition.onend=()=>{isListening=false;speakAnswerButton.textContent='🎙️ Speak Answer';setVoiceStatus(answerInput.value.trim()?'Your spoken answer is in the box. Check it, edit it if needed, then press Check Answer.':'You can try speaking again or type your answer.');};
-  try{recognition.start();}catch(e){isListening=false;speakAnswerButton.textContent='🎙️ Speak Answer';setVoiceStatus('Please try Speak Answer again.');}
+speakAnswerButton.addEventListener("click", startSpeechRecognition);
+
+if ("speechSynthesis" in window && "onvoiceschanged" in window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = () => { /* voices become available asynchronously */ };
 }
-function stopVoice(){if('speechSynthesis'in window)window.speechSynthesis.cancel();if(recognition)try{recognition.stop();}catch(e){}isListening=false;speakAnswerButton.textContent='🎙️ Speak Answer';setVoiceStatus('Voice stopped.');}
-listenButton?.addEventListener('click',speakQuestion); speakAnswerButton?.addEventListener('click',startSpeechRecognition); stopVoiceButton?.addEventListener('click',stopVoice);
-if('speechSynthesis'in window&&'onvoiceschanged'in window.speechSynthesis)window.speechSynthesis.onvoiceschanged=function(){};
-// Render Question 1 immediately on first load.
+
+// IMPORTANT: this is deliberately called on page load so Question 1 is visible immediately.
+updateTutorButtons();
 displayQuestion();
 </script>
-
 </body>
 </html>
