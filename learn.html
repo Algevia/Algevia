@@ -799,6 +799,9 @@ const questions = [
 
 ];
 
+// Expose the original bank to the integrated Algevia learning engine.
+window.questions = questions;
+
 let currentQuestion = 0;
 let correctCount = 0;
 let attemptCount = 0;
@@ -1892,7 +1895,7 @@ stopVoiceButton.addEventListener(
   function speak(text){if(!('speechSynthesis'in window)){if($('voiceStatus'))$('voiceStatus').textContent='Voice playback is not available in this browser. Written tutor guidance remains available.';return;}window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text).replace(/(\d+)x\b/gi,'$1 x').replace(/\^2/g,' squared ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/\*/g,' times ').replace(/−/g,' minus '));const vs=window.speechSynthesis.getVoices();const female=/susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|female/i;const male=/daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|male/i;const pool=vs.filter(v=>/^en-/i.test(v.lang));const v=pool.sort((a,b)=>{const sa=(/^en-GB$/i.test(a.lang)?100:40)+(tutor==='female'&&female.test(a.name)?50:0)+(tutor==='male'&&male.test(a.name)?50:0);const sb=(/^en-GB$/i.test(b.lang)?100:40)+(tutor==='female'&&female.test(b.name)?50:0)+(tutor==='male'&&male.test(b.name)?50:0);return sb-sa;})[0]||vs[0];if(v){u.voice=v;u.lang=v.lang;}else u.lang='en-GB';u.rate=.86;u.pitch=tutor==='female'?1.04:.96;u.onstart=()=>{if($('voiceStatus'))$('voiceStatus').textContent='🔊 Algevia is speaking…';};u.onend=()=>{if($('voiceStatus'))$('voiceStatus').textContent='Voice finished.';};window.speechSynthesis.speak(u);}
   function setTutor(t){tutor=t;localStorage.setItem('algeviaTutorVoice',t);$('algeviaFemaleTutor').classList.toggle('selected',t==='female');$('algeviaMaleTutor').classList.toggle('selected',t==='male');$('algeviaSelectedTutor').textContent=t==='female'?'👩 Female Tutor selected':'👨 Male Tutor selected';if($('selectedTutor'))$('selectedTutor').textContent=t==='female'?'👩 Female Tutor selected':'👨 Male Tutor selected';}
   function render(q){current=q;hintIndex=0;answered=false;const st=getSkill(q);if($('question'))$('question').textContent=q.q;if($('questionCounter'))$('questionCounter').textContent='Question — adaptive practice';if($('progressBar'))$('progressBar').style.width='0%';if($('answerInput')){$('answerInput').value='';$('answerInput').focus();}if($('feedback'))$('feedback').style.display='none';if($('hint'))$('hint').style.display='none';if($('nextArea'))$('nextArea').style.display='none';if($('checkButton'))$('checkButton').disabled=false;if($('hintButton'))$('hintButton').disabled=false;if($('teachButton'))$('teachButton').disabled=false;if($('enhancedMasteryText'))$('enhancedMasteryText').textContent='Current skill: '+q.skill+' — '+label(st.mastery)+' ('+st.mastery+'%)';if($('enhancedTutorDialogue'))$('enhancedTutorDialogue').textContent=tutorText('question',q)+' '+q.q;saveContext();}
-  function start(){const t=$('algeviaTopicSelect').value,s=$('algeviaSubtopicSelect').value;state.lastTopic=t;state.lastSubtopic=s;session={attempts:0,correct:0,index:0,started:Date.now(),used:[]};current=choose(t,s);if(!current)return;session.used.push(current.id);if($('exerciseCard'))$('exerciseCard').style.display='block';if($('completionCard'))$('completionCard').style.display='none';render(current);window.scrollTo({top:$('exerciseCard').offsetTop-20,behavior:'smooth'});}
+  function start(){const topicEl=$('algeviaTopicSelect'),subEl=$('algeviaSubtopicSelect');if(!topicEl||!subEl||!bank.length)return;const t=topicEl.value,s=subEl.value;if(!t||!s)return;state.lastTopic=t;state.lastSubtopic=s;session={attempts:0,correct:0,index:0,started:Date.now(),used:[]};current=choose(t,s);if(!current)return;session.used.push(current.id);if($('completionCard'))$('completionCard').style.display='none';render(current);const step3=Array.from(document.querySelectorAll('main > section.card')).find(sec=>{const h=sec.querySelector('h2');return h&&/Step 3/i.test(h.textContent);});if(step3)step3.style.display='block';}
   function next(){if(!current)return;const t=$('algeviaTopicSelect').value,s=$('algeviaSubtopicSelect').value;session.index++;current=choose(t,s)||current;session.used.push(current.id);render(current);}
   function hint(){if(!current)return;const h=current.hints||[];if(!h.length)return;const i=Math.min(hintIndex,h.length-1);hintIndex++;if($('hint')){$('hint').textContent='Hint '+(i+1)+' of '+h.length+': '+h[i];$('hint').style.display='block';}getSkill(current).hints++;save();speak(tutorText('hint',current)+' '+h[i]);if(hintIndex>=h.length&&$('hintButton'))$('hintButton').disabled=true;}
   function teach(){if(!current)return;const st=getSkill(current);let txt=current.teach+' '+current.explain;if(st.errors>=2)txt+=' '+tutorText('repeat',current);if($('hint')){$('hint').textContent=txt;$('hint').style.display='block';}if($('enhancedTutorDialogue'))$('enhancedTutorDialogue').textContent=txt;speak(tutorText('hint',current)+' '+txt);}
@@ -1904,7 +1907,43 @@ stopVoiceButton.addEventListener(
   function speakCurrent(){if(current)speak(tutorText('question',current)+' '+current.q);}
   function stop(){if('speechSynthesis'in window)window.speechSynthesis.cancel();if(window._algeviaRecognition){try{window._algeviaRecognition.stop();}catch(e){}}if($('voiceStatus'))$('voiceStatus').textContent='Voice stopped.';}
   function intercept(id,fn){const el=$(id);if(!el)return;el.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();fn();},true);}
-  function init(){populate();renderProfile();setTutor(tutor);$('algeviaTopicSelect').addEventListener('change',function(){const t=this.value,s=$('algeviaSubtopicSelect');s.innerHTML=subs(t).map(x=>'<option>'+x+'</option>').join('');renderSubSkills();});$('algeviaSubtopicSelect').addEventListener('change',renderSubSkills);$('algeviaFemaleTutor').addEventListener('click',()=>setTutor('female'));$('algeviaMaleTutor').addEventListener('click',()=>setTutor('male'));$('algeviaStartButton').addEventListener('click',start);$('algeviaContinueButton').addEventListener('click',continueLearning);$('algeviaSaveExitButton').addEventListener('click',saveExit);$('algeviaSpeakButton').addEventListener('click',speakCurrent);$('algeviaStopButton').addEventListener('click',stop);$('algeviaTeachButton').addEventListener('click',teach);$('algeviaHintButton').addEventListener('click',hint);intercept('checkButton',check);intercept('hintButton',hint);intercept('nextButton',next);intercept('teachButton',teach);intercept('listenButton',speakCurrent);intercept('stopVoiceButton',stop);if($('saveExitButton'))intercept('saveExitButton',saveExit);if($('answerInput'))$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check();}},true);}
+  function moveEnhancedControls(){
+    const controls=$('algeviaLearningControls');
+    const tutorCard=$('algeviaTutorCard');
+    const mastery=$('algeviaMasteryCard');
+    const sections=Array.from(document.querySelectorAll('main > section.card'));
+    const step3=sections.find(sec=>{const h=sec.querySelector('h2');return h&&/Step 3/i.test(h.textContent);});
+    if(step3&&controls){step3.parentNode.insertBefore(controls,step3);if(tutorCard)step3.parentNode.insertBefore(tutorCard,step3);if(mastery)step3.parentNode.insertBefore(mastery,step3);}
+  }
+  function init(){
+    moveEnhancedControls();
+    populate();
+    renderProfile();
+    setTutor(tutor);
+    const topic=$('algeviaTopicSelect');
+    const subtopic=$('algeviaSubtopicSelect');
+    if(topic)topic.addEventListener('change',function(){const t=this.value;if(subtopic){subtopic.innerHTML=subs(t).map(x=>'<option>'+x+'</option>').join('');}renderSubSkills();start();});
+    if(subtopic)subtopic.addEventListener('change',function(){renderSubSkills();start();});
+    $('algeviaFemaleTutor').addEventListener('click',()=>setTutor('female'));
+    $('algeviaMaleTutor').addEventListener('click',()=>setTutor('male'));
+    $('algeviaStartButton').addEventListener('click',start);
+    $('algeviaContinueButton').addEventListener('click',continueLearning);
+    $('algeviaSaveExitButton').addEventListener('click',saveExit);
+    $('algeviaSpeakButton').addEventListener('click',speakCurrent);
+    $('algeviaStopButton').addEventListener('click',stop);
+    $('algeviaTeachButton').addEventListener('click',teach);
+    $('algeviaHintButton').addEventListener('click',hint);
+    intercept('checkButton',check);
+    intercept('hintButton',hint);
+    intercept('nextButton',next);
+    intercept('teachButton',teach);
+    intercept('listenButton',speakCurrent);
+    intercept('stopVoiceButton',stop);
+    if($('saveExitButton'))intercept('saveExitButton',saveExit);
+    if($('answerInput'))$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check();}},true);
+    // Always show a real first question on entry. The student can then change topic/subtopic at any time.
+    if(bank.length){start();}
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
