@@ -217,42 +217,6 @@
       font-size: 19px;
     }
   }
-
-  .voice-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 15px;
-  }
-
-  .voice-controls button {
-    margin-top: 0;
-  }
-
-  .voice-status {
-    margin-top: 12px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .speech-transcript {
-    margin-top: 12px;
-    padding: 12px 14px;
-    background: #f8fafc;
-    border-radius: 8px;
-    display: none;
-  }
-
-  .adaptive-badge {
-    display: inline-block;
-    background: #ecfeff;
-    border: 1px solid #67e8f9;
-    padding: 7px 11px;
-    border-radius: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-
 </style>
 </head>
 
@@ -301,10 +265,6 @@
       <strong>Learning approach:</strong>
       Learn by Yourself
     </p>
-
-    <div class="adaptive-badge">
-      🧠 Algevia adapts the next question to your performance.
-    </div>
 
   </section>
 
@@ -431,27 +391,6 @@
         autocomplete="off"
       >
 
-      <div class="voice-controls">
-        <button id="listenQuestionButton" type="button">
-          🔊 Listen
-        </button>
-
-        <button id="speakAnswerButton" class="secondary" type="button">
-          🎙️ Speak Answer
-        </button>
-
-        <button id="stopVoiceButton" class="secondary" type="button">
-          ⏸️ Stop
-        </button>
-      </div>
-
-      <div id="voiceStatus" class="voice-status" aria-live="polite"></div>
-
-      <div id="speechTranscript" class="speech-transcript">
-        <strong>Algevia heard:</strong>
-        <span id="speechTranscriptText"></span>
-      </div>
-
       <br>
 
       <button
@@ -559,7 +498,12 @@ const questions = [
     level: 1,
     question: "Simplify: 3x + 5x",
     answers: ["8x"],
-    hint: "Collect the two x terms.",
+    hints: [
+      "Start by collecting the x terms.",
+      "The x terms are 3x and 5x.",
+      "Add the coefficients: 3 + 5 = 8.",
+      "So 3x + 5x = 8x."
+    ],
     explanation: "3x + 5x = 8x because the terms are like terms."
   },
 
@@ -567,7 +511,12 @@ const questions = [
     level: 1,
     question: "Simplify: 7x - 2x",
     answers: ["5x"],
-    hint: "Subtract the coefficients of x.",
+    hints: [
+      "Start by collecting the x terms.",
+      "The x terms are 7x and -2x.",
+      "Subtract the coefficients: 7 - 2 = 5.",
+      "So 7x - 2x = 5x."
+    ],
     explanation: "7x - 2x = 5x."
   },
 
@@ -575,7 +524,13 @@ const questions = [
     level: 1,
     question: "Simplify: 4x + 3 + 2x",
     answers: ["6x+3", "3+6x"],
-    hint: "Collect the x terms first.",
+    hints: [
+      "First collect the x terms.",
+      "The x terms are 4x and 2x.",
+      "Add the coefficients: 4 + 2 = 6, giving 6x.",
+      "The 3 has no like term, so keep it.",
+      "Therefore the answer is 6x + 3."
+    ],
     explanation: "4x + 2x = 6x, so the answer is 6x + 3."
   },
 
@@ -583,7 +538,14 @@ const questions = [
     level: 2,
     question: "Simplify: 5x + 7 + 3x + 2",
     answers: ["8x+9", "9+8x"],
-    hint: "Collect the x terms and then the numbers.",
+    hints: [
+      "First collect the x terms.",
+      "The x terms are 5x and 3x.",
+      "Add them: 5x + 3x = 8x.",
+      "Now collect the number terms: 7 and 2.",
+      "Add them: 7 + 2 = 9.",
+      "Therefore the answer is 8x + 9."
+    ],
     explanation: "5x + 3x = 8x and 7 + 2 = 9."
   },
 
@@ -591,7 +553,14 @@ const questions = [
     level: 2,
     question: "Simplify: 9a - 4 + 2a + 7",
     answers: ["11a+3", "3+11a"],
-    hint: "Combine the a terms and the constants.",
+    hints: [
+      "First collect the a terms.",
+      "The a terms are 9a and 2a.",
+      "Add them: 9a + 2a = 11a.",
+      "Now collect the numbers: -4 and 7.",
+      "Add them: -4 + 7 = 3.",
+      "Therefore the answer is 11a + 3."
+    ],
     explanation: "9a + 2a = 11a and -4 + 7 = 3."
   },
 
@@ -599,7 +568,14 @@ const questions = [
     level: 2,
     question: "Simplify: 6y + 4 - 2y + 9",
     answers: ["4y+13", "13+4y"],
-    hint: "6y - 2y gives the coefficient of y.",
+    hints: [
+      "First collect the y terms.",
+      "The y terms are 6y and -2y.",
+      "Subtract the coefficients: 6 - 2 = 4, giving 4y.",
+      "Now collect the numbers: 4 and 9.",
+      "Add them: 4 + 9 = 13.",
+      "Therefore the answer is 4y + 13."
+    ],
     explanation: "6y - 2y = 4y and 4 + 9 = 13."
   },
 
@@ -607,7 +583,13 @@ const questions = [
     level: 3,
     question: "Expand: 3(x + 4)",
     answers: ["3x+12", "12+3x"],
-    hint: "Multiply 3 by everything inside the bracket.",
+    hints: [
+      "Multiply the number outside the bracket by every term inside.",
+      "Multiply 3 by x: 3 × x = 3x.",
+      "Multiply 3 by 4: 3 × 4 = 12.",
+      "Put the two results together.",
+      "Therefore the answer is 3x + 12."
+    ],
     explanation: "3 × x = 3x and 3 × 4 = 12."
   },
 
@@ -615,7 +597,13 @@ const questions = [
     level: 3,
     question: "Expand: 5(2x - 3)",
     answers: ["10x-15", "-15+10x"],
-    hint: "Multiply both terms inside the bracket by 5.",
+    hints: [
+      "Multiply 5 by every term inside the bracket.",
+      "Multiply 5 by 2x: 5 × 2x = 10x.",
+      "Multiply 5 by -3: 5 × -3 = -15.",
+      "Put the two results together.",
+      "Therefore the answer is 10x - 15."
+    ],
     explanation: "5 × 2x = 10x and 5 × -3 = -15."
   },
 
@@ -623,7 +611,13 @@ const questions = [
     level: 3,
     question: "Expand: 2(3x + 5) + x",
     answers: ["7x+10", "10+7x"],
-    hint: "Expand first, then collect like terms.",
+    hints: [
+      "First expand the bracket by multiplying 2 by both terms.",
+      "2 × 3x = 6x.",
+      "2 × 5 = 10, so the bracket becomes 6x + 10.",
+      "Now add the remaining x: 6x + x = 7x.",
+      "Therefore the answer is 7x + 10."
+    ],
     explanation: "2(3x + 5) = 6x + 10. Adding x gives 7x + 10."
   },
 
@@ -631,7 +625,13 @@ const questions = [
     level: 4,
     question: "Factorise: 6x + 12",
     answers: ["6(x+2)", "6(2+x)"],
-    hint: "Find the highest common factor of 6x and 12.",
+    hints: [
+      "Look for the highest common factor of 6x and 12.",
+      "The highest common factor is 6.",
+      "Take 6 outside the bracket: 6(x + ?).",
+      "Divide 12 by 6 to find the number inside the bracket: 2.",
+      "Therefore the answer is 6(x + 2)."
+    ],
     explanation: "Both terms have a factor of 6, giving 6(x + 2)."
   },
 
@@ -639,7 +639,13 @@ const questions = [
     level: 4,
     question: "Factorise: 8x + 20",
     answers: ["4(2x+5)", "4(5+2x)"],
-    hint: "What is the highest common factor of 8 and 20?",
+    hints: [
+      "Look for the highest common factor of 8x and 20.",
+      "The highest common factor is 4.",
+      "Take 4 outside the bracket: 4(2x + ?).",
+      "Divide 20 by 4 to find the remaining number: 5.",
+      "Therefore the answer is 4(2x + 5)."
+    ],
     explanation: "The highest common factor is 4, so 8x + 20 = 4(2x + 5)."
   },
 
@@ -647,25 +653,26 @@ const questions = [
     level: 5,
     question: "Simplify: 3(2x + 4) - 2(x - 5)",
     answers: ["4x+22", "22+4x"],
-    hint: "Expand both brackets carefully, especially the minus sign.",
+    hints: [
+      "Start by expanding both brackets carefully.",
+      "Expand the first bracket: 3 × 2x = 6x and 3 × 4 = 12.",
+      "Expand the second bracket: 2 × x = 2x and 2 × -5 = -10.",
+      "Remember that subtracting the second bracket changes -10 to +10.",
+      "Now collect the x terms: 6x - 2x = 4x.",
+      "Collect the numbers: 12 + 10 = 22.",
+      "Therefore the answer is 4x + 22."
+    ],
     explanation: "3(2x + 4) = 6x + 12. 2(x - 5) = 2x - 10. Therefore 6x + 12 - 2x + 10 = 4x + 22."
   }
 
 ];
-
 
 let currentQuestion = 0;
 let correctCount = 0;
 let attemptCount = 0;
 
 let currentLevel = 1;
-let questionHistory = [];
-let answeredCurrentQuestion = false;
-let recognition = null;
-let speechSupported = "speechSynthesis" in window;
-let recognitionSupported =
-  "SpeechRecognition" in window ||
-  "webkitSpeechRecognition" in window;
+let currentHintStep = 0;
 
 const questionElement =
   document.getElementById("question");
@@ -715,179 +722,144 @@ const completionCard =
 const completionMessage =
   document.getElementById("completionMessage");
 
-const listenQuestionButton =
-  document.getElementById("listenQuestionButton");
 
-const speakAnswerButton =
-  document.getElementById("speakAnswerButton");
+function speakText(text) {
 
-const stopVoiceButton =
-  document.getElementById("stopVoiceButton");
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
 
-const voiceStatus =
-  document.getElementById("voiceStatus");
+  window.speechSynthesis.cancel();
 
-const speechTranscript =
-  document.getElementById("speechTranscript");
+  const utterance =
+    new SpeechSynthesisUtterance(text);
 
-const speechTranscriptText =
-  document.getElementById("speechTranscriptText");
+  utterance.lang = "en-GB";
+  utterance.rate = 0.9;
+  utterance.pitch = 1.05;
+
+  const voices =
+    window.speechSynthesis.getVoices();
+
+  const femaleBritishVoice =
+    voices.find(voice =>
+      /^en-GB$/i.test(voice.lang) &&
+      /female|susan|hazel|libby|sonia|serena|kate/i.test(voice.name)
+    ) ||
+    voices.find(voice =>
+      /^en-GB$/i.test(voice.lang)
+    );
+
+  if (femaleBritishVoice) {
+    utterance.voice = femaleBritishVoice;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
 
 
 function normaliseAnswer(value) {
+
   return value
     .toLowerCase()
-    .trim()
-    .replace(/−/g, "-")
-    .replace(/×/g, "x")
-    .replace(/÷/g, "/")
-    .replace(/,/g, "")
-    .replace(/\bmultiplied\s+by\b/g, "x")
-    .replace(/\btimes\b/g, "x")
-    .replace(/\bplus\b/g, "+")
-    .replace(/\bminus\b/g, "-")
-    .replace(/\bequals?\b/g, "")
-    .replace(/\bzero\b/g, "0")
-    .replace(/\bone\b/g, "1")
-    .replace(/\btwo\b/g, "2")
-    .replace(/\bthree\b/g, "3")
-    .replace(/\bfour\b/g, "4")
-    .replace(/\bfive\b/g, "5")
-    .replace(/\bsix\b/g, "6")
-    .replace(/\bseven\b/g, "7")
-    .replace(/\beight\b/g, "8")
-    .replace(/\bnine\b/g, "9")
-    .replace(/\bten\b/g, "10")
-    .replace(/\s+/g, "");
+    .replace(/\s+/g, "")
+    .replace(/−/g, "-");
+
 }
 
 
 function isCorrect(userAnswer, acceptedAnswers) {
+
   const normalisedUserAnswer =
     normaliseAnswer(userAnswer);
 
   return acceptedAnswers.some(answer =>
     normaliseAnswer(answer) === normalisedUserAnswer
   );
+
 }
 
 
 function getCurrentQuestion() {
+
   return questions[currentQuestion];
-}
 
-
-/*
- * Genuine adaptive selection:
- * - Start at level 1.
- * - Correct answers increase the target level.
- * - Incorrect answers decrease it.
- * - A question is never repeated during the current module run.
- * - If the exact level is unavailable, the nearest unused level is chosen.
- */
-function chooseNextQuestion() {
-  const unused = questions.filter(
-    (_, index) => !questionHistory.includes(index)
-  );
-
-  if (!unused.length) {
-    return null;
-  }
-
-  const preferred = unused
-    .filter(q => q.level === currentLevel);
-
-  if (preferred.length) {
-    return preferred[
-      Math.floor(Math.random() * preferred.length)
-    ];
-  }
-
-  const nearest = [...unused].sort(
-    (a, b) =>
-      Math.abs(a.level - currentLevel) -
-      Math.abs(b.level - currentLevel)
-  );
-
-  const nearestDistance =
-    Math.abs(nearest[0].level - currentLevel);
-
-  const candidates =
-    nearest.filter(
-      q => Math.abs(q.level - currentLevel) === nearestDistance
-    );
-
-  return candidates[
-    Math.floor(Math.random() * candidates.length)
-  ];
-}
-
-
-function setCurrentQuestion(question) {
-  const questionIndex = questions.indexOf(question);
-
-  if (questionIndex === -1) return;
-
-  questionHistory.push(questionIndex);
-  currentQuestion = questionIndex;
 }
 
 
 function displayQuestion() {
-  const question = getCurrentQuestion();
+
+  const question =
+    getCurrentQuestion();
 
   questionElement.textContent =
     question.question;
 
   questionCounter.textContent =
     "Question " +
-    (questionHistory.length) +
+    (currentQuestion + 1) +
     " of " +
-    Math.min(questions.length, 12);
+    questions.length;
 
   progressBar.style.width =
-    ((questionHistory.length - 1) / 12 * 100) + "%";
+    ((currentQuestion / questions.length) * 100) +
+    "%";
 
   answerInput.value = "";
 
   feedbackElement.style.display = "none";
+
+  currentHintStep = 0;
+
+  hintElement.textContent = "";
   hintElement.style.display = "none";
+
   nextArea.style.display = "none";
 
   checkButton.disabled = false;
-  hintButton.disabled = false;
-  answeredCurrentQuestion = false;
 
-  speechTranscript.style.display = "none";
-  speechTranscriptText.textContent = "";
-  voiceStatus.textContent = "";
+  hintButton.disabled = false;
 
   answerInput.focus();
 
-  /*
-   * Read the question automatically only after the student
-   * has interacted with the page, because browsers may block
-   * unsolicited audio.
-   */
 }
 
 
 function showHint() {
-  const question = getCurrentQuestion();
+
+  const question =
+    getCurrentQuestion();
+
+  const hints =
+    Array.isArray(question.hints)
+      ? question.hints
+      : [];
+
+  if (!hints.length) {
+    return;
+  }
+
+  if (currentHintStep >= hints.length) {
+    currentHintStep = hints.length - 1;
+  }
 
   hintElement.textContent =
-    question.hint;
+    hints[currentHintStep];
 
   hintElement.style.display =
     "block";
 
-  speakText(
-    "Hint. " + question.hint
-  );
+  speakText(hints[currentHintStep]);
+
+  if (currentHintStep < hints.length - 1) {
+    currentHintStep++;
+  }
+
 }
 
 
 function updateStats() {
+
   correctCountElement.textContent =
     correctCount;
 
@@ -903,173 +875,51 @@ function updateStats() {
 
   accuracyElement.textContent =
     percentage + "%";
+
 }
 
 
 function updateAdaptiveMessage() {
-  if (attemptCount < 1) {
+
+  if (attemptCount < 2) {
+
     adaptiveMessage.textContent =
       "Algevia is learning how you learn.";
+
     return;
+
   }
 
   const accuracy =
     correctCount / attemptCount;
 
   if (accuracy >= 0.8) {
+
     adaptiveMessage.textContent =
-      "Strong performance. Algevia is increasing the challenge.";
+      "You're showing strong understanding. Algevia will increase the challenge.";
+
   } else if (accuracy >= 0.5) {
+
     adaptiveMessage.textContent =
-      "You're developing this skill. Algevia is keeping the challenge at the right level.";
+      "You're developing this skill. Algevia will keep building your understanding.";
+
   } else {
+
     adaptiveMessage.textContent =
-      "Let's strengthen the foundations. Algevia is adjusting the next question.";
-  }
-}
+      "Let's strengthen the foundations before increasing the difficulty.";
 
-
-function speakText(text) {
-  if (!speechSupported) {
-    voiceStatus.textContent =
-      "Voice playback is not available in this browser. You can continue with written text.";
-    return;
   }
 
-  window.speechSynthesis.cancel();
-
-  const utterance =
-    new SpeechSynthesisUtterance(text);
-
-  utterance.lang = "en-GB";
-  utterance.rate = 0.9;
-  utterance.pitch = 1;
-
-  utterance.onstart = function() {
-    voiceStatus.textContent =
-      "🔊 Algevia is speaking.";
-  };
-
-  utterance.onend = function() {
-    voiceStatus.textContent =
-      "Voice finished.";
-  };
-
-  utterance.onerror = function() {
-    voiceStatus.textContent =
-      "Voice playback was unavailable. The written text remains available.";
-  };
-
-  window.speechSynthesis.speak(utterance);
-}
-
-
-function stopVoice() {
-  if (speechSupported) {
-    window.speechSynthesis.cancel();
-  }
-
-  if (recognition) {
-    try {
-      recognition.stop();
-    } catch (error) {
-      // Recognition may already have stopped.
-    }
-  }
-
-  voiceStatus.textContent =
-    "Voice stopped.";
-}
-
-
-function listenToQuestion() {
-  const question = getCurrentQuestion();
-
-  speakText(
-    "Question " +
-    questionHistory.length +
-    ". " +
-    question.question
-  );
-}
-
-
-function startSpeechRecognition() {
-  if (!recognitionSupported) {
-    voiceStatus.textContent =
-      "Voice answers are not available in this browser. Please type your answer.";
-    return;
-  }
-
-  if (speechSupported) {
-    window.speechSynthesis.cancel();
-  }
-
-  const Recognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-  recognition = new Recognition();
-
-  recognition.lang = "en-GB";
-  recognition.interimResults = false;
-  recognition.continuous = false;
-  recognition.maxAlternatives = 1;
-
-  voiceStatus.textContent =
-    "🎙️ Listening… say your answer clearly.";
-
-  recognition.onresult = function(event) {
-    const transcript =
-      event.results[0][0].transcript.trim();
-
-    answerInput.value = transcript;
-
-    speechTranscriptText.textContent =
-      transcript;
-
-    speechTranscript.style.display =
-      "block";
-
-    voiceStatus.textContent =
-      "Answer captured. Check it when you're ready.";
-  };
-
-  recognition.onerror = function() {
-    voiceStatus.textContent =
-      "I couldn't capture that answer. Please try again or type it.";
-  };
-
-  recognition.onend = function() {
-    recognition = null;
-  };
-
-  try {
-    recognition.start();
-  } catch (error) {
-    voiceStatus.textContent =
-      "Voice input could not start. Please try again or type your answer.";
-  }
-}
-
-
-function speakFeedback(correct, explanation) {
-  const opening =
-    correct
-      ? "Correct!"
-      : "Not quite.";
-
-  speakText(
-    opening + " " + explanation
-  );
 }
 
 
 function checkAnswer() {
+
   const userAnswer =
     answerInput.value.trim();
 
   if (!userAnswer) {
+
     feedbackElement.className =
       "feedback incorrect";
 
@@ -1079,15 +929,8 @@ function checkAnswer() {
     feedbackElement.style.display =
       "block";
 
-    speakText(
-      "Please enter an answer first."
-    );
-
     return;
-  }
 
-  if (answeredCurrentQuestion) {
-    return;
   }
 
   const question =
@@ -1101,9 +944,8 @@ function checkAnswer() {
       question.answers
     );
 
-  answeredCurrentQuestion = true;
-
   if (correct) {
+
     correctCount++;
 
     feedbackElement.className =
@@ -1113,12 +955,9 @@ function checkAnswer() {
       "<strong>Correct!</strong><br><br>" +
       question.explanation;
 
-    /*
-     * Move the adaptive target up after success,
-     * but never above the available maximum.
-     */
-    currentLevel =
-      Math.min(5, Math.max(1, question.level + 1));
+    if (question.level < 5) {
+      currentLevel = question.level + 1;
+    }
 
   } else {
 
@@ -1129,55 +968,43 @@ function checkAnswer() {
       "<strong>Not quite.</strong><br><br>" +
       question.explanation;
 
-    /*
-     * Move the adaptive target down after an error,
-     * so the next question reinforces the foundation.
-     */
-    currentLevel =
-      Math.max(1, question.level - 1);
+    if (question.level > 1) {
+      currentLevel = question.level - 1;
+    }
+
   }
 
   feedbackElement.style.display =
     "block";
 
   checkButton.disabled = true;
+
   hintButton.disabled = true;
 
   nextArea.style.display =
     "block";
 
   updateStats();
+
   updateAdaptiveMessage();
 
-  speakFeedback(
-    correct,
-    question.explanation
-  );
 }
 
 
 function nextQuestion() {
 
-  /*
-   * This prototype contains 12 questions.
-   * The next question is selected based on performance,
-   * rather than following the original fixed sequence.
-   */
-  if (questionHistory.length >= 12) {
+  currentQuestion++;
+
+  if (currentQuestion >= questions.length) {
+
     finishModule();
+
     return;
+
   }
 
-  const next =
-    chooseNextQuestion();
-
-  if (!next) {
-    finishModule();
-    return;
-  }
-
-  setCurrentQuestion(next);
   displayQuestion();
+
 }
 
 
@@ -1196,8 +1023,6 @@ function finishModule() {
   nextArea.style.display =
     "none";
 
-  stopVoice();
-
   const percentage =
     attemptCount === 0
       ? 0
@@ -1208,94 +1033,59 @@ function finishModule() {
   if (percentage >= 80) {
 
     completionMessage.textContent =
-      "Excellent work. You have demonstrated strong understanding of this Algebraic Expressions module. Algevia is ready to increase the challenge.";
+      "Excellent work. You have demonstrated strong understanding of this Algebraic Expressions module.";
 
   } else if (percentage >= 50) {
 
     completionMessage.textContent =
-      "Good progress. You have developed a useful foundation. Algevia would continue practising the skills that need more confidence.";
+      "Good progress. You have developed a useful foundation, but there are still areas worth practising.";
 
   } else {
 
     completionMessage.textContent =
-      "This skill needs more practice. Algevia would return to the explanations and easier questions before increasing the difficulty.";
+      "This skill needs more practice. Algevia would recommend returning to the explanation and worked examples before moving on.";
 
   }
 
   completionCard.style.display =
     "block";
 
-  speakText(
-    "Module complete. " +
-    completionMessage.textContent
-  );
 }
 
-
-function initialiseVoice() {
-  if (!speechSupported && !recognitionSupported) {
-    voiceStatus.textContent =
-      "Voice features are not available here. Written learning and typed answers remain available.";
-  } else if (!speechSupported) {
-    voiceStatus.textContent =
-      "Voice answers may be available, but spoken playback is unavailable. Written text remains available.";
-  } else if (!recognitionSupported) {
-    voiceStatus.textContent =
-      "Spoken playback is available. Voice answers are unavailable, so you can type your answers.";
-  } else {
-    voiceStatus.textContent =
-      "Voice + written learning is ready.";
-  }
-}
-
-
-const firstQuestion = chooseNextQuestion();
-
-if (firstQuestion) {
-  setCurrentQuestion(firstQuestion);
-  displayQuestion();
-}
-
-initialiseVoice();
-
-listenQuestionButton.addEventListener(
-  "click",
-  listenToQuestion
-);
-
-speakAnswerButton.addEventListener(
-  "click",
-  startSpeechRecognition
-);
-
-stopVoiceButton.addEventListener(
-  "click",
-  stopVoice
-);
 
 checkButton.addEventListener(
   "click",
   checkAnswer
 );
 
+
 hintButton.addEventListener(
   "click",
   showHint
 );
+
 
 nextButton.addEventListener(
   "click",
   nextQuestion
 );
 
+
 answerInput.addEventListener(
   "keydown",
   function(event) {
+
     if (event.key === "Enter") {
+
       checkAnswer();
+
     }
+
   }
 );
+
+
+displayQuestion();
 
 </script>
 
