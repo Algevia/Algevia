@@ -336,7 +336,7 @@
     <h2>Now Try It Yourself</h2>
     <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
     <p id="questionCounter">Question 1</p>
-    <div class="question" id="question"></div>
+    <div class="question" id="question">Simplify: 3x + 5x</div>
 
     <!-- Tutor selection belongs to the question, not elsewhere on the page. -->
     <div class="algevia-question-tutor" id="algeviaTutorCard">
@@ -1770,7 +1770,23 @@ stopVoiceButton.addEventListener(
     if($('saveExitButton'))intercept('saveExitButton',saveExit);
     if($('answerInput'))$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check();}},true);
     // Always show a real first question on entry. The student can then change topic/subtopic at any time.
-    if(bank.length){start(); setTimeout(function(){ if(current) render(current); }, 0);}
+    // The question is rendered explicitly here so the page never opens with a blank question box.
+    if(bank.length){
+      const firstTopic = $('algeviaTopicSelect').value || topicNames()[0];
+      const firstSubs = subs(firstTopic);
+      const firstSubtopic = $('algeviaSubtopicSelect').value || firstSubs[0];
+      $('algeviaTopicSelect').value = firstTopic;
+      $('algeviaSubtopicSelect').innerHTML = firstSubs.map(x=>'<option>'+x+'</option>').join('');
+      $('algeviaSubtopicSelect').value = firstSubtopic;
+      state.lastTopic = firstTopic;
+      state.lastSubtopic = firstSubtopic;
+      session = {attempts:0,correct:0,index:0,started:Date.now(),used:[]};
+      current = choose(firstTopic, firstSubtopic);
+      if(current){
+        session.used.push(current.id);
+        render(current);
+      }
+    }
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
