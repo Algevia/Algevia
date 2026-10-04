@@ -774,130 +774,6 @@ const completionMessage =
   document.getElementById("completionMessage");
 
 
-function getAvailableVoices() {
-  if (!("speechSynthesis" in window)) return [];
-  return window.speechSynthesis.getVoices() || [];
-}
-
-function populateVoiceSelector() {
-  const select = document.getElementById("voiceSelect");
-  if (!select || !("speechSynthesis" in window)) return;
-
-  const voices = getAvailableVoices();
-  if (!voices.length) {
-    select.innerHTML = '<option value="">No browser voices available</option>';
-    return;
-  }
-
-  const previous = select.value;
-  select.innerHTML = "";
-
-  // Put British English voices first, then other English voices.
-  const ordered = voices.slice().sort(function(a, b) {
-    const aGB = /^en-GB$/i.test(a.lang) ? 0 : /^en-/i.test(a.lang) ? 1 : 2;
-    const bGB = /^en-GB$/i.test(b.lang) ? 0 : /^en-/i.test(b.lang) ? 1 : 2;
-    return aGB - bGB || a.name.localeCompare(b.name);
-  });
-
-  ordered.forEach(function(voice) {
-    const option = document.createElement("option");
-    option.value = voice.name + "|" + voice.lang;
-    option.textContent = voice.name + " (" + voice.lang + ")";
-    select.appendChild(option);
-  });
-
-  // Restore a saved choice, otherwise choose a British English voice.
-  const saved = localStorage.getItem("algeviaPreferredVoice");
-  const preferred =
-    saved && ordered.some(v => v.name + "|" + v.lang === saved)
-      ? saved
-      : (ordered.find(v => /^en-GB$/i.test(v.lang)) ||
-         ordered.find(v => /^en-/i.test(v.lang)) ||
-         ordered[0]).name + "|" +
-        (ordered.find(v => /^en-GB$/i.test(v.lang)) ||
-         ordered.find(v => /^en-/i.test(v.lang)) ||
-         ordered[0]).lang;
-
-  select.value = preferred;
-}
-
-function getSelectedVoice() {
-  const voices = getAvailableVoices();
-  const select = document.getElementById("voiceSelect");
-
-  if (select && select.value) {
-    const parts = select.value.split("|");
-    const chosen = voices.find(function(v) {
-      return v.name === parts[0] && v.lang === parts[1];
-    });
-    if (chosen) return chosen;
-  }
-
-  // Female gender is not exposed reliably by the Web Speech API.
-  // Prefer British English; the student can choose the exact voice.
-  return (
-    voices.find(v => /^en-GB$/i.test(v.lang)) ||
-    voices.find(v => /^en-/i.test(v.lang)) ||
-    voices[0] ||
-    null
-  );
-}
-
-function speakText(text) {
-  if (!("speechSynthesis" in window)) {
-    setVoiceStatus("Voice playback is not available on this device. Written text is still available.");
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  const voice = getSelectedVoice();
-
-  if (voice) {
-    utterance.voice = voice;
-    utterance.lang = voice.lang;
-  } else {
-    utterance.lang = "en-GB";
-  }
-
-  // Slightly slower and clearer for maths teaching.
-  utterance.rate = 0.82;
-  utterance.pitch = 1.0;
-  utterance.volume = 1.0;
-
-  utterance.onstart = function() {
-    setVoiceStatus("🔊 Algevia is speaking…");
-  };
-
-  utterance.onend = function() {
-    setVoiceStatus("Voice finished. You can replay it or continue.");
-  };
-
-  utterance.onerror = function() {
-    setVoiceStatus("Voice playback could not be completed. Written text is still available.");
-  };
-
-  window.speechSynthesis.speak(utterance);
-}
-
-const voiceSelect = document.getElementById("voiceSelect");
-
-if ("speechSynthesis" in window) {
-  populateVoiceSelector();
-
-  if ("onvoiceschanged" in window.speechSynthesis) {
-    window.speechSynthesis.onvoiceschanged = populateVoiceSelector;
-  }
-
-  if (voiceSelect) {
-    voiceSelect.addEventListener("change", function() {
-      localStorage.setItem("algeviaPreferredVoice", voiceSelect.value);
-      setVoiceStatus("Voice selected. Press Listen to hear the new voice.");
-    });
-  }
-}
-
 function normaliseAnswer(value) {
 
   return value
@@ -1232,6 +1108,8 @@ answerInput.addEventListener(
   }
 );
 
+// IMPORTANT: render Question 1 immediately when Learn by Yourself opens.
+displayQuestion();
 
 
 /* =========================================================
@@ -1294,12 +1172,18 @@ function updateTutorButtons() {
 function setTutorVoice(tutor) {
   selectedTutor = tutor;
   localStorage.setItem("algeviaTutorVoice", tutor);
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+
   updateTutorButtons();
 
+  const voice = getSelectedVoice();
   setVoiceStatus(
     tutor === "female"
-      ? "Female Tutor selected. Press Listen to hear Algevia."
-      : "Male Tutor selected. Press Listen to hear Algevia."
+      ? "👩 Female Tutor selected." + voiceDescription(voice) + " Press Listen to hear her."
+      : "👨 Male Tutor selected." + voiceDescription(voice) + " Press Listen to hear him."
   );
 }
 
@@ -1327,79 +1211,52 @@ function getAvailableVoices() {
   return window.speechSynthesis.getVoices() || [];
 }
 
+// These are common female/male system voices found on macOS, Safari,
+// iPhone/iPad, Windows and Google voice sets.
+const femaleVoicePattern =
+  /kate|samantha|susan|hazel|libby|sonia|serena|amy|moira|victoria|aria|ava|jenny|zira|sara|sarah|emma|fiona|karen|tessa|veena|catherine|claire|allison|nora|anna|julie|female|google uk english female|microsoft.*female/i;
+
+const maleVoicePattern =
+  /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|david|aaron|lee|male|google uk english male|microsoft.*male/i;
+
 function scoreTutorVoice(voice, tutor) {
-  const name = (voice.name || "").toLowerCase();
+  const name = voice.name || "";
   const lang = (voice.lang || "").toLowerCase();
 
-  if (!/^en-/.test(lang)) return -10000;
+  if (!/^en-/.test(lang)) return -100000;
 
-  const femaleNames =
-    /susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|sara|sarah|emma|female|google uk english female|microsoft.*female/;
+  let score = /^en-gb$/i.test(lang) ? 200 : 100;
+  const isFemale = femaleVoicePattern.test(name);
+  const isMale = maleVoicePattern.test(name);
 
-  const maleNames =
-    /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|david|male|google uk english male|microsoft.*male/;
-
-  const looksFemale = femaleNames.test(name);
-  const looksMale = maleNames.test(name);
-
-  let score = 0;
-
-  // Gender/tutor match must dominate the decision.
   if (tutor === "female") {
-    if (looksFemale) score += 1000;
-    if (looksMale) score -= 1000;
+    if (isFemale) score += 10000;
+    if (isMale) score -= 10000;
   } else {
-    if (looksMale) score += 1000;
-    if (looksFemale) score -= 1000;
+    if (isMale) score += 10000;
+    if (isFemale) score -= 10000;
   }
-
-  // Prefer British English when available.
-  if (/^en-gb$/i.test(lang)) score += 100;
-  else if (/^en-/i.test(lang)) score += 40;
 
   return score;
 }
 
 function getSelectedVoice() {
-  const voices = getAvailableVoices();
+  const voices = getAvailableVoices()
+    .filter(function(voice) {
+      return /^en-/i.test(voice.lang || "");
+    });
 
   if (!voices.length) return null;
 
-  const ranked = voices
-    .filter(function(voice) {
-      return /^en-/i.test(voice.lang || "");
-    })
-    .slice()
-    .sort(function(a, b) {
-      return (
-        scoreTutorVoice(b, selectedTutor) -
-        scoreTutorVoice(a, selectedTutor)
-      );
-    });
+  const ranked = voices.slice().sort(function(a, b) {
+    return scoreTutorVoice(b, selectedTutor) - scoreTutorVoice(a, selectedTutor);
+  });
 
-  if (!ranked.length) return null;
+  return ranked[0] || null;
+}
 
-  const best = ranked[0];
-  const bestName = (best.name || "").toLowerCase();
-
-  const femalePattern =
-    /susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|sara|sarah|emma|female|google uk english female|microsoft.*female/;
-
-  const malePattern =
-    /daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|david|male|google uk english male|microsoft.*male/;
-
-  // If a recognisable tutor voice exists, use it.
-  if (
-    (selectedTutor === "female" && femalePattern.test(bestName)) ||
-    (selectedTutor === "male" && malePattern.test(bestName))
-  ) {
-    return best;
-  }
-
-  // Some browsers do not expose gender in voice metadata.
-  // In that case use the best available English voice and let pitch
-  // provide a small additional distinction.
-  return best;
+function voiceDescription(voice) {
+  return voice ? " Voice: " + voice.name + "." : "";
 }
 
 function makeMathsSpeakable(text) {
@@ -1475,7 +1332,7 @@ function speakText(text) {
   }
 
   /* Slower, clearer and more teacher-like for maths. */
-  utterance.rate = 0.82;
+  utterance.rate = 0.88;
   utterance.pitch =
     selectedTutor === "female"
       ? 1.08
@@ -1483,7 +1340,10 @@ function speakText(text) {
   utterance.volume = 1.0;
 
   utterance.onstart = function() {
-    setVoiceStatus("🔊 Algevia is speaking…");
+    setVoiceStatus(
+      (selectedTutor === "female" ? "👩 Female Tutor speaking…" : "👨 Male Tutor speaking…") +
+      voiceDescription(voice)
+    );
   };
 
   utterance.onend = function() {
@@ -1533,7 +1393,10 @@ if (
   "speechSynthesis" in window &&
   "onvoiceschanged" in window.speechSynthesis
 ) {
-  window.speechSynthesis.onvoiceschanged = function() {};
+  window.speechSynthesis.onvoiceschanged = function() {
+    // Voices can load after page startup; the next Listen action will use the
+    // freshly loaded list and the currently selected tutor.
+  };
 }
 
 function mathsSpeechToText(text) {
