@@ -217,6 +217,42 @@
       font-size: 19px;
     }
   }
+
+  .voice-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .voice-controls button {
+    margin-top: 0;
+  }
+
+  .voice-status {
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .speech-transcript {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-radius: 8px;
+    display: none;
+  }
+
+  .adaptive-badge {
+    display: inline-block;
+    background: #ecfeff;
+    border: 1px solid #67e8f9;
+    padding: 7px 11px;
+    border-radius: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
 </style>
 </head>
 
@@ -265,6 +301,10 @@
       <strong>Learning approach:</strong>
       Learn by Yourself
     </p>
+
+    <div class="adaptive-badge">
+      🧠 Algevia adapts the next question to your performance.
+    </div>
 
   </section>
 
@@ -390,6 +430,27 @@
         placeholder="Type your answer"
         autocomplete="off"
       >
+
+      <div class="voice-controls">
+        <button id="listenQuestionButton" type="button">
+          🔊 Listen
+        </button>
+
+        <button id="speakAnswerButton" class="secondary" type="button">
+          🎙️ Speak Answer
+        </button>
+
+        <button id="stopVoiceButton" class="secondary" type="button">
+          ⏸️ Stop
+        </button>
+      </div>
+
+      <div id="voiceStatus" class="voice-status" aria-live="polite"></div>
+
+      <div id="speechTranscript" class="speech-transcript">
+        <strong>Algevia heard:</strong>
+        <span id="speechTranscriptText"></span>
+      </div>
 
       <br>
 
@@ -598,6 +659,13 @@ let correctCount = 0;
 let attemptCount = 0;
 
 let currentLevel = 1;
+let questionHistory = [];
+let answeredCurrentQuestion = false;
+let recognition = null;
+let speechSupported = "speechSynthesis" in window;
+let recognitionSupported =
+  "SpeechRecognition" in window ||
+  "webkitSpeechRecognition" in window;
 
 const questionElement =
   document.getElementById("question");
@@ -647,75 +715,165 @@ const completionCard =
 const completionMessage =
   document.getElementById("completionMessage");
 
+const listenQuestionButton =
+  document.getElementById("listenQuestionButton");
+
+const speakAnswerButton =
+  document.getElementById("speakAnswerButton");
+
+const stopVoiceButton =
+  document.getElementById("stopVoiceButton");
+
+const voiceStatus =
+  document.getElementById("voiceStatus");
+
+const speechTranscript =
+  document.getElementById("speechTranscript");
+
+const speechTranscriptText =
+  document.getElementById("speechTranscriptText");
+
 
 function normaliseAnswer(value) {
-
   return value
     .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/−/g, "-");
-
+    .trim()
+    .replace(/−/g, "-")
+    .replace(/×/g, "x")
+    .replace(/÷/g, "/")
+    .replace(/,/g, "")
+    .replace(/\bmultiplied\s+by\b/g, "x")
+    .replace(/\btimes\b/g, "x")
+    .replace(/\bplus\b/g, "+")
+    .replace(/\bminus\b/g, "-")
+    .replace(/\bequals?\b/g, "")
+    .replace(/\bzero\b/g, "0")
+    .replace(/\bone\b/g, "1")
+    .replace(/\btwo\b/g, "2")
+    .replace(/\bthree\b/g, "3")
+    .replace(/\bfour\b/g, "4")
+    .replace(/\bfive\b/g, "5")
+    .replace(/\bsix\b/g, "6")
+    .replace(/\bseven\b/g, "7")
+    .replace(/\beight\b/g, "8")
+    .replace(/\bnine\b/g, "9")
+    .replace(/\bten\b/g, "10")
+    .replace(/\s+/g, "");
 }
 
 
 function isCorrect(userAnswer, acceptedAnswers) {
-
   const normalisedUserAnswer =
     normaliseAnswer(userAnswer);
 
   return acceptedAnswers.some(answer =>
     normaliseAnswer(answer) === normalisedUserAnswer
   );
-
 }
 
 
 function getCurrentQuestion() {
-
   return questions[currentQuestion];
+}
 
+
+/*
+ * Genuine adaptive selection:
+ * - Start at level 1.
+ * - Correct answers increase the target level.
+ * - Incorrect answers decrease it.
+ * - A question is never repeated during the current module run.
+ * - If the exact level is unavailable, the nearest unused level is chosen.
+ */
+function chooseNextQuestion() {
+  const unused = questions.filter(
+    (_, index) => !questionHistory.includes(index)
+  );
+
+  if (!unused.length) {
+    return null;
+  }
+
+  const preferred = unused
+    .filter(q => q.level === currentLevel);
+
+  if (preferred.length) {
+    return preferred[
+      Math.floor(Math.random() * preferred.length)
+    ];
+  }
+
+  const nearest = [...unused].sort(
+    (a, b) =>
+      Math.abs(a.level - currentLevel) -
+      Math.abs(b.level - currentLevel)
+  );
+
+  const nearestDistance =
+    Math.abs(nearest[0].level - currentLevel);
+
+  const candidates =
+    nearest.filter(
+      q => Math.abs(q.level - currentLevel) === nearestDistance
+    );
+
+  return candidates[
+    Math.floor(Math.random() * candidates.length)
+  ];
+}
+
+
+function setCurrentQuestion(question) {
+  const questionIndex = questions.indexOf(question);
+
+  if (questionIndex === -1) return;
+
+  questionHistory.push(questionIndex);
+  currentQuestion = questionIndex;
 }
 
 
 function displayQuestion() {
-
-  const question =
-    getCurrentQuestion();
+  const question = getCurrentQuestion();
 
   questionElement.textContent =
     question.question;
 
   questionCounter.textContent =
     "Question " +
-    (currentQuestion + 1) +
+    (questionHistory.length) +
     " of " +
-    questions.length;
+    Math.min(questions.length, 12);
 
   progressBar.style.width =
-    ((currentQuestion / questions.length) * 100) +
-    "%";
+    ((questionHistory.length - 1) / 12 * 100) + "%";
 
   answerInput.value = "";
 
   feedbackElement.style.display = "none";
-
   hintElement.style.display = "none";
-
   nextArea.style.display = "none";
 
   checkButton.disabled = false;
-
   hintButton.disabled = false;
+  answeredCurrentQuestion = false;
+
+  speechTranscript.style.display = "none";
+  speechTranscriptText.textContent = "";
+  voiceStatus.textContent = "";
 
   answerInput.focus();
 
+  /*
+   * Read the question automatically only after the student
+   * has interacted with the page, because browsers may block
+   * unsolicited audio.
+   */
 }
 
 
 function showHint() {
-
-  const question =
-    getCurrentQuestion();
+  const question = getCurrentQuestion();
 
   hintElement.textContent =
     question.hint;
@@ -723,11 +881,13 @@ function showHint() {
   hintElement.style.display =
     "block";
 
+  speakText(
+    "Hint. " + question.hint
+  );
 }
 
 
 function updateStats() {
-
   correctCountElement.textContent =
     correctCount;
 
@@ -743,51 +903,173 @@ function updateStats() {
 
   accuracyElement.textContent =
     percentage + "%";
-
 }
 
 
 function updateAdaptiveMessage() {
-
-  if (attemptCount < 2) {
-
+  if (attemptCount < 1) {
     adaptiveMessage.textContent =
       "Algevia is learning how you learn.";
-
     return;
-
   }
 
   const accuracy =
     correctCount / attemptCount;
 
   if (accuracy >= 0.8) {
-
     adaptiveMessage.textContent =
-      "You're showing strong understanding. Algevia will increase the challenge.";
-
+      "Strong performance. Algevia is increasing the challenge.";
   } else if (accuracy >= 0.5) {
-
     adaptiveMessage.textContent =
-      "You're developing this skill. Algevia will keep building your understanding.";
-
+      "You're developing this skill. Algevia is keeping the challenge at the right level.";
   } else {
-
     adaptiveMessage.textContent =
-      "Let's strengthen the foundations before increasing the difficulty.";
+      "Let's strengthen the foundations. Algevia is adjusting the next question.";
+  }
+}
 
+
+function speakText(text) {
+  if (!speechSupported) {
+    voiceStatus.textContent =
+      "Voice playback is not available in this browser. You can continue with written text.";
+    return;
   }
 
+  window.speechSynthesis.cancel();
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+  utterance.lang = "en-GB";
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+
+  utterance.onstart = function() {
+    voiceStatus.textContent =
+      "🔊 Algevia is speaking.";
+  };
+
+  utterance.onend = function() {
+    voiceStatus.textContent =
+      "Voice finished.";
+  };
+
+  utterance.onerror = function() {
+    voiceStatus.textContent =
+      "Voice playback was unavailable. The written text remains available.";
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+
+function stopVoice() {
+  if (speechSupported) {
+    window.speechSynthesis.cancel();
+  }
+
+  if (recognition) {
+    try {
+      recognition.stop();
+    } catch (error) {
+      // Recognition may already have stopped.
+    }
+  }
+
+  voiceStatus.textContent =
+    "Voice stopped.";
+}
+
+
+function listenToQuestion() {
+  const question = getCurrentQuestion();
+
+  speakText(
+    "Question " +
+    questionHistory.length +
+    ". " +
+    question.question
+  );
+}
+
+
+function startSpeechRecognition() {
+  if (!recognitionSupported) {
+    voiceStatus.textContent =
+      "Voice answers are not available in this browser. Please type your answer.";
+    return;
+  }
+
+  if (speechSupported) {
+    window.speechSynthesis.cancel();
+  }
+
+  const Recognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  recognition = new Recognition();
+
+  recognition.lang = "en-GB";
+  recognition.interimResults = false;
+  recognition.continuous = false;
+  recognition.maxAlternatives = 1;
+
+  voiceStatus.textContent =
+    "🎙️ Listening… say your answer clearly.";
+
+  recognition.onresult = function(event) {
+    const transcript =
+      event.results[0][0].transcript.trim();
+
+    answerInput.value = transcript;
+
+    speechTranscriptText.textContent =
+      transcript;
+
+    speechTranscript.style.display =
+      "block";
+
+    voiceStatus.textContent =
+      "Answer captured. Check it when you're ready.";
+  };
+
+  recognition.onerror = function() {
+    voiceStatus.textContent =
+      "I couldn't capture that answer. Please try again or type it.";
+  };
+
+  recognition.onend = function() {
+    recognition = null;
+  };
+
+  try {
+    recognition.start();
+  } catch (error) {
+    voiceStatus.textContent =
+      "Voice input could not start. Please try again or type your answer.";
+  }
+}
+
+
+function speakFeedback(correct, explanation) {
+  const opening =
+    correct
+      ? "Correct!"
+      : "Not quite.";
+
+  speakText(
+    opening + " " + explanation
+  );
 }
 
 
 function checkAnswer() {
-
   const userAnswer =
     answerInput.value.trim();
 
   if (!userAnswer) {
-
     feedbackElement.className =
       "feedback incorrect";
 
@@ -797,8 +1079,15 @@ function checkAnswer() {
     feedbackElement.style.display =
       "block";
 
-    return;
+    speakText(
+      "Please enter an answer first."
+    );
 
+    return;
+  }
+
+  if (answeredCurrentQuestion) {
+    return;
   }
 
   const question =
@@ -812,8 +1101,9 @@ function checkAnswer() {
       question.answers
     );
 
-  if (correct) {
+  answeredCurrentQuestion = true;
 
+  if (correct) {
     correctCount++;
 
     feedbackElement.className =
@@ -823,9 +1113,12 @@ function checkAnswer() {
       "<strong>Correct!</strong><br><br>" +
       question.explanation;
 
-    if (question.level < 5) {
-      currentLevel = question.level + 1;
-    }
+    /*
+     * Move the adaptive target up after success,
+     * but never above the available maximum.
+     */
+    currentLevel =
+      Math.min(5, Math.max(1, question.level + 1));
 
   } else {
 
@@ -836,43 +1129,55 @@ function checkAnswer() {
       "<strong>Not quite.</strong><br><br>" +
       question.explanation;
 
-    if (question.level > 1) {
-      currentLevel = question.level - 1;
-    }
-
+    /*
+     * Move the adaptive target down after an error,
+     * so the next question reinforces the foundation.
+     */
+    currentLevel =
+      Math.max(1, question.level - 1);
   }
 
   feedbackElement.style.display =
     "block";
 
   checkButton.disabled = true;
-
   hintButton.disabled = true;
 
   nextArea.style.display =
     "block";
 
   updateStats();
-
   updateAdaptiveMessage();
 
+  speakFeedback(
+    correct,
+    question.explanation
+  );
 }
 
 
 function nextQuestion() {
 
-  currentQuestion++;
-
-  if (currentQuestion >= questions.length) {
-
+  /*
+   * This prototype contains 12 questions.
+   * The next question is selected based on performance,
+   * rather than following the original fixed sequence.
+   */
+  if (questionHistory.length >= 12) {
     finishModule();
-
     return;
-
   }
 
-  displayQuestion();
+  const next =
+    chooseNextQuestion();
 
+  if (!next) {
+    finishModule();
+    return;
+  }
+
+  setCurrentQuestion(next);
+  displayQuestion();
 }
 
 
@@ -891,6 +1196,8 @@ function finishModule() {
   nextArea.style.display =
     "none";
 
+  stopVoice();
+
   const percentage =
     attemptCount === 0
       ? 0
@@ -901,59 +1208,94 @@ function finishModule() {
   if (percentage >= 80) {
 
     completionMessage.textContent =
-      "Excellent work. You have demonstrated strong understanding of this Algebraic Expressions module.";
+      "Excellent work. You have demonstrated strong understanding of this Algebraic Expressions module. Algevia is ready to increase the challenge.";
 
   } else if (percentage >= 50) {
 
     completionMessage.textContent =
-      "Good progress. You have developed a useful foundation, but there are still areas worth practising.";
+      "Good progress. You have developed a useful foundation. Algevia would continue practising the skills that need more confidence.";
 
   } else {
 
     completionMessage.textContent =
-      "This skill needs more practice. Algevia would recommend returning to the explanation and worked examples before moving on.";
+      "This skill needs more practice. Algevia would return to the explanations and easier questions before increasing the difficulty.";
 
   }
 
   completionCard.style.display =
     "block";
 
+  speakText(
+    "Module complete. " +
+    completionMessage.textContent
+  );
 }
 
+
+function initialiseVoice() {
+  if (!speechSupported && !recognitionSupported) {
+    voiceStatus.textContent =
+      "Voice features are not available here. Written learning and typed answers remain available.";
+  } else if (!speechSupported) {
+    voiceStatus.textContent =
+      "Voice answers may be available, but spoken playback is unavailable. Written text remains available.";
+  } else if (!recognitionSupported) {
+    voiceStatus.textContent =
+      "Spoken playback is available. Voice answers are unavailable, so you can type your answers.";
+  } else {
+    voiceStatus.textContent =
+      "Voice + written learning is ready.";
+  }
+}
+
+
+const firstQuestion = chooseNextQuestion();
+
+if (firstQuestion) {
+  setCurrentQuestion(firstQuestion);
+  displayQuestion();
+}
+
+initialiseVoice();
+
+listenQuestionButton.addEventListener(
+  "click",
+  listenToQuestion
+);
+
+speakAnswerButton.addEventListener(
+  "click",
+  startSpeechRecognition
+);
+
+stopVoiceButton.addEventListener(
+  "click",
+  stopVoice
+);
 
 checkButton.addEventListener(
   "click",
   checkAnswer
 );
 
-
 hintButton.addEventListener(
   "click",
   showHint
 );
-
 
 nextButton.addEventListener(
   "click",
   nextQuestion
 );
 
-
 answerInput.addEventListener(
   "keydown",
   function(event) {
-
     if (event.key === "Enter") {
-
       checkAnswer();
-
     }
-
   }
 );
-
-
-displayQuestion();
 
 </script>
 
