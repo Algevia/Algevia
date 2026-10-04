@@ -148,6 +148,15 @@
     background: #64748b;
   }
 
+  #voiceStatus {
+    color: #475569;
+    min-height: 24px;
+  }
+
+  #speakAnswerButton {
+    background: #0f766e;
+  }
+
   .feedback {
     padding: 18px;
     border-radius: 8px;
@@ -398,6 +407,33 @@
         type="button">
         Check Answer
       </button>
+
+      <button
+        id="listenButton"
+        class="secondary"
+        type="button">
+        🔊 Listen
+      </button>
+
+      <button
+        id="speakAnswerButton"
+        class="secondary"
+        type="button">
+        🎙️ Speak Answer
+      </button>
+
+      <button
+        id="stopVoiceButton"
+        class="secondary"
+        type="button">
+        ⏹ Stop Voice
+      </button>
+
+      <p
+        id="voiceStatus"
+        style="margin-top:12px; font-weight:bold;">
+        You can type or speak your answer.
+      </p>
 
       <button
         id="hintButton"
@@ -723,38 +759,65 @@ const completionMessage =
   document.getElementById("completionMessage");
 
 
-function speakText(text) {
+function getPreferredVoice() {
+  if (!("speechSynthesis" in window)) return null;
 
+  const voices = window.speechSynthesis.getVoices();
+
+  /*
+    Voice gender is not exposed reliably by the Web Speech API.
+    Prefer a British English voice with a known female-style
+    name when one is available, then fall back to any en-GB voice.
+  */
+  return (
+    voices.find(voice =>
+      /^en-GB$/i.test(voice.lang) &&
+      /female|susan|hazel|libby|sonia|serena|kate|amy|samantha|moira/i.test(voice.name)
+    ) ||
+    voices.find(voice => /^en-GB$/i.test(voice.lang)) ||
+    voices.find(voice => /^en-/i.test(voice.lang)) ||
+    voices[0] ||
+    null
+  );
+}
+
+function speakText(text) {
   if (!("speechSynthesis" in window)) {
+    setVoiceStatus("Voice playback is not available on this device. Written text is still available.");
     return;
   }
 
   window.speechSynthesis.cancel();
 
-  const utterance =
-    new SpeechSynthesisUtterance(text);
-
+  const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-GB";
   utterance.rate = 0.9;
   utterance.pitch = 1.05;
 
-  const voices =
-    window.speechSynthesis.getVoices();
-
-  const femaleBritishVoice =
-    voices.find(voice =>
-      /^en-GB$/i.test(voice.lang) &&
-      /female|susan|hazel|libby|sonia|serena|kate/i.test(voice.name)
-    ) ||
-    voices.find(voice =>
-      /^en-GB$/i.test(voice.lang)
-    );
-
-  if (femaleBritishVoice) {
-    utterance.voice = femaleBritishVoice;
+  const voice = getPreferredVoice();
+  if (voice) {
+    utterance.voice = voice;
   }
 
+  utterance.onstart = function() {
+    setVoiceStatus("🔊 Algevia is speaking…");
+  };
+
+  utterance.onend = function() {
+    setVoiceStatus("Voice finished. You can replay it or continue.");
+  };
+
+  utterance.onerror = function() {
+    setVoiceStatus("Voice playback could not be completed. Written text is still available.");
+  };
+
   window.speechSynthesis.speak(utterance);
+}
+
+if ("speechSynthesis" in window && "onvoiceschanged" in window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = function() {
+    getPreferredVoice();
+  };
 }
 
 
@@ -977,6 +1040,15 @@ function checkAnswer() {
   feedbackElement.style.display =
     "block";
 
+  /*
+    Voice and written feedback are deliberately simultaneous.
+  */
+  speakFeedback(
+    correct
+      ? "Correct. " + question.explanation
+      : "Not quite. " + question.explanation
+  );
+
   checkButton.disabled = true;
 
   hintButton.disabled = true;
@@ -1084,6 +1156,210 @@ answerInput.addEventListener(
   }
 );
 
+
+
+/* =========================================================
+   ALGEVIA VOICE INTERACTION
+   Voice + written text work together.
+   ========================================================= */
+
+const listenButton = document.getElementById("listenButton");
+const speakAnswerButton = document.getElementById("speakAnswerButton");
+const stopVoiceButton = document.getElementById("stopVoiceButton");
+const voiceStatus = document.getElementById("voiceStatus");
+
+const SpeechRecognitionAPI =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+let recognition = null;
+let isListening = false;
+
+function setVoiceStatus(message) {
+  if (voiceStatus) {
+    voiceStatus.textContent = message;
+  }
+}
+
+function mathsSpeechToText(text) {
+  let value = text.toLowerCase().trim();
+
+  const replacements = [
+    [/\bminus\b/g, "-"],
+    [/\bnegative\b/g, "-"],
+    [/\bplus\b/g, "+"],
+    [/\btimes\b/g, "*"],
+    [/\bmultiplied by\b/g, "*"],
+    [/\bdivided by\b/g, "/"],
+    [/\bequals\b/g, "="],
+    [/\bpoint\b/g, "."],
+    [/\bzero\b/g, "0"],
+    [/\bone\b/g, "1"],
+    [/\btwo\b/g, "2"],
+    [/\bthree\b/g, "3"],
+    [/\bfour\b/g, "4"],
+    [/\bfive\b/g, "5"],
+    [/\bsix\b/g, "6"],
+    [/\bseven\b/g, "7"],
+    [/\beight\b/g, "8"],
+    [/\bnine\b/g, "9"],
+    [/\bten\b/g, "10"],
+    [/\btwenty\b/g, "20"],
+    [/\bthirty\b/g, "30"],
+    [/\bforty\b/g, "40"],
+    [/\bfifty\b/g, "50"],
+    [/\bsixty\b/g, "60"],
+    [/\bseventy\b/g, "70"],
+    [/\beighty\b/g, "80"],
+    [/\bninety\b/g, "90"]
+  ];
+
+  replacements.forEach(function(pair) {
+    value = value.replace(pair[0], pair[1]);
+  });
+
+  /* "4 x" → "4x" */
+  value = value.replace(/(\d)\s*x\b/g, "$1x");
+
+  /* "x 2" is normally multiplication in spoken algebra. */
+  value = value.replace(/\bx\s+(\d)/g, "x*$1");
+
+  /* Remove punctuation that speech recognition may add. */
+  value = value.replace(/[?.,]+$/g, "");
+
+  return value.trim();
+}
+
+function startSpeechRecognition() {
+  if (!SpeechRecognitionAPI) {
+    setVoiceStatus(
+      "🎙️ Speech input is not available in this browser. You can still type your answer."
+    );
+    return;
+  }
+
+  if (recognition) {
+    try {
+      recognition.stop();
+    } catch (error) {}
+  }
+
+  recognition = new SpeechRecognitionAPI();
+  recognition.lang = "en-GB";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.continuous = false;
+
+  recognition.onstart = function() {
+    isListening = true;
+    speakAnswerButton.textContent = "🎙️ Listening…";
+    setVoiceStatus("🎙️ Listening — speak your answer.");
+  };
+
+  recognition.onresult = function(event) {
+    const transcript =
+      event.results[0][0].transcript || "";
+
+    const mathsAnswer =
+      mathsSpeechToText(transcript);
+
+    /*
+      IMPORTANT:
+      The recognised answer is written into the same
+      answer box the student can type into.
+    */
+    answerInput.value = mathsAnswer;
+
+    setVoiceStatus(
+      'Heard: "' + transcript + '"  →  Answer: ' + mathsAnswer
+    );
+
+    answerInput.focus();
+  };
+
+  recognition.onerror = function(event) {
+    isListening = false;
+    speakAnswerButton.textContent = "🎙️ Speak Answer";
+
+    if (event.error === "not-allowed") {
+      setVoiceStatus(
+        "Microphone access was not allowed. You can type your answer instead."
+      );
+    } else {
+      setVoiceStatus(
+        "I couldn't hear that clearly. Please try again or type your answer."
+      );
+    }
+  };
+
+  recognition.onend = function() {
+    isListening = false;
+    speakAnswerButton.textContent = "🎙️ Speak Answer";
+
+    if (answerInput.value.trim()) {
+      setVoiceStatus(
+        "Your spoken answer has been typed into the answer box. Check it, edit it if needed, then press Check Answer."
+      );
+    } else {
+      setVoiceStatus("You can try speaking again or type your answer.");
+    }
+  };
+
+  try {
+    recognition.start();
+  } catch (error) {
+    isListening = false;
+    speakAnswerButton.textContent = "🎙️ Speak Answer";
+    setVoiceStatus("Please try Speak Answer again.");
+  }
+}
+
+function stopVoice() {
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+
+  if (recognition) {
+    try {
+      recognition.stop();
+    } catch (error) {}
+  }
+
+  isListening = false;
+
+  if (speakAnswerButton) {
+    speakAnswerButton.textContent = "🎙️ Speak Answer";
+  }
+
+  setVoiceStatus("Voice stopped.");
+}
+
+listenButton.addEventListener("click", function() {
+  const question = getCurrentQuestion();
+
+  if ("speechSynthesis" in window) {
+    speakText(question.question);
+  } else {
+    setVoiceStatus(
+      "Voice playback is not available on this device. The written question remains visible."
+    );
+  }
+});
+
+speakAnswerButton.addEventListener(
+  "click",
+  startSpeechRecognition
+);
+
+stopVoiceButton.addEventListener(
+  "click",
+  stopVoice
+);
+
+/* Speak the written feedback as well as displaying it. */
+function speakFeedback(text) {
+  speakText(text);
+}
 
 displayQuestion();
 
