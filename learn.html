@@ -1013,6 +1013,301 @@ updateProgress();
 
 })();
 </script>
+  
+<script>
+/*
+ ALGEVIA V15
+ Student microphone + tutor speech + conversation board.
+ Keeps the existing V14 learning engine and layout.
+*/
+(function () {
+  "use strict";
+
+  const byId = id => document.getElementById(id);
+
+  const hintButton = byId("hint");
+  const teachButton = byId("teach");
+  const studentButton = byId("speak");
+  const stopButton = byId("stop");
+  const dialogue = byId("dialogue");
+  const tutorPanel = dialogue?.parentElement;
+
+  if (!hintButton || !teachButton ||
+      !studentButton || !dialogue || !tutorPanel) {
+    console.error("Algevia V15: Required V14 controls not found.");
+    return;
+  }
+
+  // Create a shared learning conversation board.
+  const heading = document.createElement("h3");
+  heading.textContent = "Learning Conversation Board";
+
+  const board = document.createElement("div");
+  board.id = "learningConversationBoard";
+  board.setAttribute("role", "log");
+  board.setAttribute("aria-label", "Learning conversation");
+  board.style.cssText = [
+    "background:#fff",
+    "border:1px solid #d9e4f0",
+    "border-radius:10px",
+    "padding:14px",
+    "max-height:350px",
+    "overflow-y:auto",
+    "margin-top:12px"
+  ].join(";");
+
+  const microphoneStatus = document.createElement("p");
+  microphoneStatus.id = "studentMicrophoneStatus";
+  microphoneStatus.textContent = "Student microphone is off.";
+  microphoneStatus.style.color = "#60738a";
+
+  tutorPanel.append(heading, board, microphoneStatus);
+
+  let recognition = null;
+  let listening = false;
+  let lastTutorText = dialogue.textContent.trim();
+
+  function addMessage(speaker, text) {
+    if (!text) return;
+
+    const entry = document.createElement("div");
+    entry.style.cssText = [
+      "padding:12px",
+      "border-radius:9px",
+      "margin:8px 0",
+      "background:" +
+        (speaker === "Tutor" ? "#edf5fc" : "#f5f7fb")
+    ].join(";");
+
+    const label = document.createElement("strong");
+    label.textContent = speaker + ": ";
+
+    entry.append(label, document.createTextNode(text));
+    board.appendChild(entry);
+    board.scrollTop = board.scrollHeight;
+  }
+
+  // Display tutor dialogue automatically when it changes.
+  const observer = new MutationObserver(() => {
+    const text = dialogue.textContent.trim();
+
+    if (text && text !== lastTutorText) {
+      lastTutorText = text;
+      addMessage("Tutor", text);
+    }
+  });
+
+  observer.observe(dialogue, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+
+  function stopTutorVoice() {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  function tutorVoice(text) {
+    if (!("speechSynthesis" in window)) {
+      microphoneStatus.textContent =
+        "Tutor speech is unavailable in this browser.";
+      return;
+    }
+
+    stopTutorVoice();
+
+    const gender =
+      byId("male")?.classList.contains("active")
+        ? "male"
+        : "female";
+
+    const voices = window.speechSynthesis.getVoices();
+
+    const femaleNames =
+      /samantha|karen|moira|sonia|serena|kate|amy|ava|jenny|zira|victoria/i;
+
+    const maleNames =
+      /daniel|george|oliver|ryan|arthur|james|thomas|william/i;
+
+    const pattern =
+      gender === "male" ? maleNames : femaleNames;
+
+    const voice = voices.find(v =>
+      /^en-GB/i.test(v.lang) && pattern.test(v.name)
+    ) || voices.find(v =>
+      /^en/i.test(v.lang) && pattern.test(v.name)
+    );
+
+    if (!voice) {
+      microphoneStatus.textContent =
+        "No matching tutor voice is installed. " +
+        "The explanation is still displayed as text.";
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.voice = voice;
+    utterance.lang = voice.lang;
+    utterance.rate = 0.93;
+    utterance.pitch = 1;
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Hint and Teach Me: allow the original V14 function
+  // to update the dialogue, then speak the updated text.
+  function speakUpdatedTutorText() {
+    setTimeout(() => {
+      const text = dialogue.textContent.trim();
+      if (text) tutorVoice(text);
+    }, 0);
+  }
+
+  hintButton.addEventListener(
+    "click",
+    speakUpdatedTutorText
+  );
+
+  teachButton.addEventListener(
+    "click",
+    speakUpdatedTutorText
+  );
+
+  function stopStudentMicrophone() {
+    if (recognition) {
+      try {
+        recognition.abort();
+      } catch (error) {}
+      recognition = null;
+    }
+
+    listening = false;
+    studentButton.textContent = "Student Speak";
+    studentButton.setAttribute("aria-pressed", "false");
+    microphoneStatus.textContent = "Student microphone is off.";
+  }
+
+  function startStudentMicrophone() {
+    if (listening) {
+      stopStudentMicrophone();
+      return;
+    }
+
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      microphoneStatus.textContent =
+        "Speech recognition is unavailable. " +
+        "Please type your answer instead.";
+      return;
+    }
+
+    stopTutorVoice();
+
+    const instance = new SpeechRecognition();
+    recognition = instance;
+
+    instance.lang = "en-GB";
+    instance.continuous = false;
+    instance.interimResults = false;
+
+    instance.onresult = event => {
+      const spoken = Array.from(event.results)
+        .map(result => result[0].transcript)
+        .join(" ")
+        .trim();
+
+      if (!spoken) return;
+
+      addMessage("Student", spoken);
+
+      microphoneStatus.textContent =
+        "Student speech converted to text.";
+
+      // For this prototype, spoken answers are placed
+      // in the answer box for student confirmation.
+      const answerBox = byId("answer");
+
+      if (answerBox) {
+        answerBox.value = spoken;
+        answerBox.dispatchEvent(
+          new Event("input", { bubbles: true })
+        );
+      }
+    };
+
+    instance.onerror = event => {
+      microphoneStatus.textContent =
+        "Microphone error: " + event.error +
+        ". You can type your answer.";
+    };
+
+    instance.onend = () => {
+      if (recognition === instance) {
+        recognition = null;
+        listening = false;
+        studentButton.textContent = "Student Speak";
+        studentButton.setAttribute("aria-pressed", "false");
+      }
+    };
+
+    try {
+      instance.start();
+      listening = true;
+      studentButton.textContent = "Stop Student Microphone";
+      studentButton.setAttribute("aria-pressed", "true");
+      microphoneStatus.textContent = "Listening to student...";
+    } catch (error) {
+      stopStudentMicrophone();
+      microphoneStatus.textContent =
+        "Could not activate microphone: " + error.message;
+    }
+  }
+
+  // Replace V14 Speak behaviour with student microphone.
+  studentButton.addEventListener("click", event => {
+    event.stopImmediatePropagation();
+    startStudentMicrophone();
+  }, true);
+
+  studentButton.textContent = "Student Speak";
+
+  // Stop both tutor speech and microphone.
+  stopButton?.addEventListener("click", () => {
+    stopStudentMicrophone();
+    stopTutorVoice();
+  });
+
+  // Avoid recording a previous question's conversation
+  // against a newly displayed question.
+  let lastQuestion = byId("question")?.textContent;
+
+  const questionElement = byId("question");
+
+  if (questionElement) {
+    new MutationObserver(() => {
+      const question = questionElement.textContent;
+
+      if (question !== lastQuestion) {
+        lastQuestion = question;
+        stopStudentMicrophone();
+        stopTutorVoice();
+        board.replaceChildren();
+        lastTutorText = dialogue.textContent.trim();
+      }
+    }).observe(questionElement, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
 
