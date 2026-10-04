@@ -256,6 +256,20 @@
 @media(max-width:700px){.algevia-grid{grid-template-columns:1fr}.algevia-control-row button{width:100%}}
 </style>
 
+<style id="algevia-v5-clean-layout">
+  #algeviaLearningControls, #algeviaTutorCard, #algeviaMasteryCard { box-sizing:border-box; width:100%; max-width:100%; }
+  #algeviaTutorCard { margin-bottom:20px; }
+  #algeviaTutorCard .algevia-control-row { display:flex; gap:12px; flex-wrap:wrap; }
+  #algeviaTutorCard .algevia-tutor-choice { min-width:160px; }
+  #algeviaTutorCard .algevia-tutor-choice.selected { outline:3px solid currentColor; font-weight:700; }
+  #algeviaLearningControls select { width:100%; box-sizing:border-box; }
+  #algeviaLearningControls .algevia-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  @media (max-width:700px){ #algeviaLearningControls .algevia-grid{grid-template-columns:1fr;} }
+  #algeviaLearningControls, #algeviaTutorCard, #algeviaMasteryCard { margin-top:20px; }
+  #algeviaTutorCard { order:0; }
+  #algeviaLearningControls { order:0; }
+  #algeviaMasteryCard { order:3; }
+</style>
 </head>
 
 <body>
@@ -457,21 +471,6 @@
         type="button">
         ⏹ Stop Voice
       </button>
-
-      <div style="margin-top:15px;">
-        <strong>Choose your Algevia tutor:</strong>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-          <button id="femaleTutorButton" class="secondary" type="button">
-            👩 Female Tutor
-          </button>
-          <button id="maleTutorButton" class="secondary" type="button">
-            👨 Male Tutor
-          </button>
-        </div>
-        <p id="selectedTutor" style="margin-top:8px;">
-          👩 Female Tutor selected
-        </p>
-      </div>
 
       <p
         id="voiceStatus"
@@ -1892,7 +1891,7 @@ stopVoiceButton.addEventListener(
   function score(q){const s=getSkill(q),now=Date.now();let v=(100-s.mastery)*2+s.errors*10+(s.reviewDue&&s.reviewDue<=now?70:0);if(s.attempts===0)v+=35;if(session.used.includes(q.id))v-=60;v+=(q.difficulty>=4&&s.mastery<55?12:0);v+=Math.random()*8;return v;}
   function choose(t,s){const pool=bank.filter(q=>q.topic===t&&q.subtopic===s);if(!pool.length)return null;return pool.slice().sort((a,b)=>score(b)-score(a))[0];}
   function tutorText(kind,q){const female=tutor==='female';const n=(arr)=>arr[Math.floor(Math.random()*arr.length)];if(kind==='correct')return n(['Brilliant! You spotted that straight away.','Yes — exactly right. Nice work.','That’s it. You handled that really well.','Perfect. You’ve got the idea.']);if(kind==='wrong')return n(['Not quite — but you’re close. Let’s look at the part that needs changing.','Nearly. There’s one step to fix, so let’s slow it down and look at it together.','Good attempt. I think we’ve found the bit that’s causing trouble. Let’s focus on that.']);if(kind==='repeat')return 'I’ve noticed this skill is proving a little tricky. Let’s pause and practise the key idea before we move on.';if(kind==='hint')return female?'Okay, let’s have a look at this together.':'Alright, let’s have a look at this together.';return female?'Okay, let’s work through this one together.':'Alright, let’s work through this one together.';}
-  function speak(text){if(!('speechSynthesis'in window)){if($('voiceStatus'))$('voiceStatus').textContent='Voice playback is not available in this browser. Written tutor guidance remains available.';return;}window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text).replace(/(\d+)x\b/gi,'$1 x').replace(/\^2/g,' squared ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/\*/g,' times ').replace(/−/g,' minus '));const vs=window.speechSynthesis.getVoices();const female=/susan|hazel|libby|sonia|serena|kate|amy|samantha|moira|victoria|aria|ava|jenny|zira|female/i;const male=/daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|male/i;const pool=vs.filter(v=>/^en-/i.test(v.lang));const v=pool.sort((a,b)=>{const sa=(/^en-GB$/i.test(a.lang)?100:40)+(tutor==='female'&&female.test(a.name)?50:0)+(tutor==='male'&&male.test(a.name)?50:0);const sb=(/^en-GB$/i.test(b.lang)?100:40)+(tutor==='female'&&female.test(b.name)?50:0)+(tutor==='male'&&male.test(b.name)?50:0);return sb-sa;})[0]||vs[0];if(v){u.voice=v;u.lang=v.lang;}else u.lang='en-GB';u.rate=.86;u.pitch=tutor==='female'?1.04:.96;u.onstart=()=>{if($('voiceStatus'))$('voiceStatus').textContent='🔊 Algevia is speaking…';};u.onend=()=>{if($('voiceStatus'))$('voiceStatus').textContent='Voice finished.';};window.speechSynthesis.speak(u);}
+  function speak(text){if(!('speechSynthesis'in window)){if($('voiceStatus'))$('voiceStatus').textContent='Voice playback is not available in this browser. Written tutor guidance remains available.';return;}window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text).replace(/(\d+)x\b/gi,'$1 x').replace(/\^2/g,' squared ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/\*/g,' times ').replace(/−/g,' minus '));const vs=window.speechSynthesis.getVoices();const female=/samantha|karen|moira|susan|hazel|libby|sonia|serena|kate|amy|victoria|aria|ava|jenny|zira|siri.*female|female/i;const male=/daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william|siri.*male|male/i;const pool=vs.filter(v=>/^en-/i.test(v.lang));const femalePool=pool.filter(v=>female.test(v.name)&&!male.test(v.name));const malePool=pool.filter(v=>male.test(v.name)&&!female.test(v.name));const ranked=(arr)=>arr.slice().sort((a,b)=>(/^en-GB$/i.test(a.lang)?20:0)-(/^en-GB$/i.test(b.lang)?20:0)||a.name.localeCompare(b.name));let v=tutor==='female'?(ranked(femalePool)[0]||ranked(pool.filter(x=>!male.test(x.name)))[0]):(ranked(malePool)[0]||ranked(pool)[0]);v=v||vs[0];if(v){u.voice=v;u.lang=v.lang;}else u.lang='en-GB';u.rate=.86;u.pitch=tutor==='female'?1.02:.96;u.onstart=()=>{if($('voiceStatus'))$('voiceStatus').textContent='🔊 Algevia is speaking…';};u.onend=()=>{if($('voiceStatus'))$('voiceStatus').textContent='Voice finished.';};window.speechSynthesis.speak(u);}
   function setTutor(t){tutor=t;localStorage.setItem('algeviaTutorVoice',t);$('algeviaFemaleTutor').classList.toggle('selected',t==='female');$('algeviaMaleTutor').classList.toggle('selected',t==='male');$('algeviaSelectedTutor').textContent=t==='female'?'👩 Female Tutor selected':'👨 Male Tutor selected';if($('selectedTutor'))$('selectedTutor').textContent=t==='female'?'👩 Female Tutor selected':'👨 Male Tutor selected';}
   function render(q){current=q;hintIndex=0;answered=false;const st=getSkill(q);if($('question'))$('question').textContent=q.q;if($('questionCounter'))$('questionCounter').textContent='Question — adaptive practice';if($('progressBar'))$('progressBar').style.width='0%';if($('answerInput')){$('answerInput').value='';$('answerInput').focus();}if($('feedback'))$('feedback').style.display='none';if($('hint'))$('hint').style.display='none';if($('nextArea'))$('nextArea').style.display='none';if($('checkButton'))$('checkButton').disabled=false;if($('hintButton'))$('hintButton').disabled=false;if($('teachButton'))$('teachButton').disabled=false;if($('enhancedMasteryText'))$('enhancedMasteryText').textContent='Current skill: '+q.skill+' — '+label(st.mastery)+' ('+st.mastery+'%)';if($('enhancedTutorDialogue'))$('enhancedTutorDialogue').textContent=tutorText('question',q)+' '+q.q;saveContext();}
   function start(){const topicEl=$('algeviaTopicSelect'),subEl=$('algeviaSubtopicSelect');if(!topicEl||!subEl||!bank.length)return;const t=topicEl.value,s=subEl.value;if(!t||!s)return;state.lastTopic=t;state.lastSubtopic=s;session={attempts:0,correct:0,index:0,started:Date.now(),used:[]};current=choose(t,s);if(!current)return;session.used.push(current.id);if($('completionCard'))$('completionCard').style.display='none';render(current);const step3=Array.from(document.querySelectorAll('main > section.card')).find(sec=>{const h=sec.querySelector('h2');return h&&/Step 3/i.test(h.textContent);});if(step3)step3.style.display='block';}
@@ -1916,6 +1915,11 @@ stopVoiceButton.addEventListener(
     if(step3&&controls){step3.parentNode.insertBefore(controls,step3);if(tutorCard)step3.parentNode.insertBefore(tutorCard,step3);if(mastery)step3.parentNode.insertBefore(mastery,step3);}
   }
   function init(){
+    // v5: there must be exactly one visible tutor selector. Remove any legacy selector block.
+    document.querySelectorAll('#femaleTutorButton, #maleTutorButton, #selectedTutor').forEach(function(el){
+      const legacy=el.closest('div[style*="margin-top:15px"]');
+      if(legacy) legacy.remove(); else el.remove();
+    });
     moveEnhancedControls();
     populate();
     renderProfile();
@@ -1942,7 +1946,7 @@ stopVoiceButton.addEventListener(
     if($('saveExitButton'))intercept('saveExitButton',saveExit);
     if($('answerInput'))$('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check();}},true);
     // Always show a real first question on entry. The student can then change topic/subtopic at any time.
-    if(bank.length){start();}
+    if(bank.length){start(); setTimeout(function(){ if(current) render(current); }, 0);}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
