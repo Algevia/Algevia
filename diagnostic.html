@@ -246,14 +246,6 @@
       <strong>No preparation is needed.</strong>
       Answer as accurately as you can.
     </p>
-    <button
-  class="button"
-  id="resetDiagnosticHistory"
-  type="button"
-  style="margin-top:20px;"
->
-  Reset Diagnostic History
-</button>
   </section>
 
   <section id="diagnosticArea">
@@ -338,16 +330,16 @@
       <div class="method-grid">
 
         <div class="method-card">
-          <h3>📚 Learn by Yourself</h3>
+          <h3>ðŸ“š Learn by Yourself</h3>
           <p>
             Learn with personalised explanations, examples,
             practice and adaptive questions.
           </p>
-          <a class="button" href="learn.html">Start AI Learning</a>
+          <a class="button" id="startAiLearning" href="learn.html">Start AI Learning</a>
         </div>
 
         <div class="method-card">
-          <h3>👨‍🏫 Match My Tutor</h3>
+          <h3>ðŸ‘¨â€ðŸ« Match My Tutor</h3>
           <p>
             Use your Learning Profile to help identify tutors
             suited to your subject and learning needs.
@@ -356,7 +348,7 @@
         </div>
 
         <div class="method-card">
-          <h3>🔗 Learn with Both</h3>
+          <h3>ðŸ”— Learn with Both</h3>
           <p>
             Combine personalised AI learning with support from
             a tutor who understands your Learning Profile.
@@ -372,7 +364,7 @@
 </main>
 
 <footer>
-  © Algevia — The right person. The right solution. No more guesswork.
+  Â© Algevia â€” The right person. The right solution. No more guesswork.
 </footer>
 
 <script>
@@ -383,11 +375,11 @@
 
   Architecture:
   Education selections
-  → exact question-bank routing
-  → validation
-  → 20-question selection
-  → answers
-  → Learning Profile
+  â†’ exact question-bank routing
+  â†’ validation
+  â†’ 20-question selection
+  â†’ answers
+  â†’ Learning Profile
 
   Current live bank:
   GCSE Maths / AQA / Higher
@@ -400,64 +392,11 @@ const QUESTION_COUNT = 20;
 
 let questionBank = [];
 let diagnosticQuestions = [];
+let currentBankFile = "";
 let currentQuestion = 0;
 let score = 0;
 let answers = [];
-  
-/* Completed diagnostic question history */
-const DIAGNOSTIC_HISTORY_KEY =
-  "algeviaCompletedDiagnosticQuestionIds";
 
-function getDiagnosticHistory() {
-  try {
-    const saved =
-      localStorage.getItem(
-        DIAGNOSTIC_HISTORY_KEY
-      );
-
-    if (!saved) {
-      return [];
-    }
-
-    const parsed =
-      JSON.parse(saved);
-
-    return Array.isArray(parsed)
-      ? parsed
-      : [];
-  } catch (error) {
-    console.warn(
-      "Could not read diagnostic history:",
-      error
-    );
-
-    return [];
-  }
-}
-
-function saveDiagnosticHistory(questionIds) {
-  try {
-    const existing =
-      getDiagnosticHistory();
-
-    const combined = [
-      ...new Set([
-        ...existing,
-        ...questionIds
-      ])
-    ];
-
-    localStorage.setItem(
-      DIAGNOSTIC_HISTORY_KEY,
-      JSON.stringify(combined)
-    );
-  } catch (error) {
-    console.warn(
-      "Could not save diagnostic history:",
-      error
-    );
-  }
-}
 const elements = {
   questionText: document.getElementById("questionText"),
   questionNumber: document.getElementById("questionNumber"),
@@ -474,21 +413,6 @@ const elements = {
   estimatedLevel: document.getElementById("estimatedLevel"),
   profileGrid: document.getElementById("profileGrid")
 };
-  const resetDiagnosticHistoryButton =
-  document.getElementById("resetDiagnosticHistory");
-
-resetDiagnosticHistoryButton.addEventListener(
-  "click",
-  function() {
-    localStorage.removeItem(
-      DIAGNOSTIC_HISTORY_KEY
-    );
-
-    alert("Diagnostic history has been reset.");
-
-    window.location.reload();
-  }
-);
 
 function setMessage(message) {
   elements.questionText.textContent = message;
@@ -600,7 +524,7 @@ function getBankFile(selection) {
     board === "aqa" &&
     tier === "higher"
   ) {
-  return "https://algevia.vercel.app/data/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";
+  return "data/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";  
   }
 
   return "";
@@ -675,16 +599,112 @@ function compatibleQuestions(selection) {
   topic diversity
   subtopic diversity
 */
+const DIAGNOSTIC_HISTORY_KEY = "algeviaDiagnosticHistory";
+
+function getDiagnosticHistory(bankFile) {
+  try {
+    const raw = localStorage.getItem(DIAGNOSTIC_HISTORY_KEY);
+    const history = raw ? JSON.parse(raw) : {};
+
+    if (!history || typeof history !== "object") {
+      return { ids: [], texts: [] };
+    }
+
+    const bankHistory = history[bankFile];
+
+    if (!bankHistory || typeof bankHistory !== "object") {
+      return { ids: [], texts: [] };
+    }
+
+    return {
+      ids: Array.isArray(bankHistory.ids) ? bankHistory.ids : [],
+      texts: Array.isArray(bankHistory.texts) ? bankHistory.texts : []
+    };
+  } catch (error) {
+    console.warn("Could not read diagnostic history:", error);
+    return { ids: [], texts: [] };
+  }
+}
+
+function recordDiagnosticCompletion(bankFile, questions) {
+  try {
+    const raw = localStorage.getItem(DIAGNOSTIC_HISTORY_KEY);
+    const history = raw ? JSON.parse(raw) : {};
+
+    if (!history || typeof history !== "object") {
+      return;
+    }
+
+    if (!history[bankFile]) {
+      history[bankFile] = {
+        ids: [],
+        texts: []
+      };
+    }
+
+    const bankHistory = history[bankFile];
+
+    if (!Array.isArray(bankHistory.ids)) {
+      bankHistory.ids = [];
+    }
+
+    if (!Array.isArray(bankHistory.texts)) {
+      bankHistory.texts = [];
+    }
+
+    for (const question of questions) {
+      const id = normalise(question.id);
+      const text = normalise(question.question);
+
+      if (id && !bankHistory.ids.includes(id)) {
+        bankHistory.ids.push(id);
+      }
+
+      if (text && !bankHistory.texts.includes(text)) {
+        bankHistory.texts.push(text);
+      }
+    }
+
+    localStorage.setItem(
+      DIAGNOSTIC_HISTORY_KEY,
+      JSON.stringify(history)
+    );
+  } catch (error) {
+    console.warn("Could not save diagnostic history:", error);
+  }
+}
+
 function buildDiagnostic(selection) {
   const pool = compatibleQuestions(selection);
 
-  const completedQuestionIds = new Set(
-    getDiagnosticHistory().map(id => normalise(id))
-  );
+  if (pool.length < QUESTION_COUNT) {
+    return {
+      questions: [],
+      error:
+        "There are not yet enough suitable questions in this diagnostic bank. Please try again later."
+    };
+  }
 
-  const freshPool = pool.filter(question =>
-    !completedQuestionIds.has(normalise(question.id))
-  );
+  const history = getDiagnosticHistory(currentBankFile);
+  const previousIds = new Set(history.ids.map(normalise));
+  const previousTexts = new Set(history.texts.map(normalise));
+
+  /*
+    Prefer questions never used in a completed diagnostic.
+    If fewer than 20 unused suitable questions remain,
+    the engine can reuse older questions rather than fail.
+  */
+  const freshPool = pool.filter(question => {
+    const id = normalise(question.id);
+    const text = normalise(question.question);
+
+    return !previousIds.has(id) && !previousTexts.has(text);
+  });
+
+  const selectionPool =
+    freshPool.length >= QUESTION_COUNT
+      ? freshPool
+      : pool;
 
   const selected = [];
   const usedIds = new Set();
@@ -721,13 +741,13 @@ function buildDiagnostic(selection) {
 
   function isDuplicate(question) {
     const id = normalise(question.id);
-    const questionText = normalise(question.question);
+    const text = normalise(question.question);
 
     return (
       !id ||
-      !questionText ||
+      !text ||
       usedIds.has(id) ||
-      usedTexts.has(questionText)
+      usedTexts.has(text)
     );
   }
 
@@ -742,7 +762,6 @@ function buildDiagnostic(selection) {
     const questionType = questionTypeKey(question);
 
     if (
-      !allowRepeatedSkill &&
       subtopic &&
       usedSubtopics.has(subtopic)
     ) {
@@ -758,51 +777,94 @@ function buildDiagnostic(selection) {
     }
 
     selected.push(question);
+
     usedIds.add(normalise(question.id));
     usedTexts.add(normalise(question.question));
 
-    if (topic) usedTopics.add(topic);
-    if (subtopic) usedSubtopics.add(subtopic);
-    if (skill) usedSkills.add(skill);
-    if (questionType) usedQuestionTypes.add(questionType);
+    if (topic) {
+      usedTopics.add(topic);
+    }
+
+    if (subtopic) {
+      usedSubtopics.add(subtopic);
+    }
+
+    if (skill) {
+      usedSkills.add(skill);
+    }
+
+    if (questionType) {
+      usedQuestionTypes.add(questionType);
+    }
 
     return true;
   }
 
   function gradeDistance(question, desiredGrade) {
     const grade = questionGrade(question);
-    return grade === null ? 999 : Math.abs(grade - desiredGrade);
+
+    if (grade === null) {
+      return 99;
+    }
+
+    return Math.abs(grade - desiredGrade);
   }
 
   function candidateScore(question, desiredGrade) {
     const grade = questionGrade(question);
 
     if (grade === null) {
-      return -9999;
+      return -999;
     }
 
-    let scoreValue = 0;
+    let score = 0;
 
-    scoreValue -= gradeDistance(question, desiredGrade) * 10;
+    // Stay close to the desired grade
+    score -= gradeDistance(question, desiredGrade) * 10;
 
+    // Strongly reward a new major topic
     const topic = topicKey(question);
+
+    if (topic && !usedTopics.has(topic)) {
+      score += 50;
+    }
+
+    // Reward a new skill
     const skill = skillKey(question);
+
+    if (skill && !usedSkills.has(skill)) {
+      score += 30;
+    }
+
+    // Reward a new subtopic
     const subtopic = subtopicKey(question);
+
+    if (
+      subtopic &&
+      !usedSubtopics.has(subtopic)
+    ) {
+      score += 20;
+    }
+
+    // Reward a new question type
     const questionType = questionTypeKey(question);
 
-    scoreValue += topic && !usedTopics.has(topic) ? 50 : -35;
-    scoreValue += skill && !usedSkills.has(skill) ? 30 : -30;
-    scoreValue += subtopic && !usedSubtopics.has(subtopic) ? 20 : -25;
-    scoreValue += questionType && !usedQuestionTypes.has(questionType)
-      ? 10
-      : -15;
-
-    if (question.difficulty !== undefined &&
-        question.difficulty !== null) {
-      scoreValue += 3;
+    if (
+      questionType &&
+      !usedQuestionTypes.has(questionType)
+    ) {
+      score += 10;
     }
 
-    return scoreValue;
+    // Small reward for known difficulty
+    if (
+      question.difficulty !== undefined &&
+      question.difficulty !== null
+    ) {
+      score += 3;
+    }
+
+    return score;
   }
 
   function chooseBest(candidates, desiredGrade) {
@@ -810,105 +872,83 @@ function buildDiagnostic(selection) {
       question => !isDuplicate(question)
     );
 
-    if (!available.length) {
+    if (available.length === 0) {
       return null;
     }
 
-    const shuffled = shuffle(available);
-
-    shuffled.sort((a, b) => {
-      const difference =
+    available.sort(
+      (a, b) =>
         candidateScore(b, desiredGrade) -
-        candidateScore(a, desiredGrade);
+        candidateScore(a, desiredGrade)
+    );
 
-      if (Math.abs(difference) <= 5) {
-        return Math.random() - 0.5;
-      }
-
-      return difference;
-    });
-
-    return shuffled[0];
+    return available[0];
   }
 
   const currentGrade = Number(selection.currentGrade);
   const targetGrade = Number(selection.targetGrade);
 
-  // Step 1: cover all six major topics where possible.
+  /*
+    STEP 1
+    First guarantee all six major AQA topic areas
+    where the question bank contains them.
+  */
+
   for (const majorTopic of majorTopics) {
-    const candidates = freshPool.filter(question => {
-      const grade = questionGrade(question);
+    const topicCandidates = selectionPool.filter(
+      question =>
+        topicKey(question) === majorTopic
+    );
 
-      return (
-        topicKey(question) === majorTopic &&
-        grade !== null &&
-        grade >= currentGrade &&
-        grade <= targetGrade &&
-        !isDuplicate(question)
-      );
-    });
-
-    if (!candidates.length) {
+    if (topicCandidates.length === 0) {
       continue;
     }
 
-    const progress = selected.length / Math.max(majorTopics.length - 1, 1);
+    /*
+      Spread the first six questions across the
+      student's current-to-target grade range.
+    */
+    const progress =
+      selected.length / 5;
+
     const desiredGrade =
       currentGrade +
       ((targetGrade - currentGrade) * progress);
 
-    const chosen = chooseBest(candidates, desiredGrade);
+    const chosen =
+      chooseBest(
+        topicCandidates,
+        desiredGrade
+      );
 
     if (chosen) {
-      addQuestion(chosen);
+      addQuestion(chosen, true);
     }
   }
 
-  // Step 2: fill remaining slots strictly within current-to-target grade.
-  let safetyCounter = 0;
+  /*
+    STEP 2
+    Fill the remaining questions progressively
+    from current grade toward target grade.
+  */
 
-  while (
-    selected.length < QUESTION_COUNT &&
-    safetyCounter < 200
-  ) {
-    safetyCounter++;
+  while (selected.length < QUESTION_COUNT) {
+
+    const remainingSlots =
+      QUESTION_COUNT - selected.length;
 
     const progress =
-      selected.length /
-      Math.max(QUESTION_COUNT - 1, 1);
+      (selected.length - 6) /
+      Math.max(QUESTION_COUNT - 7, 1);
 
-    const desiredGrade = Math.round(
+    let desiredGrade =
       currentGrade +
-      ((targetGrade - currentGrade) * progress)
-    );
+      ((targetGrade - currentGrade) * progress);
 
-    const candidates = freshPool.filter(question => {
-      const grade = questionGrade(question);
+    desiredGrade = Math.round(desiredGrade);
 
-      return (
-        grade !== null &&
-        grade >= currentGrade &&
-        grade <= targetGrade &&
-        !isDuplicate(question)
-      );
-    });
-
-    const chosen = chooseBest(candidates, desiredGrade);
-
-    if (!chosen) {
-      break;
-    }
-
-    if (!addQuestion(chosen, false)) {
-      break;
-    }
-  }
-
-  // Step 3: if unique subtopics/skills are exhausted, still fill from
-  // unused questions within the student's selected grade range.
-  if (selected.length < QUESTION_COUNT) {
-    const remaining = shuffle(
-      freshPool.filter(question => {
+    const candidates = selectionPool.filter(
+      question => {
         const grade = questionGrade(question);
 
         return (
@@ -917,30 +957,122 @@ function buildDiagnostic(selection) {
           grade <= targetGrade &&
           !isDuplicate(question)
         );
-      })
+      }
     );
 
-    for (const question of remaining) {
-      if (selected.length >= QUESTION_COUNT) {
-        break;
-      }
+    let chosen =
+      chooseBest(
+        candidates,
+        desiredGrade
+      );
 
-      addQuestion(question, true);
+    /*
+      If there are not enough questions between
+      current and target grade, use nearby grades.
+    */
+    if (!chosen) {
+      const fallbackCandidates =
+        selectionPool.filter(question => {
+          const grade = questionGrade(question);
+
+          return (
+            grade !== null &&
+            grade >= currentGrade - 1 &&
+            grade <= targetGrade + 1 &&
+            !isDuplicate(question)
+          );
+        });
+
+      chosen =
+        chooseBest(
+          fallbackCandidates,
+          desiredGrade
+        );
+    }
+
+    /*
+      Final fallback:
+      never repeat an actual question.
+      Repeated skills are allowed only if necessary.
+    */
+    if (!chosen) {
+      const finalCandidates =
+        selectionPool.filter(
+          question => !isDuplicate(question)
+        );
+
+      chosen =
+        chooseBest(
+          finalCandidates,
+          targetGrade
+        );
+
+      if (chosen) {
+        addQuestion(chosen, true);
+      }
+    } else {
+      addQuestion(chosen);
+    }
+
+    /*
+      Safety against an unexpected selection loop.
+    */
+    if (!chosen && remainingSlots > 0) {
+      break;
     }
   }
 
-  // Do not silently reuse completed questions. A fresh diagnostic must
-  // contain 20 unused questions.
+  /*
+    STEP 3
+    Final fill if the bank does not contain enough
+    unique skills/subtopics.
+  */
+  if (selected.length < QUESTION_COUNT) {
+
+    const remaining =
+      selectionPool
+        .filter(
+          question => !isDuplicate(question)
+        )
+        .sort(
+          (a, b) =>
+            gradeDistance(a, targetGrade) -
+            gradeDistance(b, targetGrade)
+        );
+
+    for (const question of remaining) {
+
+      if (
+        selected.length >= QUESTION_COUNT
+      ) {
+        break;
+      }
+
+      addQuestion(
+        question,
+        true
+      );
+    }
+  }
+
   if (selected.length < QUESTION_COUNT) {
     return {
       questions: [],
       error:
-        "There are not enough unused suitable questions in this diagnostic bank yet. Please try again later."
+        "There are not yet enough unique questions in this diagnostic bank. Please try again later."
     };
   }
 
+  /*
+    Randomise the final order so the six topics
+    are not always presented in the same sequence.
+  */
   return {
-    questions: shuffle(selected).slice(0, QUESTION_COUNT),
+    questions:
+      shuffle(selected).slice(
+        0,
+        QUESTION_COUNT
+      ),
     error: ""
   };
 }
@@ -992,9 +1124,9 @@ function normaliseAnswer(value) {
   return String(value ?? "")
     .trim()
     .toLowerCase()
-    .replace(/£/g, "")
+    .replace(/Â£/g, "")
     .replace(/,/g, "")
-    .replace(/cm²/g, "")
+    .replace(/cmÂ²/g, "")
     .replace(/cm2/g, "")
     .replace(/km\/h/g, "")
     .replace(/\s+/g, "");
@@ -1064,104 +1196,24 @@ function submitAnswer() {
   }
 }
 
-function profileStatus(percentage, total) {
-  if (total < 3) return "Limited";
-
-  if (total < 5) {
-    if (percentage >= 50) return "Developing";
-    return "Priority";
-  }
-
+function profileStatus(percentage) {
   if (percentage >= 75) return "Strong";
   if (percentage >= 50) return "Developing";
   return "Priority";
 }
 
 function estimateLevel() {
-  const selection = getParams();
+  const percentage =
+    (score / QUESTION_COUNT) * 100;
 
-  const currentGrade = Number(selection.currentGrade);
-  const targetGrade = Number(selection.targetGrade);
-
-  if (
-    !Number.isFinite(currentGrade) ||
-    !Number.isFinite(targetGrade) ||
-    !answers.length
-  ) {
-    return "Initial estimate unavailable";
-  }
-
-  let weightedCorrect = 0;
-  let weightedTotal = 0;
-
-  answers.forEach(result => {
-    const question =
-      diagnosticQuestions.find(
-        item => item.id === result.questionId
-      );
-
-    if (!question) return;
-
-    const difficulty =
-      Number(question.difficulty);
-
-    const gradeForQuestion =
-  questionGrade(question);
-
-    let weight = 1;
-
-    if (Number.isFinite(difficulty)) {
-      weight +=
-        Math.max(1, Math.min(5, difficulty)) * 0.10;
-    }
-
-    if (Number.isFinite(gradeForQuestion)) {
-  if (gradeForQuestion >= targetGrade) {
-        weight += 0.15;
-      } else if (gradeForQuestion >= currentGrade) {
-        weight += 0.05;
-      }
-    }
-
-    weightedTotal += weight;
-
-    if (result.correct) {
-      weightedCorrect += weight;
-    }
-  });
-
-  if (!weightedTotal) {
-    return "Initial estimate unavailable";
-  }
-
-  const weightedPercentage =
-    (weightedCorrect / weightedTotal) * 100;
-
-  let estimatedGrade = currentGrade;
-
-  if (weightedPercentage < 40) {
-    estimatedGrade = currentGrade - 1;
-  } else if (weightedPercentage < 60) {
-    estimatedGrade = currentGrade;
-  } else if (weightedPercentage < 75) {
-    estimatedGrade = currentGrade + 1;
-  } else {
-    estimatedGrade = currentGrade + 2;
-  }
-
-  estimatedGrade = Math.max(
-    1,
-    Math.min(
-      targetGrade,
-      estimatedGrade
-    )
-  );
-
-  return (
-    "Around Grade " +
-    estimatedGrade +
-    " level (initial estimate)"
-  );
+  if (percentage >= 90) return "Grade 9 range";
+  if (percentage >= 80) return "Grade 8 range";
+  if (percentage >= 70) return "Grade 7 range";
+  if (percentage >= 60) return "Grade 6 range";
+  if (percentage >= 50) return "Grade 5 range";
+  if (percentage >= 40) return "Grade 4 range";
+  if (percentage >= 30) return "Grade 3 range";
+  return "Below Grade 3 range";
 }
 
 function finishDiagnostic() {
@@ -1195,7 +1247,7 @@ function finishDiagnostic() {
       (result.correct / result.total) * 100
     );
 
-    const status = profileStatus(percentage, result.total);
+    const status = profileStatus(percentage);
 
     const card =
       document.createElement("div");
@@ -1217,10 +1269,96 @@ function finishDiagnostic() {
   });
 
   /*
+    Record these questions only after all 20 questions
+    have been completed. Abandoned diagnostics therefore
+    do not consume questions from the rotation.
+
+    This is prototype browser storage. The production
+    account/backend will store this history server-side.
+  */
+  recordDiagnosticCompletion(
+    currentBankFile,
+    diagnosticQuestions
+  );
+
+  /*
     Temporary prototype storage only.
     Permanent student records will be handled by the
     secure backend/account system.
   */
+  // V17: create one shared Learning Profile for Diagnostic â†’ AI Learning.
+  const selection = getParams();
+
+  function estimatedGradeNumber() {
+    const percentage = (score / QUESTION_COUNT) * 100;
+    if (percentage >= 90) return 9;
+    if (percentage >= 80) return 8;
+    if (percentage >= 70) return 7;
+    if (percentage >= 60) return 6;
+    if (percentage >= 50) return 5;
+    if (percentage >= 40) return 4;
+    if (percentage >= 30) return 3;
+    return 2;
+  }
+
+  // Do not estimate outside the student's selected diagnostic pathway.
+  const rawEstimatedGrade = estimatedGradeNumber();
+  const estimatedGrade = Math.max(
+    1,
+    Math.min(selection.targetGrade, rawEstimatedGrade)
+  );
+
+  const skillResults = {};
+  answers.forEach(result => {
+    const originalQuestion = diagnosticQuestions.find(q => q.id === result.questionId) || {};
+    const skillName = originalQuestion.subtopic || originalQuestion.skill || result.subtopic || result.topic || "General";
+    if (!skillResults[skillName]) {
+      skillResults[skillName] = { correct: 0, total: 0, topic: result.topic || "Other" };
+    }
+    skillResults[skillName].total++;
+    if (result.correct) skillResults[skillName].correct++;
+  });
+
+  const skills = {};
+  Object.entries(skillResults).forEach(([skillName, result]) => {
+    const pct = result.total ? Math.round((result.correct / result.total) * 100) : 0;
+    skills[skillName] = {
+      mastery: pct,
+      workingGrade: estimatedGrade,
+      priority: pct < 60,
+      diagnosticCorrect: result.correct,
+      diagnosticTotal: result.total,
+      topic: result.topic
+    };
+  });
+
+  const learningProfile = {
+    version: 17,
+    stage: selection.stage,
+    subject: selection.subject,
+    examBoard: selection.examBoard,
+    tier: selection.tier,
+    selectedCurrentGrade: selection.currentGrade,
+    diagnostic: {
+      completed: true,
+      questionsAnswered: QUESTION_COUNT,
+      score,
+      estimatedGrade,
+      estimatedLevel: estimateLevel(),
+      completedAt: new Date().toISOString()
+    },
+    targetGrade: selection.targetGrade,
+    autoProgress: false,
+    topicResults,
+    skills
+  };
+
+  localStorage.setItem(
+    "algeviaLearningProfileV17",
+    JSON.stringify(learningProfile)
+  );
+
+  // Keep the older summary key for other prototype pages that may still read it.
   localStorage.setItem(
     "algeviaLearningProfile",
     JSON.stringify({
@@ -1228,22 +1366,26 @@ function finishDiagnostic() {
       estimatedLevel: estimateLevel(),
       topicResults,
       answers,
+      currentGrade: estimatedGrade,
+      targetGrade: selection.targetGrade,
       createdAt: new Date().toISOString()
     })
   );
 
-  // Record the questions used in this completed diagnostic
-saveDiagnosticHistory(
-  diagnosticQuestions.map(
-    question => question.id
-  )
-);
+  const aiLink = document.getElementById("startAiLearning");
+  if (aiLink) {
+    const learnParams = new URLSearchParams({
+      stage: selection.stage,
+      subject: selection.subject,
+      examBoard: selection.examBoard,
+      tier: selection.tier,
+      currentGrade: String(estimatedGrade),
+      targetGrade: String(selection.targetGrade),
+      profile: "diagnostic"
+    });
+    aiLink.href = "learn.html?" + learnParams.toString();
+  }
 
-  alert(
-  "Diagnostic history saved: " +
-  getDiagnosticHistory().length +
-  " question IDs"
-);
   elements.diagnosticArea.style.display = "none";
   elements.intro.style.display = "none";
   elements.resultsArea.style.display = "block";
@@ -1284,35 +1426,28 @@ async function startDiagnostic() {
     elements.topicLabel.textContent =
       "Loading question bank";
 
-        const GITHUB_BANK_URL =
-  "https://raw.githubusercontent.com/Algevia/Algevia/refs/heads/main/data/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";
+    currentBankFile = bankFile;
+
+    const GITHUB_BANK_URL =
+      "https://raw.githubusercontent.com/Algevia/Algevia/refs/heads/main/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";
 
     let data = null;
 
     try {
-  const controller = new AbortController();
+      const response =
+        await fetch(bankFile, {
+          cache: "no-store"
+        });
 
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 8000);
-
-  const response =
-    await fetch(bankFile, {
-      cache: "no-store",
-      signal: controller.signal
-    });
-
-  clearTimeout(timeout);
-
-  if (response.ok) {
-    data = await response.json();
-  }
-} catch (error) {
-  console.warn(
-    "Vercel question bank load failed:",
-    error
-  );
-}
+      if (response.ok) {
+        data = await response.json();
+      }
+    } catch (error) {
+      console.warn(
+        "Vercel question bank load failed:",
+        error
+      );
+    }
 
     if (!data || !Array.isArray(data.questions)) {
       try {
@@ -1327,8 +1462,7 @@ async function startDiagnostic() {
           );
         }
 
-        data =
-          await githubResponse.json();
+        data = await githubResponse.json();
       } catch (error) {
         console.error(
           "GitHub question bank load failed:",
