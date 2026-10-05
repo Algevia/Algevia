@@ -1,1311 +1,2193 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Algevia | Learn by Yourself</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Algevia Learning V16</title>
+
 <style>
-:root {
-  --navy:#173b67;
-  --blue:#2465a6;
-  --bg:#f4f7fb;
-  --line:#d9e4f0;
-  --ink:#192638;
-  --muted:#60738a;
-}
-* {box-sizing:border-box}
-body {
+*{box-sizing:border-box}
+
+body{
   margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font:16px/1.6 Arial,Helvetica,sans-serif;
+  font-family:Arial,sans-serif;
+  background:#f5f7fa;
+  color:#222;
 }
-header {
-  background:white;
-  border-bottom:1px solid var(--line);
+
+header{
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  padding:18px 8%;
 }
-nav {
-  max-width:1080px;
+
+.nav{
+  max-width:1100px;
   margin:auto;
-  padding:16px 24px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-.logo {
-  font-size:25px;
-  font-weight:800;
-  color:var(--navy);
+
+.logo{
+  font-size:24px;
+  font-weight:700;
 }
-nav a {color:var(--navy);text-decoration:none}
-main {max-width:1040px;margin:auto;padding:25px 18px 65px}
-.hero {
-  text-align:center;
-  background:white;
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:32px 20px;
+
+.nav a{
+  text-decoration:none;
+  color:#222;
+  font-weight:700;
 }
-.hero h1 {font-size:34px;margin:0;color:var(--navy)}
-.hero h2 {font-size:23px;color:var(--navy);margin:6px 0}
-.card {
-  background:white;
-  border:1px solid var(--line);
-  border-radius:15px;
+
+main{
+  max-width:1000px;
+  margin:auto;
+  padding:30px 20px 60px;
+}
+
+.hero,.card{
+  background:#fff;
   padding:25px;
-  margin:18px 0;
-  box-shadow:0 3px 12px #19263808;
+  border-radius:14px;
+  margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
 }
-h2 {color:var(--navy);margin:0 0 13px}
-h3 {color:var(--navy)}
-.muted {color:var(--muted)}
-.grid {
+
+.hero{
+  text-align:center;
+  padding:45px 25px;
+}
+
+.learning-profile{
+  background:#eef6ff;
+  border:1px solid #bfdbfe;
+}
+
+.personalised{
+  background:#ecfdf5;
+  border:1px solid #86efac;
+  padding:16px;
+  border-radius:10px;
+  margin:16px 0;
+}
+
+.profile-grid,.stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:12px;
 }
-.fact,.stat {
-  background:#f7faff;
-  padding:15px;
-  border-radius:10px;
-}
-.fact small {display:block;color:var(--muted)}
-.fact strong {color:var(--navy)}
-.stat {text-align:center}
-.stat strong {
-  display:block;
-  font-size:26px;
-  color:var(--navy);
-}
-label {display:block;font-weight:bold;margin:14px 0 6px}
-select,input {
-  width:100%;
-  padding:12px;
-  border:1px solid #adbed3;
-  border-radius:9px;
-  font:inherit;
-}
-button {
-  border:0;
-  background:var(--navy);
-  color:white;
-  padding:12px 17px;
-  border-radius:9px;
-  font-weight:bold;
-  cursor:pointer;
-}
-button.secondary {background:#e8eef6;color:var(--navy)}
-button.active {background:#1762a3;outline:3px solid #b4cde9}
-button:disabled {opacity:.5;cursor:not-allowed}
-.row {display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-.note {
-  background:#edf5fc;
+
+.profile-item,.stat{
+  background:#fff;
   padding:14px;
-  border-radius:9px;
+  border-radius:10px;
+  text-align:center;
 }
-.example {
-  background:#f8fbff;
-  border-left:5px solid #8aa9cb;
-  padding:16px;
-  margin:12px 0;
-  border-radius:8px;
+
+.profile-item strong,.stat strong{
+  display:block;
+  font-size:22px;
+  margin-top:5px;
 }
-.example ol {margin:8px 0;padding-left:23px}
-.question {
-  font-size:24px;
-  font-weight:bold;
-  padding:22px;
-  background:#f7faff;
-  border:1px solid var(--line);
-  border-radius:12px;
+
+.skill{
+  display:inline-block;
+  background:#eef2ff;
+  padding:8px 12px;
+  border-radius:20px;
+  font-weight:700;
+}
+
+.example{
+  background:#f8fafc;
+  border-left:4px solid #2563eb;
+  padding:18px;
+  margin:20px 0;
+  border-radius:6px;
+}
+
+.question{
+  font-size:22px;
+  font-weight:700;
+  margin:20px 0;
+}
+
+.progress{
+  height:10px;
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
   margin:15px 0;
 }
-.tutor {
-  background:#fbfcff;
-  border:1px solid var(--line);
-  padding:18px;
-  border-radius:11px;
+
+.progress-bar{
+  height:100%;
+  background:#2563eb;
+  transition:.3s;
 }
-.dialogue {
-  background:#eaf3fc;
-  padding:14px;
-  border-radius:9px;
-  margin-top:12px;
-}
-.feedback {
-  display:none;
-  padding:14px;
-  border-radius:9px;
-  margin-top:12px;
-}
-.good {background:#e8f6ec;color:#12663b}
-.bad {background:#fff0ee;color:#a72d27}
-.bar {height:11px;background:#e8edf3;border-radius:12px;overflow:hidden}
-.fill {height:100%;width:0;background:var(--blue)}
-.skill-row {
+
+.row{
   display:flex;
-  justify-content:space-between;
-  border-bottom:1px solid var(--line);
-  padding:9px 0;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
 }
-.notice {
-  padding:14px;
-  background:#fff7e6;
-  border-left:4px solid #d99819;
+
+select,input{
+  padding:13px;
+  font-size:17px;
+  border:1px solid #bbb;
   border-radius:8px;
+  background:#fff;
 }
-.hidden {display:none}
-@media(max-width:650px) {
-  .grid {grid-template-columns:1fr}
-  .card {padding:18px}
-  .hero h1 {font-size:28px}
-  .question {font-size:21px}
+
+input[type=text]{
+  width:100%;
+  max-width:520px;
+}
+
+button,.button{
+  border:0;
+  background:#2563eb;
+  color:#fff;
+  padding:13px 20px;
+  border-radius:8px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+button.secondary{background:#64748b}
+button.good{background:#0f766e}
+
+.feedback,.hint,.tutor-board,.promotion{
+  padding:16px;
+  border-radius:9px;
+  margin-top:15px;
+}
+
+.feedback{display:none}
+
+.correct{
+  background:#ecfdf5;
+  border:1px solid #10b981;
+}
+
+.incorrect{
+  background:#fef2f2;
+  border:1px solid #ef4444;
+}
+
+.hint{
+  display:none;
+  background:#fff7ed;
+  border:1px solid #f97316;
+}
+
+.tutor-board{
+  background:#f8fafc;
+  border:1px solid #cbd5e1;
+  min-height:70px;
+}
+
+.promotion{
+  display:none;
+  background:#fffbeb;
+  border:2px solid #f59e0b;
+}
+
+.muted{color:#64748b}
+.priority{font-weight:700;color:#9a3412}
+
+.mastery-row{margin:12px 0}
+
+.mastery-track{
+  height:9px;
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.mastery-fill{
+  height:100%;
+  background:#2563eb;
+}
+
+.small{font-size:14px}
+.hidden{display:none}
+
+@media(max-width:700px){
+  .profile-grid,.stats{grid-template-columns:1fr}
+  .hero{padding:30px 18px}
+  .question{font-size:19px}
 }
 </style>
 </head>
+
 <body>
 
 <header>
-<nav>
-<div class="logo">ALGEVIA</div>
-<a href="education.html">Education</a>
-</nav>
+<div class="nav">
+  <div class="logo">ALGEVIA</div>
+  <a href="education.html">Education</a>
+</div>
 </header>
 
 <main>
 
 <section class="hero">
-<h1>Learn by Yourself</h1>
-<h2 id="courseHeading">GCSE Maths - AQA Higher</h2>
-<p><strong>Learn Smarter. Achieve More.</strong></p>
-<p>Algevia teaches you the skill, shows you how it works,
-lets you try it yourself and adapts what comes next.</p>
+  <h1>Learn by Yourself</h1>
+  <h2 id="courseTitle">GCSE Maths — AQA Higher</h2>
+  <p><strong>Learn Smarter. Achieve More.</strong></p>
+  <p>
+    Algevia uses your diagnostic profile to decide where to start,
+    what to teach and what should come next.
+  </p>
 </section>
 
-<section class="card">
+<section class="card learning-profile">
+
 <h2>Your Learning Profile</h2>
-<p class="muted">
-Your learning journey starts with the areas that need
-the most attention. You can change topics at any time.
-</p>
-<div class="grid">
-<div class="fact"><small>Subject</small><strong id="subject">Maths</strong></div>
-<div class="fact"><small>Level and tier</small><strong id="level">GCSE Higher</strong></div>
-<div class="fact"><small>Exam board</small><strong id="board">AQA</strong></div>
-<div class="fact"><small>Current grade</small><strong id="currentGrade">Not supplied</strong></div>
-<div class="fact"><small>Target grade</small><strong id="targetGrade">Not supplied</strong></div>
-<div class="fact"><small>Learning approach</small><strong>Learn by Yourself</strong></div>
+
+<div class="personalised">
+  <strong>Your learning has been personalised from your diagnostic.</strong>
+  <br><br>
+  Algevia uses your diagnostic results to identify your starting
+  level and priority skills. Your teaching and questions adapt as
+  you progress towards your target grade.
 </div>
-<p id="profileNote" class="muted">Progress is saved on this device.</p>
+
+<div class="profile-grid">
+
+<div class="profile-item">
+Estimated current grade
+<strong id="currentGrade">6</strong>
+</div>
+
+<div class="profile-item">
+Target grade
+<strong id="targetGrade">8</strong>
+</div>
+
+<div class="profile-item">
+Diagnostic
+<strong id="diagnosticStatus">Linked</strong>
+</div>
+
+</div>
+
+<p>
+<strong>Priority areas:</strong>
+<span id="priorityAreas">Loading...</span>
+</p>
+
+<p class="muted small" id="profileSource"></p>
+
+<div class="row">
+
+<label>
+Target grade
+<select id="targetSelect"></select>
+</label>
+
+<label>
+<input type="checkbox" id="autoProgress">
+Automatically raise my target when Algevia determines I am ready
+</label>
+
+</div>
+
 </section>
 
 <section class="card">
+
 <h2>Choose What You Want to Practise</h2>
-<p class="muted">
-You choose the topic and subtopic.
-Algevia chooses suitable questions and adjusts their difficulty.
+
+<div class="row">
+
+<label>
+Topic<br>
+<select id="topicSelect"></select>
+</label>
+
+<label>
+Subtopic<br>
+<select id="subtopicSelect"></select>
+</label>
+
+<button id="startPractice">
+Start Practice
+</button>
+
+<button class="secondary" id="priorityPractice">
+Practise My Priority
+</button>
+
+</div>
+
+<p class="muted small">
+Questions are selected within your current-to-target grade pathway.
+If Algevia identifies a missing prerequisite skill, it may temporarily
+give you prerequisite support before returning to your normal grade pathway.
 </p>
-<label for="topic">Topic</label>
-<select id="topic"></select>
-<label for="subtopic">Subtopic</label>
-<select id="subtopic"></select>
+
+</section>
+
+<section class="card">
+
+<span class="skill" id="skillBadge"></span>
+
+<h2>Step 1 — Understand</h2>
+
+<div id="understand"></div>
+
+</section>
+
+<section class="card">
+
+<h2>Step 2 — Worked Example</h2>
+
+<div class="example" id="workedExample"></div>
+
+</section>
+
+<section class="card">
+
+<h2>Step 3 — Now Try It Yourself</h2>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<p id="questionCounter"></p>
+
+<p>
+<strong>Working level:</strong>
+<span id="questionGrade"></span>
+<span id="supportLabel" class="priority"></span>
+</p>
+
+<div class="question" id="question"></div>
+
+<input
+  id="answerInput"
+  type="text"
+  placeholder="Type your answer"
+  autocomplete="off"
+>
+
 <div class="row">
-<button id="start">Start Practice</button>
-<button id="resume" class="secondary">Continue Learning</button>
-<button id="save" class="secondary">Save &amp; Exit</button>
+
+<button id="checkButton">
+Check Answer
+</button>
+
+<button id="hintButton" class="secondary">
+Hint
+</button>
+
+<button id="teachButton" class="secondary">
+Teach Me
+</button>
+
+<button id="studentSpeak" class="good">
+🎙 Student Speak
+</button>
+
+<button id="stopVoice" class="secondary">
+⏹ Stop
+</button>
+
+<button id="nextButton" class="hidden">
+Next Question
+</button>
+
 </div>
-<p id="saveStatus" class="muted" role="status"></p>
-</section>
-
-<section class="card">
-<h2>Step 1 - Understand</h2>
-<h3 id="skillHeading"></h3>
-<p id="understandText"></p>
-<div class="note" id="keyIdea"></div>
-</section>
-
-<section class="card">
-<h2>Step 2 - Worked Examples</h2>
-<p class="muted" id="exampleIntro"></p>
-<div id="examples"></div>
-</section>
-
-<section class="card">
-<h2>Step 3 - Now Try It Yourself</h2>
-<div class="bar"><div id="masteryBar" class="fill"></div></div>
-<p id="questionMeta" class="muted"></p>
-<div id="question" class="question" aria-live="polite"></div>
-
-<div class="tutor">
-<h3>Your Algevia Tutor</h3>
-<p>Choose the tutor who guides you through the question.</p>
-<div class="row">
-<button id="female">Female Tutor</button>
-<button id="male">Male Tutor</button>
-</div>
-<p id="selectedTutor">Female Tutor selected</p>
-<div id="dialogue" class="dialogue" aria-live="polite"></div>
-<p id="voiceStatus" class="muted"></p>
-</div>
-
-<label for="answer">Your Answer</label>
-<input id="answer" autocomplete="off" placeholder="Type your answer">
 
 <div class="row">
-<button id="check">Check Answer</button>
-<button id="hint" class="secondary">Hint</button>
-<button id="teach" class="secondary">Teach Me</button>
-<button id="speak" class="secondary">Speak</button>
-<button id="stop" class="secondary">Stop</button>
-<button id="next" class="secondary">Next Question</button>
+
+<strong>Choose your Algevia tutor:</strong>
+
+<button id="femaleTutor" class="secondary">
+👩 Female Tutor
+</button>
+
+<button id="maleTutor" class="secondary">
+👨 Male Tutor
+</button>
+
 </div>
 
-<div id="hintBox" class="note hidden" style="margin-top:12px"></div>
-<div id="feedback" class="feedback" role="status"></div>
-<p id="questionStatus" class="muted"></p>
+<p id="voiceStatus" class="muted">
+Female Tutor selected.
+</p>
+
+<div class="tutor-board">
+
+<strong>Learning conversation</strong>
+
+<div id="conversation"></div>
+
+</div>
+
+<div id="hint" class="hint"></div>
+
+<div id="feedback" class="feedback"></div>
+
+</section>
+
+<section class="promotion" id="promotion">
+
+<h2>You're ready for a bigger challenge!</h2>
+
+<p id="promotionText"></p>
+
+<div class="row">
+
+<button id="acceptPromotion">
+Move to next grade
+</button>
+
+<button id="keepTarget" class="secondary">
+Keep my current target
+</button>
+
+</div>
+
 </section>
 
 <section class="card">
+
 <h2>Student Progress</h2>
-<div class="grid">
-<div class="stat"><strong id="correctCount">0</strong>Correct</div>
-<div class="stat"><strong id="attemptCount">0</strong>Attempts</div>
-<div class="stat"><strong id="accuracy">0%</strong>Accuracy</div>
-</div>
-<p id="adaptiveMessage" class="muted">
-Algevia is learning how you learn.
-</p>
-</section>
 
-<section class="card">
-<h2>Student Learning Progress</h2>
-<div class="grid">
-<div class="stat"><strong id="mastery">0%</strong>Overall Mastery</div>
-<div class="stat"><strong id="secure">0</strong>Secure Skills</div>
-<div class="stat"><strong id="answered">0</strong>Questions Answered</div>
-</div>
-<p id="currentSkill" class="muted"></p>
-<div id="skillList"></div>
-</section>
+<div class="stats">
 
-<p class="notice" id="scopeNotice">
-Development version: the current question bank covers selected
-GCSE Maths Algebra skills. Other curriculum areas and natural
-AI voices require further development.
+<div class="stat">
+<strong id="correctCount">0</strong>
+Correct
+</div>
+
+<div class="stat">
+<strong id="attemptCount">0</strong>
+Attempts
+</div>
+
+<div class="stat">
+<strong id="accuracy">0%</strong>
+Accuracy
+</div>
+
+</div>
+
+<h3>Skill mastery</h3>
+
+<div id="masteryList"></div>
+
+<p id="adaptiveMessage">
+<strong>Algevia is learning how you learn.</strong>
 </p>
+
+<button class="secondary" id="saveExit">
+Save & Exit
+</button>
+
+</section>
 
 </main>
 
 <script>
-(function () {
-"use strict";
+
+const TOPICS = {
+
+"Number":{
+skills:{
+
+"Fractions, decimals and percentages":{
+grade:5,
+understand:
+"Fractions, decimals and percentages are different ways of representing the same value. Being able to convert between them helps with comparison, percentage change and many later GCSE topics.",
+example:
+"Example: 3/5 = 0.6 = 60%."
+},
+
+"Standard form":{
+grade:6,
+understand:
+"Standard form writes very large or very small numbers in the form a × 10ⁿ, where a is at least 1 but less than 10.",
+example:
+"Example: 4,500,000 = 4.5 × 10⁶."
+}
+
+}
+},
+
+"Algebra":{
+skills:{
+
+"Collecting like terms":{
+grade:5,
+understand:
+"Only terms with exactly the same variable part can be collected together.",
+example:
+"Example: 7x + 3 + 2x + 5 = 9x + 8."
+},
+
+"Expanding brackets":{
+grade:6,
+understand:
+"To expand a bracket, multiply every term inside the bracket by the term outside it.",
+example:
+"Example: 4(2x - 3) = 8x - 12."
+},
+
+"Solving equations":{
+grade:6,
+understand:
+"An equation stays balanced when you perform the same mathematical operation to both sides.",
+example:
+"Example: 3x + 5 = 20 → 3x = 15 → x = 5."
+},
+
+"Quadratics":{
+grade:7,
+understand:
+"Quadratic expressions contain an x² term. Factorising can help reveal the values that make a quadratic equal to zero.",
+example:
+"Example: x² + 7x + 12 = (x + 3)(x + 4)."
+},
+
+"Algebraic fractions":{
+grade:8,
+understand:
+"With algebraic fractions, factorise expressions where possible and then cancel common factors carefully.",
+example:
+"Example: (x² - 9)/(x + 3) = (x - 3)(x + 3)/(x + 3) = x - 3."
+},
+
+"Functions and iteration":{
+grade:9,
+understand:
+"Higher-grade algebra can involve functions, proof and iterative processes.",
+example:
+"Example: if f(x) = 2x + 3, then f(4) = 11."
+}
+
+}
+},
+
+"Ratio, Proportion & Rates of Change":{
+skills:{
+
+"Direct proportion":{
+grade:6,
+understand:
+"In direct proportion, one quantity changes by the same scale factor as the other.",
+example:
+"Example: y ∝ x and y = 12 when x = 3. Therefore y = 4x."
+},
+
+"Inverse proportion":{
+grade:7,
+understand:
+"In inverse proportion, increasing one quantity causes the other quantity to decrease proportionally.",
+example:
+"Example: y ∝ 1/x and y = 6 when x = 2. Therefore y = 12/x."
+}
+
+}
+},
+
+"Geometry & Measures":{
+skills:{
+
+"Pythagoras":{
+grade:6,
+understand:
+"For a right-angled triangle, a² + b² = c², where c is the hypotenuse.",
+example:
+"Example: if the shorter sides are 6 and 8, then c² = 36 + 64 = 100, so c = 10."
+},
+
+"Trigonometry":{
+grade:7,
+understand:
+"Sine, cosine and tangent connect angles and side lengths in right-angled triangles.",
+example:
+"Example: sin θ = opposite ÷ hypotenuse."
+},
+
+"Circle theorems":{
+grade:8,
+understand:
+"Circle theorems describe relationships between angles, chords, tangents and cyclic quadrilaterals.",
+example:
+"Example: the angle at the centre is twice the angle at the circumference standing on the same arc."
+}
+
+}
+},
+
+"Probability":{
+skills:{
+
+"Combined events":{
+grade:6,
+understand:
+"For combined events, use systematic outcomes, probability rules or tree diagrams to find the probability of more than one event.",
+example:
+"Example: for independent events, probabilities multiply along a branch of a tree diagram."
+},
+
+"Conditional probability":{
+grade:8,
+understand:
+"Conditional probability changes the sample space because some information is already known.",
+example:
+"Example: first restrict the outcomes to those satisfying the given condition, then calculate the probability."
+}
+
+}
+},
+
+"Statistics":{
+skills:{
+
+"Averages and spread":{
+grade:5,
+understand:
+"Mean, median, mode and range help describe the centre and spread of a set of data.",
+example:
+"Example: for 2, 4, 4, 10 the mean is 5, the median is 4 and the range is 8."
+},
+
+"Histograms":{
+grade:7,
+understand:
+"Histograms represent grouped continuous data. When class widths are unequal, frequency density determines the bar height.",
+example:
+"Example: frequency density = frequency ÷ class width."
+}
+
+}
+}
+
+};
+
+
+/*
+V16 representative validated question architecture.
+
+IMPORTANT:
+This is deliberately not described as the finished full AQA Higher bank.
+The purpose of V16 is to establish the adaptive architecture first.
+The bank can then be expanded systematically.
+*/
+
+const BANK = [
+
+{
+id:"NUM-FDP-5-001",
+topic:"Number",
+skill:"Fractions, decimals and percentages",
+grade:5,
+q:"Write 0.35 as a percentage.",
+a:["35%","35"],
+h:[
+"To change a decimal into a percentage, multiply by 100.",
+"What is 0.35 × 100?"
+],
+teach:
+"A percentage means an amount out of 100. Multiplying a decimal by 100 converts it into a percentage.",
+sol:"0.35 × 100 = 35, so the answer is 35%."
+},
+
+{
+id:"NUM-FDP-6-001",
+topic:"Number",
+skill:"Fractions, decimals and percentages",
+grade:6,
+q:"Increase £240 by 15%.",
+a:["276","£276"],
+h:[
+"First find 15% of £240.",
+"10% is £24 and 5% is £12. Add these to find 15%."
+],
+teach:
+"To increase an amount by a percentage, find the percentage increase and add it to the original amount.",
+sol:"15% of £240 is £36. £240 + £36 = £276."
+},
+
+{
+id:"NUM-SF-6-001",
+topic:"Number",
+skill:"Standard form",
+grade:6,
+q:"Write 5,600,000 in standard form.",
+a:["5.6x10^6","5.6×10^6","5.6*10^6"],
+h:[
+"The first number must be at least 1 and less than 10.",
+"Move the decimal point so that 5,600,000 becomes 5.6."
+],
+teach:
+"Count how many places the decimal point moves. That number becomes the power of 10.",
+sol:"5,600,000 = 5.6 × 10⁶."
+},
+
+{
+id:"ALG-CLT-5-001",
+topic:"Algebra",
+skill:"Collecting like terms",
+grade:5,
+q:"Simplify: 5x + 3x - 2",
+a:["8x-2"],
+h:[
+"Collect the x terms first.",
+"5x + 3x = 8x."
+],
+teach:
+"Like terms have the same variable part. Add or subtract their coefficients.",
+sol:"5x + 3x = 8x, so the simplified expression is 8x - 2."
+},
+
+{
+id:"ALG-EXP-6-001",
+topic:"Algebra",
+skill:"Expanding brackets",
+grade:6,
+q:"Expand and simplify: 3(2x + 5) + x",
+a:["7x+15","15+7x"],
+h:[
+"Multiply 3 by both terms inside the bracket.",
+"3 × 2x = 6x and 3 × 5 = 15."
+],
+teach:
+"Expand the bracket first. Then collect any like terms outside the bracket.",
+sol:"3(2x + 5) = 6x + 15. Adding x gives 7x + 15."
+},
+
+{
+id:"ALG-EQN-6-001",
+topic:"Algebra",
+skill:"Solving equations",
+grade:6,
+q:"Solve: 4x + 7 = 31",
+a:["6","x=6"],
+h:[
+"Undo the +7 first.",
+"31 - 7 = 24. Now divide by 4."
+],
+teach:
+"Use inverse operations while keeping both sides of the equation balanced.",
+sol:"4x + 7 = 31, so 4x = 24 and x = 6."
+},
+
+{
+id:"ALG-QUAD-7-001",
+topic:"Algebra",
+skill:"Quadratics",
+grade:7,
+q:"Factorise: x² + 7x + 12",
+a:["(x+3)(x+4)","(x+4)(x+3)"],
+h:[
+"Find two numbers that multiply to 12 and add to 7.",
+"3 × 4 = 12 and 3 + 4 = 7."
+],
+teach:
+"For x² + bx + c, look for two numbers whose product is c and whose sum is b.",
+sol:"The required numbers are 3 and 4, so x² + 7x + 12 = (x + 3)(x + 4)."
+},
+
+{
+id:"ALG-AF-8-001",
+topic:"Algebra",
+skill:"Algebraic fractions",
+grade:8,
+q:"Simplify: (x² - 9)/(x + 3)",
+a:["x-3"],
+h:[
+"Factorise x² - 9 as a difference of two squares.",
+"x² - 9 = (x - 3)(x + 3)."
+],
+teach:
+"Factorise the numerator first. A common factor can then be cancelled from numerator and denominator.",
+sol:"(x² - 9)/(x + 3) = (x - 3)(x + 3)/(x + 3) = x - 3."
+},
+
+{
+id:"ALG-FUN-9-001",
+topic:"Algebra",
+skill:"Functions and iteration",
+grade:9,
+q:"Given f(x) = 3x - 2, find f(5).",
+a:["13"],
+h:[
+"Replace x with 5.",
+"Calculate 3 × 5 - 2."
+],
+teach:
+"Function notation tells you to substitute the given input into the function rule.",
+sol:"f(5) = 3(5) - 2 = 15 - 2 = 13."
+},
+
+{
+id:"RATIO-DP-6-001",
+topic:"Ratio, Proportion & Rates of Change",
+skill:"Direct proportion",
+grade:6,
+q:"y is directly proportional to x. When x = 4, y = 20. Find y when x = 7.",
+a:["35"],
+h:[
+"Write y = kx.",
+"Use x = 4 and y = 20 to find k."
+],
+teach:
+"Direct proportion can be written y = kx, where k is the constant of proportionality.",
+sol:"20 = 4k, so k = 5. Therefore when x = 7, y = 35."
+},
+
+{
+id:"RATIO-IP-7-001",
+topic:"Ratio, Proportion & Rates of Change",
+skill:"Inverse proportion",
+grade:7,
+q:"y is inversely proportional to x. When x = 3, y = 8. Find y when x = 6.",
+a:["4"],
+h:[
+"For inverse proportion, y = k/x.",
+"Use x = 3 and y = 8 to find k."
+],
+teach:
+"In inverse proportion, the product xy remains constant.",
+sol:"k = 3 × 8 = 24. When x = 6, y = 24/6 = 4."
+},
+
+{
+id:"GEO-PYT-6-001",
+topic:"Geometry & Measures",
+skill:"Pythagoras",
+grade:6,
+q:"A right-angled triangle has shorter sides 9 cm and 12 cm. Find the hypotenuse.",
+a:["15","15cm","15 cm"],
+h:[
+"Use a² + b² = c².",
+"9² + 12² = 81 + 144."
+],
+teach:
+"Pythagoras' theorem connects the three sides of a right-angled triangle.",
+sol:"c² = 81 + 144 = 225, so c = 15 cm."
+},
+
+{
+id:"GEO-TRIG-7-001",
+topic:"Geometry & Measures",
+skill:"Trigonometry",
+grade:7,
+q:"In a right-angled triangle, the opposite side is 6 cm and the hypotenuse is 10 cm. Find sin θ.",
+a:["0.6","3/5"],
+h:[
+"Use sin θ = opposite ÷ hypotenuse.",
+"Calculate 6 ÷ 10."
+],
+teach:
+"SOH tells us that sine equals opposite divided by hypotenuse.",
+sol:"sin θ = 6/10 = 0.6."
+},
+
+{
+id:"GEO-CIRC-8-001",
+topic:"Geometry & Measures",
+skill:"Circle theorems",
+grade:8,
+q:"An angle at the circumference is 38°. What is the angle at the centre standing on the same arc?",
+a:["76","76°"],
+h:[
+"The angle at the centre is twice the angle at the circumference.",
+"Calculate 38 × 2."
+],
+teach:
+"For angles standing on the same arc, the angle at the centre is twice the angle at the circumference.",
+sol:"38° × 2 = 76°."
+},
+
+{
+id:"PROB-COMB-6-001",
+topic:"Probability",
+skill:"Combined events",
+grade:6,
+q:"A fair coin is tossed twice. What is the probability of getting two heads?",
+a:["1/4","0.25","25%"],
+h:[
+"The probability of a head on each toss is 1/2.",
+"For independent events, multiply the probabilities."
+],
+teach:
+"When independent events both need to occur, multiply their probabilities.",
+sol:"1/2 × 1/2 = 1/4."
+},
+
+{
+id:"PROB-COND-8-001",
+topic:"Probability",
+skill:"Conditional probability",
+grade:8,
+q:"A bag contains 4 red and 6 blue counters. One blue counter is removed. What is the probability that the next counter selected is red?",
+a:["4/9","0.4444444444"],
+h:[
+"After a blue counter is removed, how many counters remain?",
+"There are still 4 red counters, but only 9 counters in total."
+],
+teach:
+"Conditional information changes the sample space. Recalculate using the remaining possible outcomes.",
+sol:"There are 4 red counters out of 9 remaining counters, so the probability is 4/9."
+},
+
+{
+id:"STAT-AVG-5-001",
+topic:"Statistics",
+skill:"Averages and spread",
+grade:5,
+q:"Find the mean of 6, 8, 9, 12 and 15.",
+a:["10"],
+h:[
+"Add all five numbers first.",
+"The total is 50. Now divide by 5."
+],
+teach:
+"The mean equals the total of all values divided by the number of values.",
+sol:"6 + 8 + 9 + 12 + 15 = 50. 50 ÷ 5 = 10."
+},
+
+{
+id:"STAT-HIST-7-001",
+topic:"Statistics",
+skill:"Histograms",
+grade:7,
+q:"A histogram class has frequency 24 and class width 6. Find the frequency density.",
+a:["4"],
+h:[
+"Frequency density = frequency ÷ class width.",
+"Calculate 24 ÷ 6."
+],
+teach:
+"In a histogram, frequency density is used for the bar height when class widths can differ.",
+sol:"Frequency density = 24 ÷ 6 = 4."
+}
+
+];
+
+
+/* -------------------------------
+   LEARNING PROFILE
+-------------------------------- */
+
+const DEFAULT_PROFILE = {
+
+stage:"GCSE",
+subject:"Maths",
+examBoard:"AQA",
+tier:"Higher",
+
+diagnostic:{
+completed:true,
+questionsAnswered:20,
+estimatedGrade:6
+},
+
+targetGrade:8,
+
+autoProgress:false,
+
+skills:{
+
+"Collecting like terms":{
+mastery:72,
+workingGrade:6,
+priority:false
+},
+
+"Solving equations":{
+mastery:54,
+workingGrade:6,
+priority:true
+},
+
+"Pythagoras":{
+mastery:48,
+workingGrade:5,
+priority:true
+},
+
+"Combined events":{
+mastery:52,
+workingGrade:6,
+priority:true
+}
+
+}
+
+};
+
+
+const STORAGE_KEY = "algevia_learning_profile_v16";
+
+let storedProfile = null;
+
+try{
+storedProfile = JSON.parse(localStorage.getItem(STORAGE_KEY));
+}catch(e){}
+
+let profile = storedProfile || DEFAULT_PROFILE;
+
+let history = [];
+let current = null;
+let qAttempts = 0;
+let hintIndex = 0;
+let correct = 0;
+let attempts = 0;
+let forcedSkill = null;
+let selectedTutor = "female";
+let recognition = null;
+
 
 const $ = id => document.getElementById(id);
 
-const params = new URLSearchParams(window.location.search);
 
-function parameter(names, fallback) {
-  for (const name of names) {
-    const value = params.get(name);
-    if (value && value !== "undefined" && value !== "null") {
-      return value;
-    }
-  }
-  return fallback;
+function save(){
+
+profile.autoProgress = $("autoProgress").checked;
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(profile)
+);
+
 }
 
-const profile = {
-  stage: parameter(["stage","level"],"GCSE"),
-  subject: parameter(["subject"],"Maths"),
-  board: parameter(["examBoard","board"],"AQA"),
-  tier: parameter(["tier"],"Higher"),
-  current: parameter(["currentGrade"],"Not supplied"),
-  target: parameter(["targetGrade"],"Not supplied")
+
+function normalise(value){
+
+return String(value)
+.toLowerCase()
+.replace(/\s+/g,"")
+.replace(/£/g,"")
+.replace(/−/g,"-")
+.replace(/×/g,"x")
+.replace(/⁶/g,"^6")
+.replace(/²/g,"^2");
+
+}
+
+
+function norm(value){
+return normalise(value);
+}
+
+
+function gradeCorridor(){
+
+let currentGrade =
+Number(profile.diagnostic.estimatedGrade) || 5;
+
+let targetGrade =
+Number(profile.targetGrade) || currentGrade;
+
+if(targetGrade < currentGrade){
+targetGrade = currentGrade;
+}
+
+return [currentGrade,targetGrade];
+
+}
+
+
+function ensureSkill(skill,grade){
+
+if(!profile.skills[skill]){
+
+profile.skills[skill] = {
+mastery:50,
+workingGrade:grade || profile.diagnostic.estimatedGrade,
+priority:false
 };
 
-if (!["Higher","Foundation"].includes(profile.tier)) {
-  profile.tier = "Higher";
 }
 
-$("courseHeading").textContent =
-  `${profile.stage} ${profile.subject} - ${profile.board} ${profile.tier}`;
-$("subject").textContent = profile.subject;
-$("level").textContent = `${profile.stage} ${profile.tier}`;
-$("board").textContent = profile.board;
-$("currentGrade").textContent = profile.current;
-$("targetGrade").textContent = profile.target;
-
-const supported =
-  profile.stage.toLowerCase() === "gcse" &&
-  profile.subject.toLowerCase() === "maths" &&
-  profile.board.toLowerCase() === "aqa";
-
-const LESSONS = {
-  "Algebra": {
-    "Collecting like terms": {
-      intro:"Like terms contain the same variables raised to the same powers. Add or subtract their coefficients.",
-      key:"3x + 5x = 8x. You cannot combine 3x with 5 because they are unlike terms."
-    },
-    "Expanding single brackets": {
-      intro:"Multiply every term inside the bracket by the number outside.",
-      key:"3(x + 4) = 3x + 12. Remember to multiply both terms."
-    },
-    "Expanding double brackets": {
-      intro:"Multiply each term in the first bracket by every term in the second bracket. Then collect like terms.",
-      key:"(x + 2)(x + 3) = x^2 + 5x + 6."
-    },
-    "Factorising": {
-      intro:"Factorising reverses expanding. Find a common factor and put the remaining terms inside brackets.",
-      key:"6x + 12 = 6(x + 2)."
-    },
-    "Solving equations": {
-      intro:"Keep the equation balanced. Use inverse operations to isolate the unknown.",
-      key:"2x + 5 = 17 gives 2x = 12, so x = 6."
-    },
-    "Sequences": {
-      intro:"Look for the common difference. For a linear sequence, it gives the coefficient of n.",
-      key:"5, 8, 11, 14 has nth term 3n + 2."
-    },
-    "Indices": {
-      intro:"When multiplying powers with the same base, add the indices. When dividing, subtract them.",
-      key:"x^3 * x^2 = x^5."
-    },
-    "Inequalities": {
-      intro:"Solve inequalities like equations. Reverse the sign if multiplying or dividing by a negative number.",
-      key:"2x < 14 gives x < 7."
-    },
-    "Rearranging formulae": {
-      intro:"Use inverse operations to make the required variable the subject.",
-      key:"y = 3x + 2 gives x = (y - 2)/3."
-    }
-  }
-};
-
-const BANK = [];
-
-function add(sub, difficulty, question, answer, steps, explanation, alternatives=[]) {
-  BANK.push({
-    id:"q"+BANK.length,
-    topic:"Algebra",
-    sub,
-    difficulty,
-    question,
-    answers:[String(answer),...alternatives],
-    steps,
-    explanation
-  });
 }
 
-add("Collecting like terms",1,"Simplify: 3x + 5x","8x",
-  ["Identify the like terms.","Add 3 and 5.","Keep the x."],
-  "3x + 5x = 8x.");
 
-add("Expanding single brackets",2,"Expand: 5(2x - 3)","10x-15",
-  ["Multiply 5 by 2x.","Multiply 5 by -3.","Write the resulting terms."],
-  "5(2x - 3) = 10x - 15.");
+function mastery(skill){
 
-add("Expanding double brackets",3,"Expand: (x + 2)(x + 3)","x^2+5x+6",
-  ["Multiply x by both terms.","Multiply 2 by both terms.","Collect like terms."],
-  "x^2 + 3x + 2x + 6 = x^2 + 5x + 6.");
+ensureSkill(skill,profile.diagnostic.estimatedGrade);
 
-add("Factorising",2,"Factorise: 6x + 12","6(x+2)",
-  ["Find the highest common factor.","The common factor is 6.","Divide both terms by 6."],
-  "6x + 12 = 6(x + 2).");
+return profile.skills[skill].mastery || 0;
 
-add("Solving equations",2,"Solve: 2x + 5 = 17","6",
-  ["Subtract 5 from both sides.","2x = 12.","Divide by 2."],
-  "x = 6.",["x=6"]);
-
-add("Sequences",2,"Find the nth term: 5, 8, 11, 14, ...","3n+2",
-  ["Find the common difference.","Start with 3n.","Add 2 to match the first term."],
-  "The nth term is 3n + 2.");
-
-add("Indices",2,"Simplify: x^3 * x^2","x^5",
-  ["The bases are the same.","Add the indices.","3 + 2 = 5."],
-  "x^3 * x^2 = x^5.");
-
-add("Inequalities",2,"Solve: x + 3 > 8","x>5",
-  ["Subtract 3 from both sides.","Keep the inequality sign.","8 - 3 = 5."],
-  "x > 5.");
-
-add("Rearranging formulae",3,"Make x the subject: y = 3x + 2","x=(y-2)/3",
-  ["Subtract 2 from both sides.","y - 2 = 3x.","Divide by 3."],
-  "x = (y - 2)/3.");
-
-// Generate additional original practice variations.
-for (let i=0;i<50;i++) {
-  const a=2+i%9, b=1+(i*7)%11, c=1+(i*5)%8;
-  add("Collecting like terms",1+i%3,
-    `Simplify: ${a}x + ${b}x + ${c}`,
-    `${a+b}x+${c}`,
-    ["Identify the two x terms.",`Add ${a} and ${b}.`,`Keep the constant ${c}.`],
-    `${a}x + ${b}x + ${c} = ${a+b}x + ${c}.`,
-    [`${c}+${a+b}x`]);
 }
 
-for (let i=0;i<50;i++) {
-  const a=2+i%7,b=1+(i*3)%8,c=1+(i*5)%9;
-  const negative=i%3===0;
-  const sign=negative?"-":"+";
-  const constant=negative?-a*c:a*c;
-  add("Expanding single brackets",2+i%3,
-    `Expand: ${a}(${b}x ${sign} ${c})`,
-    `${a*b}x${constant<0?"":"+"}${constant}`,
-    [`Multiply ${a} by ${b}x.`,`Multiply ${a} by ${negative?-c:c}.`,
-     "Write the two terms."],
-    `${a*b}x ${constant<0?"-":"+"} ${Math.abs(constant)}.`);
+
+function prioritySkills(){
+
+return Object.entries(profile.skills)
+.filter(([skill,data])=>data.priority)
+.sort((a,b)=>a[1].mastery-b[1].mastery)
+.map(([skill])=>skill);
+
 }
 
-for (let i=0;i<35;i++) {
-  const a=1+i%6,b=1+(i*3)%7;
-  add("Expanding double brackets",3+i%3,
-    `Expand: (x + ${a})(x + ${b})`,
-    `x^2+${a+b}x+${a*b}`,
-    ["Multiply x by both terms in the second bracket.",
-     `Multiply ${a} by both terms.`, "Collect the x terms."],
-    `x^2 + ${a+b}x + ${a*b}.`);
+
+function eligible(q){
+
+const [floor,ceiling] = gradeCorridor();
+
+return (
+q.grade >= floor &&
+q.grade <= ceiling
+);
+
 }
 
-for (let i=0;i<40;i++) {
-  const f=2+i%8,a=1+(i*3)%9,b=1+(i*5)%8;
-  add("Factorising",2+i%3,
-    `Factorise: ${f*a}x + ${f*b}`,
-    `${f}(${a}x+${b})`,
-    ["Find a common factor.",`Both terms are divisible by ${f}.`,
-     `Divide each term by ${f}.`],
-    `${f*a}x + ${f*b} = ${f}(${a}x + ${b}).`);
+
+function renderProfile(){
+
+const currentGrade =
+Number(profile.diagnostic.estimatedGrade) || 5;
+
+const targetGrade =
+Number(profile.targetGrade) || currentGrade;
+
+$("currentGrade").textContent = currentGrade;
+$("targetGrade").textContent = targetGrade;
+
+$("diagnosticStatus").textContent =
+profile.diagnostic.completed
+? "Linked"
+: "Not completed";
+
+const priorities = prioritySkills();
+
+$("priorityAreas").textContent =
+priorities.length
+? priorities.join(", ")
+: "Algevia will identify these as you learn.";
+
+$("profileSource").textContent =
+profile.diagnostic.completed
+? `Based on your ${profile.diagnostic.questionsAnswered || 20}-question Algevia Diagnostic Assessment.`
+: "Complete the Algevia Diagnostic Assessment to personalise your starting point.";
+
+$("autoProgress").checked =
+Boolean(profile.autoProgress);
+
+const targetSelect = $("targetSelect");
+
+targetSelect.innerHTML = "";
+
+for(let grade=currentGrade;grade<=9;grade++){
+
+targetSelect.add(
+new Option(`Grade ${grade}`,grade)
+);
+
 }
 
-for (let i=0;i<45;i++) {
-  const a=2+i%9,b=1+(i*5)%11,x=1+(i*3)%9;
-  add("Solving equations",2+i%3,
-    `Solve: ${a}x + ${b} = ${a*x+b}`,
-    String(x),
-    [`Subtract ${b} from both sides.`,`Now ${a}x = ${a*x}.`,
-     `Divide by ${a}.`],
-    `x = ${x}.`,[`x=${x}`]);
+targetSelect.value = targetGrade;
+
+$("courseTitle").textContent =
+`${profile.stage} ${profile.subject} — ${profile.examBoard} ${profile.tier}`;
+
 }
 
-for (let i=0;i<30;i++) {
-  const d=2+i%8,c=1+(i*3)%9;
-  add("Sequences",2+i%3,
-    `Find the nth term: ${d+c}, ${2*d+c}, ${3*d+c}, ${4*d+c}, ...`,
-    `${d}n+${c}`,
-    [`The common difference is ${d}.`,`Start with ${d}n.`,
-     `Add ${c} to match the first term.`],
-    `The nth term is ${d}n + ${c}.`);
-}
 
-for (let i=0;i<30;i++) {
-  const a=2+i%7,b=1+(i*5)%6;
-  add("Indices",2+i%3,
-    `Simplify: x^${a} * x^${b}`,
-    `x^${a+b}`,
-    ["The bases are the same.","Add the indices.",
-     `${a} + ${b} = ${a+b}.`],
-    `x^${a} * x^${b} = x^${a+b}.`);
-}
+function fillTopics(){
 
-for (let i=0;i<30;i++) {
-  const a=2+i%8,b=2+(i*5)%9;
-  add("Inequalities",2+i%3,
-    `Solve: ${a}x < ${a*b}`,
-    `x<${b}`,
-    [`Divide both sides by ${a}.`,
-     "The sign stays the same because the divisor is positive.",
-     `The boundary is ${b}.`],
-    `x < ${b}.`);
-}
+const topicSelect = $("topicSelect");
 
-for (let i=0;i<30;i++) {
-  const a=2+i%8,b=1+(i*5)%9;
-  add("Rearranging formulae",3+i%3,
-    `Make x the subject: y = ${a}x + ${b}`,
-    `x=(y-${b})/${a}`,
-    [`Subtract ${b} from both sides.`,
-     `y - ${b} = ${a}x.`,`Divide by ${a}.`],
-    `x = (y - ${b})/${a}.`);
-}
+topicSelect.innerHTML = "";
 
-const storageKey =
-  `algevia-v14:${profile.stage}:${profile.subject}:${profile.board}:${profile.tier}`;
+Object.keys(TOPICS).forEach(topic=>{
 
-function freshState() {
-  return {
-    topic:"Algebra",
-    sub:"Collecting like terms",
-    questionId:null,
-    skills:{},
-    history:[],
-    drafts:{},
-    answered:0,
-    tutor:"female"
-  };
-}
+topicSelect.add(
+new Option(topic,topic)
+);
 
-function readState() {
-  try {
-    const saved=JSON.parse(localStorage.getItem(storageKey));
-    if (saved && typeof saved==="object") {
-      return {
-        ...freshState(),
-        ...saved,
-        skills:saved.skills||{},
-        history:Array.isArray(saved.history)?saved.history:[],
-        drafts:saved.drafts||{}
-      };
-    }
-  } catch(e) {}
-  return freshState();
-}
-
-const state=readState();
-let current=null;
-let completed=false;
-let hintsUsed=0;
-let wrongAttempts=0;
-let session={correct:0,attempts:0};
-let tutor=state.tutor==="male"?"male":"female";
-let voices=[];
-let lastSpeech="";
-
-function saveState() {
-  state.tutor=tutor;
-  try {
-    localStorage.setItem(storageKey,JSON.stringify(state));
-    $("profileNote").textContent="Progress saved on this device.";
-  } catch(e) {
-    $("profileNote").textContent="Progress cannot be saved permanently in this browser.";
-  }
-  updateProgress();
-}
-
-function skillRecord(q) {
-  const key=q.topic+"|"+q.sub;
-  if (!state.skills[key]) {
-    state.skills[key]={
-      mastery:0,attempts:0,correct:0,hints:0,
-      due:0,lastSeen:0
-    };
-  }
-  return state.skills[key];
-}
-
-function questionsForSelection() {
-  return BANK.filter(q =>
-    q.topic===$("topic").value &&
-    q.sub===$("subtopic").value
-  );
-}
-
-function fillTopics() {
-  $("topic").innerHTML="";
-  Object.keys(LESSONS).forEach(t => {
-    $("topic").add(new Option(t,t));
-  });
-  $("topic").value=LESSONS[state.topic]?state.topic:"Algebra";
-  fillSubtopics();
-}
-
-function fillSubtopics() {
-  const topic=$("topic").value;
-  $("subtopic").innerHTML="";
-  Object.keys(LESSONS[topic]).forEach(s => {
-    $("subtopic").add(new Option(s,s));
-  });
-  if (LESSONS[topic][state.sub]) {
-    $("subtopic").value=state.sub;
-  }
-}
-
-function chooseQuestion(exclude=null) {
-  const items=questionsForSelection();
-  if (!items.length)return null;
-
-  const record=skillRecord(items[0]);
-  const target=record.mastery<25?2:record.mastery<65?3:4;
-  const recent=state.history.slice(-Math.min(8,items.length-1));
-  const candidates=items.filter(q=>q.id!==exclude);
-  const pool=candidates.length?candidates:items;
-
-  return pool.map(q => {
-    const previous=state.history.filter(id=>id===q.id).length;
-    const score=
-      Math.abs(q.difficulty-target)*8+
-      (recent.includes(q.id)?100:0)+
-      previous*4+
-      Math.random();
-    return {q,score};
-  }).sort((a,b)=>a.score-b.score)[0].q;
-}
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#39;"
-  }[c]));
-}
-
-function showLesson() {
-  const lesson=LESSONS[$("topic").value][$("subtopic").value];
-  $("skillHeading").textContent=$("subtopic").value;
-  $("understandText").textContent=lesson.intro;
-  $("keyIdea").textContent="Key idea: "+lesson.key;
-
-  const examples=questionsForSelection()
-    .filter(q=>!current||q.id!==current.id)
-    .sort((a,b)=>
-      Math.abs(a.difficulty-(current?.difficulty||2))-
-      Math.abs(b.difficulty-(current?.difficulty||2))
-    ).slice(0,2);
-
-  $("exampleIntro").textContent=
-    "These worked examples practise the same skill as your current question.";
-
-  $("examples").innerHTML=examples.map(q=>`
-    <div class="example">
-      <strong>${escapeHTML(q.question)}</strong>
-      <ol>${q.steps.map(s=>`<li>${escapeHTML(s)}</li>`).join("")}</ol>
-      <strong>${escapeHTML(q.explanation)}</strong>
-    </div>
-  `).join("");
-}
-
-function setDialogue(text) {
-  $("dialogue").textContent=text;
-  lastSpeech=text;
-}
-
-function showQuestion(q,restore=true) {
-  if (!q) {
-    $("question").textContent="No questions available for this selection.";
-    return;
-  }
-
-  current=q;
-  state.questionId=q.id;
-  state.topic=q.topic;
-  state.sub=q.sub;
-  completed=false;
-  hintsUsed=0;
-  wrongAttempts=0;
-
-  $("question").textContent=q.question;
-  $("questionMeta").textContent=
-    `${q.sub} | Difficulty ${q.difficulty} | Mastery ${skillRecord(q).mastery}%`;
-
-  $("answer").value=restore?(state.drafts[q.id]||""):"";
-  $("hintBox").classList.add("hidden");
-  $("feedback").style.display="none";
-  $("check").disabled=false;
-  $("hint").disabled=false;
-
-  $("masteryBar").style.width=skillRecord(q).mastery+"%";
-  $("questionStatus").textContent=
-    "You can save, leave or change topics whenever you wish.";
-
-  setDialogue(
-    `Here is your question: ${q.question} Have a go. I can give you a hint or explain the method.`
-  );
-
-  showLesson();
-  saveState();
-}
-
-function selectionChanged() {
-  stopSpeech();
-  state.topic=$("topic").value;
-  state.sub=$("subtopic").value;
-  showQuestion(chooseQuestion(),false);
-}
-
-function normal(value) {
-  return String(value)
-    .toLowerCase().trim()
-    .replace(/[\u2212\u2013]/g,"-")
-    .replace(/\u00b2/g,"^2")
-    .replace(/\u00b3/g,"^3")
-    .replace(/\s+/g,"")
-    .replace(/^x=/,"");
-}
-
-function isCorrect(q,value) {
-  return q.answers.some(a=>normal(a)===normal(value));
-}
-
-function showFeedback(text,good) {
-  $("feedback").className="feedback "+(good?"good":"bad");
-  $("feedback").textContent=text;
-  $("feedback").style.display="block";
-}
-
-function checkAnswer() {
-  if (!current||completed)return;
-  const answer=$("answer").value.trim();
-
-  if (!answer) {
-    $("questionStatus").textContent="Please enter your answer first.";
-    return;
-  }
-
-  const record=skillRecord(current);
-  record.attempts++;
-  session.attempts++;
-
-  if (isCorrect(current,answer)) {
-    record.correct++;
-    session.correct++;
-    record.mastery=Math.min(100,
-      record.mastery+(hintsUsed?9:16));
-    record.lastSeen=Date.now();
-    record.due=Date.now()+
-      Math.max(1,Math.floor(record.mastery/25))*86400000;
-
-    state.answered++;
-    state.history.push(current.id);
-    state.history=state.history.slice(-120);
-    delete state.drafts[current.id];
-
-    completed=true;
-    $("check").disabled=true;
-    $("hint").disabled=true;
-
-    const text=`That's correct. ${current.explanation} Well done.`;
-    showFeedback(text,true);
-    setDialogue(text);
-    $("questionStatus").textContent=
-      "Correct. Choose Next Question when ready.";
-  } else {
-    wrongAttempts++;
-    record.mastery=Math.max(0,record.mastery-4);
-
-    const step=current.steps[
-      Math.min(wrongAttempts-1,current.steps.length-1)
-    ];
-    const text=wrongAttempts===1
-      ?`Not quite. Let's look at ${current.question} ${step}`
-      :`I can see this part is tricky. ${step} Try again.`;
-
-    showFeedback(text,false);
-    setDialogue(text);
-    $("questionStatus").textContent=
-      "Try again, or choose Hint or Teach Me.";
-  }
-  saveState();
-}
-
-function giveHint() {
-  if (!current||completed)return;
-
-  const index=Math.min(hintsUsed,current.steps.length-1);
-  const step=current.steps[index];
-  hintsUsed++;
-  skillRecord(current).hints++;
-
-  $("hintBox").classList.remove("hidden");
-  $("hintBox").textContent=`Hint ${index+1}: ${step}`;
-  setDialogue(`For ${current.question}, here is a clue. ${step}`);
-  saveState();
-}
-
-function teachQuestion() {
-  if (!current)return;
-  const text=
-    `Let's work through ${current.question} together. `+
-    current.steps.join(" ")+
-    " "+current.explanation;
-
-  $("hintBox").classList.remove("hidden");
-  $("hintBox").textContent=text;
-  setDialogue(text);
-}
-
-function nextQuestion() {
-  stopSpeech();
-  const previous=current?.id||null;
-  showQuestion(chooseQuestion(previous),false);
-}
-
-function startPractice() {
-  stopSpeech();
-  showQuestion(chooseQuestion(current?.id||null),false);
-}
-
-function resumeLearning() {
-  stopSpeech();
-  const saved=BANK.find(q=>q.id===state.questionId);
-  if (saved) {
-    $("topic").value=saved.topic;
-    fillSubtopics();
-    $("subtopic").value=saved.sub;
-    showQuestion(saved,true);
-  } else {
-    showQuestion(chooseQuestion(),false);
-  }
-}
-
-function updateProgress() {
-  const entries=Object.entries(state.skills);
-  const records=entries.map(([,r])=>r);
-
-  const average=records.length
-    ?Math.round(records.reduce((sum,r)=>sum+r.mastery,0)/records.length)
-    :0;
-
-  $("mastery").textContent=average+"%";
-  $("secure").textContent=records.filter(r=>r.mastery>=65).length;
-  $("answered").textContent=state.answered;
-  $("correctCount").textContent=session.correct;
-  $("attemptCount").textContent=session.attempts;
-  $("accuracy").textContent=session.attempts
-    ?Math.round(session.correct/session.attempts*100)+"%"
-    :"0%";
-
-  if (current) {
-    $("currentSkill").textContent=
-      `Current skill: ${current.sub} - ${skillRecord(current).mastery}% mastery`;
-  }
-
-  $("skillList").innerHTML=entries.map(([key,r])=>`
-    <div class="skill-row">
-      <span>${escapeHTML(key.split("|")[1])}</span>
-      <strong>${r.mastery}%</strong>
-    </div>
-  `).join("");
-}
-
-// Browser voice system: no automatic opposite-gender fallback.
-function availableVoices() {
-  voices=("speechSynthesis" in window)
-    ?window.speechSynthesis.getVoices():[];
-  updateVoiceStatus();
-}
-
-function matchingVoice() {
-  const female=/samantha|karen|moira|susan|hazel|libby|sonia|serena|kate|amy|victoria|aria|ava|jenny|zira|allison|fiona|tessa/i;
-  const male=/daniel|george|oliver|ryan|alex|arthur|fred|guy|james|thomas|william/i;
-  const wanted=tutor==="female"?female:male;
-  const excluded=tutor==="female"?male:female;
-
-  return voices
-    .filter(v=>/^en([-_]|$)/i.test(v.lang))
-    .filter(v=>wanted.test(v.name)&&!excluded.test(v.name))
-    .sort((a,b)=>
-      Number(/en-GB/i.test(b.lang))-
-      Number(/en-GB/i.test(a.lang))
-    )[0]||null;
-}
-
-function updateVoiceStatus() {
-  const voice=matchingVoice();
-  $("voiceStatus").textContent=voice
-    ?`Installed voice: ${voice.name} (${voice.lang})`
-    :`No clearly identified ${tutor} English voice is available.`;
-}
-
-function stopSpeech() {
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-  updateVoiceStatus();
-}
-
-function speakText(text) {
-  if (!("speechSynthesis" in window)) {
-    $("voiceStatus").textContent="Speech is unavailable in this browser.";
-    return;
-  }
-  stopSpeech();
-  const voice=matchingVoice();
-  if (!voice)return;
-
-  const utterance=new SpeechSynthesisUtterance(text);
-  utterance.voice=voice;
-  utterance.lang=voice.lang;
-  utterance.rate=0.92;
-  utterance.pitch=1;
-  utterance.onend=updateVoiceStatus;
-  utterance.onerror=()=>{
-    $("voiceStatus").textContent="Voice playback was unsuccessful.";
-  };
-  window.speechSynthesis.speak(utterance);
-}
-
-function chooseTutor(value) {
-  stopSpeech();
-  tutor=value;
-  state.tutor=value;
-
-  $("female").classList.toggle("active",value==="female");
-  $("male").classList.toggle("active",value==="male");
-  $("female").setAttribute("aria-pressed",String(value==="female"));
-  $("male").setAttribute("aria-pressed",String(value==="male"));
-  $("selectedTutor").textContent=
-    value==="female"?"Female Tutor selected":"Male Tutor selected";
-
-  updateVoiceStatus();
-  saveState();
-}
-
-// Event listeners
-$("topic").addEventListener("change",()=>{
-  state.sub=Object.keys(LESSONS[$("topic").value])[0];
-  fillSubtopics();
-  selectionChanged();
-});
-$("subtopic").addEventListener("change",selectionChanged);
-$("start").addEventListener("click",startPractice);
-$("resume").addEventListener("click",resumeLearning);
-$("save").addEventListener("click",()=>{
-  saveState();
-  stopSpeech();
-  $("saveStatus").textContent="Your progress has been saved.";
-});
-$("female").addEventListener("click",()=>chooseTutor("female"));
-$("male").addEventListener("click",()=>chooseTutor("male"));
-$("check").addEventListener("click",checkAnswer);
-$("hint").addEventListener("click",giveHint);
-$("teach").addEventListener("click",teachQuestion);
-$("speak").addEventListener("click",()=>speakText(lastSpeech));
-$("stop").addEventListener("click",stopSpeech);
-$("next").addEventListener("click",nextQuestion);
-$("answer").addEventListener("input",()=>{
-  if (!current)return;
-  state.drafts[current.id]=$("answer").value;
-  saveState();
-});
-$("answer").addEventListener("keydown",e=>{
-  if (e.key==="Enter")checkAnswer();
 });
 
-if ("speechSynthesis" in window) {
-  availableVoices();
-  window.speechSynthesis.addEventListener(
-    "voiceschanged",availableVoices
-  );
+updateSubtopics();
+
 }
 
-// Initialise page
-fillTopics();
-chooseTutor(tutor);
 
-if (!supported) {
-  $("scopeNotice").textContent=
-    "This development question bank supports GCSE Maths AQA only. "+
-    "Questions for the selected subject or exam board are not yet available.";
-  $("question").textContent="Matching question bank not available yet.";
-  ["start","resume","check","hint","teach","next"].forEach(id=>{
-    $(id).disabled=true;
-  });
-} else {
-  const savedQuestion=BANK.find(q=>q.id===state.questionId);
-  if (savedQuestion) {
-    $("topic").value=savedQuestion.topic;
-    fillSubtopics();
-    $("subtopic").value=savedQuestion.sub;
-    showQuestion(savedQuestion,true);
-  } else {
-    showQuestion(chooseQuestion(),false);
-  }
+function updateSubtopics(){
+
+const topic = $("topicSelect").value;
+
+const subtopic = $("subtopicSelect");
+
+subtopic.innerHTML = "";
+
+Object.keys(TOPICS[topic].skills).forEach(skill=>{
+
+subtopic.add(
+new Option(skill,skill)
+);
+
+});
+
+renderLesson();
+
 }
-updateProgress();
 
-})();
-</script>
-  
-<script>
+
+function renderLesson(){
+
+const topic = $("topicSelect").value;
+const skill = $("subtopicSelect").value;
+
+const data = TOPICS[topic]?.skills[skill];
+
+if(!data)return;
+
+$("skillBadge").textContent =
+`${topic} · ${skill}`;
+
+$("understand").textContent =
+data.understand;
+
+$("workedExample").textContent =
+data.example;
+
+}
+
+
+function chooseQuestion(){
+
+let pool = BANK.filter(eligible);
+
+const selectedTopic =
+$("topicSelect").value;
+
+const selectedSkill =
+forcedSkill || $("subtopicSelect").value;
+
+let preferred =
+pool.filter(q=>q.skill===selectedSkill);
+
+if(!preferred.length){
+
+preferred =
+pool.filter(q=>q.topic===selectedTopic);
+
+}
+
+if(!preferred.length){
+
+preferred = pool;
+
+}
+
+const unseen =
+preferred.filter(
+q=>!history.some(h=>h.id===q.id)
+);
+
+if(unseen.length){
+
+preferred = unseen;
+
+}
+
+preferred.sort((a,b)=>{
+
+const masteryDifference =
+mastery(a.skill)-mastery(b.skill);
+
+if(masteryDifference!==0)
+return masteryDifference;
+
+return a.grade-b.grade;
+
+});
+
+return preferred[0] || null;
+
+}
+
+
+function prerequisiteQuestion(){
+
+if(!current || qAttempts<2)
+return null;
+
+const floor = gradeCorridor()[0];
+
+const lower =
+BANK.filter(q=>
+q.topic===current.topic &&
+q.grade===floor-1
+);
+
+return lower[0] || null;
+
+}
+
+
+function showQuestion(q,support=false){
+
+current = q;
+
+if(!q){
+
+$("question").textContent =
+"No validated question is currently available for this exact selection and grade pathway. Choose another skill while the question bank is expanded.";
+
+return;
+
+}
+
+ensureSkill(q.skill,q.grade);
+
+$("topicSelect").value = q.topic;
+
+updateSubtopics();
+
+if(
+[...$("subtopicSelect").options]
+.some(option=>option.value===q.skill)
+){
+
+$("subtopicSelect").value = q.skill;
+
+}
+
+renderLesson();
+
+$("question").textContent = q.q;
+
+$("questionGrade").textContent =
+`Grade ${q.grade}`;
+
+$("supportLabel").textContent =
+support
+? "· Prerequisite Support"
+: "";
+
+$("answerInput").value = "";
+
+$("feedback").style.display = "none";
+$("hint").style.display = "none";
+
+$("nextButton").classList.add("hidden");
+
+qAttempts = 0;
+hintIndex = 0;
+
+$("questionCounter").textContent =
+`Adaptive question ${history.length+1}`;
+
+$("progressBar").style.width =
+`${Math.min(100,history.length*5)}%`;
+
+sayBoard(
+`Tutor: This question is matched to your learning profile at Grade ${q.grade}. ${
+support
+? "We're briefly strengthening a prerequisite before returning to your grade pathway."
+: "Take your time and show me what you can do."
+}`,
+false
+);
+
+}
+
+
+function sayBoard(text,speak=true){
+
+const p = document.createElement("p");
+
+p.textContent = text;
+
+$("conversation").appendChild(p);
+
+$("conversation").scrollTop =
+$("conversation").scrollHeight;
+
+if(speak){
+
+voice(
+text.replace(/^Tutor:\s*/,"")
+);
+
+}
+
+}
+
+
+function voice(text){
+
+if(!("speechSynthesis" in window)){
+
+$("voiceStatus").textContent =
+"Written tutor guidance is available. Browser voice is only a prototype fallback.";
+
+return;
+
+}
+
+speechSynthesis.cancel();
+
+const utterance =
+new SpeechSynthesisUtterance(text);
+
+utterance.lang = "en-GB";
+
 /*
- ALGEVIA V15
- Student microphone + tutor speech + conversation board.
- Keeps the existing V14 learning engine and layout.
+Slower prototype voice.
+Final production tutor should use neural TTS.
 */
-(function () {
-  "use strict";
 
-  const byId = id => document.getElementById(id);
+utterance.rate = 0.82;
 
-  const hintButton = byId("hint");
-  const teachButton = byId("teach");
-  const studentButton = byId("speak");
-  const stopButton = byId("stop");
-  const dialogue = byId("dialogue");
-  const tutorPanel = dialogue?.parentElement;
+utterance.pitch =
+selectedTutor==="female"
+? 1.03
+: 0.96;
 
-  if (!hintButton || !teachButton ||
-      !studentButton || !dialogue || !tutorPanel) {
-    console.error("Algevia V15: Required V14 controls not found.");
-    return;
-  }
+const voices =
+speechSynthesis
+.getVoices()
+.filter(v=>/^en(-|_)/i.test(v.lang));
 
-  // Create a shared learning conversation board.
-  const heading = document.createElement("h3");
-  heading.textContent = "Learning Conversation Board";
+const preferred =
+selectedTutor==="female"
+? /sonia|libby|serena|susan|hazel|female/i
+: /daniel|george|oliver|ryan|male/i;
 
-  const board = document.createElement("div");
-  board.id = "learningConversationBoard";
-  board.setAttribute("role", "log");
-  board.setAttribute("aria-label", "Learning conversation");
-  board.style.cssText = [
-    "background:#fff",
-    "border:1px solid #d9e4f0",
-    "border-radius:10px",
-    "padding:14px",
-    "max-height:350px",
-    "overflow-y:auto",
-    "margin-top:12px"
-  ].join(";");
+utterance.voice =
+voices.find(
+v=>
+v.lang.toLowerCase()==="en-gb" &&
+preferred.test(v.name)
+)
+||
+voices.find(
+v=>v.lang.toLowerCase()==="en-gb"
+)
+||
+voices[0]
+||
+null;
 
-  const microphoneStatus = document.createElement("p");
-  microphoneStatus.id = "studentMicrophoneStatus";
-  microphoneStatus.textContent = "Student microphone is off.";
-  microphoneStatus.style.color = "#60738a";
+utterance.onstart = ()=>{
 
-  tutorPanel.append(heading, board, microphoneStatus);
+$("voiceStatus").textContent =
+"Tutor speaking...";
 
-  let recognition = null;
-  let listening = false;
-  let lastTutorText = dialogue.textContent.trim();
+};
 
-  function addMessage(speaker, text) {
-    if (!text) return;
+utterance.onend = ()=>{
 
-    const entry = document.createElement("div");
-    entry.style.cssText = [
-      "padding:12px",
-      "border-radius:9px",
-      "margin:8px 0",
-      "background:" +
-        (speaker === "Tutor" ? "#edf5fc" : "#f5f7fb")
-    ].join(";");
+$("voiceStatus").textContent =
+"Your turn.";
 
-    const label = document.createElement("strong");
-    label.textContent = speaker + ": ";
+};
 
-    entry.append(label, document.createTextNode(text));
-    board.appendChild(entry);
-    board.scrollTop = board.scrollHeight;
-  }
+speechSynthesis.speak(utterance);
 
-  // Display tutor dialogue automatically when it changes.
-  const observer = new MutationObserver(() => {
-    const text = dialogue.textContent.trim();
+}
 
-    if (text && text !== lastTutorText) {
-      lastTutorText = text;
-      addMessage("Tutor", text);
-    }
-  });
 
-  observer.observe(dialogue, {
-    childList: true,
-    characterData: true,
-    subtree: true
-  });
+function hint(){
 
-  function stopTutorVoice() {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-  }
+if(!current)return;
 
-  function tutorVoice(text) {
-    if (!("speechSynthesis" in window)) {
-      microphoneStatus.textContent =
-        "Tutor speech is unavailable in this browser.";
-      return;
-    }
+const text =
+current.h[
+Math.min(
+hintIndex,
+current.h.length-1
+)
+];
 
-    stopTutorVoice();
+hintIndex++;
 
-    const gender =
-      byId("male")?.classList.contains("active")
-        ? "male"
-        : "female";
+$("hint").textContent = text;
+$("hint").style.display = "block";
 
-    const voices = window.speechSynthesis.getVoices();
+sayBoard(
+`Tutor: ${text}`,
+true
+);
 
-    const femaleNames =
-      /samantha|karen|moira|sonia|serena|kate|amy|ava|jenny|zira|victoria/i;
+adjustMastery(
+current.skill,
+-2
+);
 
-    const maleNames =
-      /daniel|george|oliver|ryan|arthur|james|thomas|william/i;
+}
 
-    const pattern =
-      gender === "male" ? maleNames : femaleNames;
 
-    const voice = voices.find(v =>
-      /^en-GB/i.test(v.lang) && pattern.test(v.name)
-    ) || voices.find(v =>
-      /^en/i.test(v.lang) && pattern.test(v.name)
-    );
+function teach(){
 
-    if (!voice) {
-      microphoneStatus.textContent =
-        "No matching tutor voice is installed. " +
-        "The explanation is still displayed as text.";
-      return;
-    }
+if(!current)return;
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = voice;
-    utterance.lang = voice.lang;
-    utterance.rate = 0.93;
-    utterance.pitch = 1;
+sayBoard(
+`Tutor: ${current.teach} ${current.sol}`,
+true
+);
 
-    window.speechSynthesis.speak(utterance);
-  }
+adjustMastery(
+current.skill,
+-3
+);
 
-  // Hint and Teach Me: allow the original V14 function
-  // to update the dialogue, then speak the updated text.
-  function speakUpdatedTutorText() {
-    setTimeout(() => {
-      const text = dialogue.textContent.trim();
-      if (text) tutorVoice(text);
-    }, 0);
-  }
+}
 
-  hintButton.addEventListener(
-    "click",
-    speakUpdatedTutorText
-  );
 
-  teachButton.addEventListener(
-    "click",
-    speakUpdatedTutorText
-  );
+function adjustMastery(skill,delta){
 
-  function stopStudentMicrophone() {
-    if (recognition) {
-      try {
-        recognition.abort();
-      } catch (error) {}
-      recognition = null;
-    }
+ensureSkill(
+skill,
+current?.grade ||
+profile.diagnostic.estimatedGrade
+);
 
-    listening = false;
-    studentButton.textContent = "Student Speak";
-    studentButton.setAttribute("aria-pressed", "false");
-    microphoneStatus.textContent = "Student microphone is off.";
-  }
+profile.skills[skill].mastery =
+Math.max(
+0,
+Math.min(
+100,
+profile.skills[skill].mastery + delta
+)
+);
 
-  function startStudentMicrophone() {
-    if (listening) {
-      stopStudentMicrophone();
-      return;
-    }
+save();
 
-    const SpeechRecognition =
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition;
+renderMastery();
 
-    if (!SpeechRecognition) {
-      microphoneStatus.textContent =
-        "Speech recognition is unavailable. " +
-        "Please type your answer instead.";
-      return;
-    }
+}
 
-    stopTutorVoice();
 
-    const instance = new SpeechRecognition();
-    recognition = instance;
+function check(){
 
-    instance.lang = "en-GB";
-    instance.continuous = false;
-    instance.interimResults = false;
+if(!current)return;
 
-    instance.onresult = event => {
-      const spoken = Array.from(event.results)
-        .map(result => result[0].transcript)
-        .join(" ")
-        .trim();
+const value =
+$("answerInput").value.trim();
 
-      if (!spoken) return;
+if(!value)return;
 
-      addMessage("Student", spoken);
+qAttempts++;
+attempts++;
 
-      microphoneStatus.textContent =
-        "Student speech converted to text.";
+const correctAnswer =
+current.a.some(
+answer=>norm(answer)===norm(value)
+);
 
-      // For this prototype, spoken answers are placed
-      // in the answer box for student confirmation.
-      const answerBox = byId("answer");
+if(correctAnswer){
 
-      if (answerBox) {
-        answerBox.value = spoken;
-        answerBox.dispatchEvent(
-          new Event("input", { bubbles: true })
-        );
-      }
-    };
+correct++;
 
-    instance.onerror = event => {
-      microphoneStatus.textContent =
-        "Microphone error: " + event.error +
-        ". You can type your answer.";
-    };
+const gain =
+qAttempts===1 && hintIndex===0
+? 8
+: qAttempts===1
+? 5
+: 3;
 
-    instance.onend = () => {
-      if (recognition === instance) {
-        recognition = null;
-        listening = false;
-        studentButton.textContent = "Student Speak";
-        studentButton.setAttribute("aria-pressed", "false");
-      }
-    };
+adjustMastery(
+current.skill,
+gain
+);
 
-    try {
-      instance.start();
-      listening = true;
-      studentButton.textContent = "Stop Student Microphone";
-      studentButton.setAttribute("aria-pressed", "true");
-      microphoneStatus.textContent = "Listening to student...";
-    } catch (error) {
-      stopStudentMicrophone();
-      microphoneStatus.textContent =
-        "Could not activate microphone: " + error.message;
-    }
-  }
+profile.skills[current.skill].workingGrade =
+Math.max(
+profile.skills[current.skill].workingGrade || current.grade,
+current.grade
+);
 
-  // Replace V14 Speak behaviour with student microphone.
-  studentButton.addEventListener("click", event => {
-    event.stopImmediatePropagation();
-    startStudentMicrophone();
-  }, true);
+$("feedback").className =
+"feedback correct";
 
-  studentButton.textContent = "Student Speak";
+$("feedback").innerHTML =
+`<strong>Correct.</strong><br>${current.sol}`;
 
-  // Stop both tutor speech and microphone.
-  stopButton?.addEventListener("click", () => {
-    stopStudentMicrophone();
-    stopTutorVoice();
-  });
+$("feedback").style.display =
+"block";
 
-  // Avoid recording a previous question's conversation
-  // against a newly displayed question.
-  let lastQuestion = byId("question")?.textContent;
+sayBoard(
+`Student: ${value}`,
+false
+);
 
-  const questionElement = byId("question");
+sayBoard(
+`Tutor: Well done. ${current.sol}`,
+true
+);
 
-  if (questionElement) {
-    new MutationObserver(() => {
-      const question = questionElement.textContent;
+history.push({
 
-      if (question !== lastQuestion) {
-        lastQuestion = question;
-        stopStudentMicrophone();
-        stopTutorVoice();
-        board.replaceChildren();
-        lastTutorText = dialogue.textContent.trim();
-      }
-    }).observe(questionElement, {
-      childList: true,
-      characterData: true,
-      subtree: true
-    });
-  }
-})();
+id:current.id,
+grade:current.grade,
+skill:current.skill,
+correct:true,
+hints:hintIndex,
+attempts:qAttempts
+
+});
+
+$("nextButton").classList.remove("hidden");
+
+checkPromotion();
+
+}
+
+else{
+
+$("feedback").className =
+"feedback incorrect";
+
+$("feedback").innerHTML =
+"<strong>Not quite yet.</strong> Algevia will adjust the support rather than simply moving on.";
+
+$("feedback").style.display =
+"block";
+
+sayBoard(
+`Student: ${value}`,
+false
+);
+
+sayBoard(
+"Tutor: Not quite. Let's work out which step is causing the difficulty.",
+true
+);
+
+adjustMastery(
+current.skill,
+-4
+);
+
+history.push({
+
+id:current.id,
+grade:current.grade,
+skill:current.skill,
+correct:false,
+hints:hintIndex,
+attempts:qAttempts
+
+});
+
+if(qAttempts===2){
+
+const prerequisite =
+prerequisiteQuestion();
+
+if(prerequisite){
+
+setTimeout(
+()=>showQuestion(prerequisite,true),
+600
+);
+
+}
+
+else{
+
+hint();
+
+}
+
+}
+
+else{
+
+hint();
+
+}
+
+}
+
+renderStats();
+
+save();
+
+}
+
+
+function renderStats(){
+
+$("correctCount").textContent =
+correct;
+
+$("attemptCount").textContent =
+attempts;
+
+$("accuracy").textContent =
+attempts
+? Math.round(correct/attempts*100)+"%"
+: "0%";
+
+if(attempts<3){
+
+$("adaptiveMessage").innerHTML =
+"<strong>Algevia is learning how you learn.</strong>";
+
+}
+
+else if(correct/attempts>=0.8){
+
+$("adaptiveMessage").innerHTML =
+"<strong>Strong progress.</strong> Algevia will favour higher questions within your grade pathway.";
+
+}
+
+else{
+
+$("adaptiveMessage").innerHTML =
+"<strong>Algevia is strengthening weaker skills before increasing difficulty.</strong>";
+
+}
+
+}
+
+
+function renderMastery(){
+
+const box =
+$("masteryList");
+
+box.innerHTML = "";
+
+Object.entries(profile.skills)
+.sort(
+(a,b)=>a[1].mastery-b[1].mastery
+)
+.forEach(([skill,data])=>{
+
+const row =
+document.createElement("div");
+
+row.className =
+"mastery-row";
+
+row.innerHTML = `
+
+<div>
+
+<strong>${skill}</strong>
+—
+${Math.round(data.mastery)}%
+
+${
+data.priority
+? '<span class="priority">Priority</span>'
+: ''
+}
+
+</div>
+
+<div class="mastery-track">
+
+<div
+class="mastery-fill"
+style="width:${data.mastery}%">
+</div>
+
+</div>
+
+`;
+
+box.appendChild(row);
+
+});
+
+}
+
+
+function checkPromotion(){
+
+const target =
+Number(profile.targetGrade);
+
+if(target>=9)return;
+
+
+/*
+Promotion requires evidence at the target grade.
+
+This prototype threshold is intentionally conservative
+relative to a single correct answer.
+
+Production can make the evidence requirement stronger
+when the full bank is installed.
+*/
+
+const cleanTargetAnswers =
+history.filter(
+item=>
+item.grade===target &&
+item.correct &&
+item.hints===0 &&
+item.attempts===1
+);
+
+const distinctSkills =
+new Set(
+cleanTargetAnswers.map(
+item=>item.skill
+)
+).size;
+
+const strongSkills =
+Object.values(profile.skills)
+.filter(
+data=>
+(data.workingGrade||0)>=target &&
+data.mastery>=80
+).length;
+
+
+if(
+(cleanTargetAnswers.length>=4 &&
+distinctSkills>=2)
+||
+strongSkills>=3
+){
+
+if(profile.autoProgress){
+
+promote(true);
+
+}
+
+else{
+
+$("promotionText").textContent =
+`Your recent learning evidence suggests you are securely meeting your Grade ${target} target. Algevia recommends moving your target to Grade ${target+1}.`;
+
+$("promotion").style.display =
+"block";
+
+$("promotion").scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+}
+
+}
+
+}
+
+
+function promote(auto=false){
+
+if(profile.targetGrade>=9)return;
+
+profile.targetGrade++;
+
+save();
+
+renderProfile();
+
+$("promotion").style.display =
+"none";
+
+sayBoard(
+`Tutor: ${
+auto
+? "You've enabled automatic progression. "
+: "Great choice. "
+}Your new target is Grade ${profile.targetGrade}. I'll introduce the new level gradually while continuing to review earlier skills.`,
+true
+);
+
+}
+
+
+function next(){
+
+forcedSkill = null;
+
+showQuestion(
+chooseQuestion()
+);
+
+}
+
+
+function startPriority(){
+
+const priority =
+prioritySkills()[0];
+
+if(!priority)return;
+
+forcedSkill = priority;
+
+for(
+const [topic,data]
+of Object.entries(TOPICS)
+){
+
+if(data.skills[priority]){
+
+$("topicSelect").value =
+topic;
+
+updateSubtopics();
+
+$("subtopicSelect").value =
+priority;
+
+renderLesson();
+
+break;
+
+}
+
+}
+
+showQuestion(
+chooseQuestion()
+);
+
+}
+
+
+function startSpeech(){
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(!SpeechRecognition){
+
+$("voiceStatus").textContent =
+"Speech input is not available in this browser. Type your answer or question instead.";
+
+return;
+
+}
+
+if("speechSynthesis" in window){
+
+speechSynthesis.cancel();
+
+}
+
+recognition =
+new SpeechRecognition();
+
+recognition.lang =
+"en-GB";
+
+recognition.interimResults =
+false;
+
+recognition.onstart = ()=>{
+
+$("voiceStatus").textContent =
+"Listening to the student...";
+
+};
+
+recognition.onresult = event=>{
+
+const text =
+event.results[0][0].transcript;
+
+sayBoard(
+`Student: ${text}`,
+false
+);
+
+const maths =
+text
+.toLowerCase()
+.replace(/plus/g,"+")
+.replace(/minus/g,"-")
+.replace(/equals/g,"=")
+.trim();
+
+$("answerInput").value =
+maths;
+
+$("voiceStatus").textContent =
+"I heard you. You can edit the text or check the answer.";
+
+};
+
+recognition.onerror = ()=>{
+
+$("voiceStatus").textContent =
+"I couldn't hear that clearly. Please try again or type.";
+
+};
+
+recognition.start();
+
+}
+
+
+/* -------------------------------
+   EVENT LISTENERS
+-------------------------------- */
+
+$("topicSelect").addEventListener(
+"change",
+updateSubtopics
+);
+
+$("subtopicSelect").addEventListener(
+"change",
+renderLesson
+);
+
+$("startPractice").onclick = ()=>{
+
+forcedSkill =
+$("subtopicSelect").value;
+
+showQuestion(
+chooseQuestion()
+);
+
+};
+
+$("priorityPractice").onclick =
+startPriority;
+
+$("checkButton").onclick =
+check;
+
+$("hintButton").onclick =
+hint;
+
+$("teachButton").onclick =
+teach;
+
+$("nextButton").onclick =
+next;
+
+$("answerInput").addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+check();
+
+}
+
+}
+);
+
+$("targetSelect").onchange =
+event=>{
+
+profile.targetGrade =
+Number(event.target.value);
+
+save();
+
+renderProfile();
+
+next();
+
+};
+
+$("autoProgress").onchange =
+save;
+
+$("acceptPromotion").onclick =
+()=>promote(false);
+
+$("keepTarget").onclick =
+()=>{
+
+$("promotion").style.display =
+"none";
+
+};
+
+$("femaleTutor").onclick =
+()=>{
+
+selectedTutor =
+"female";
+
+$("voiceStatus").textContent =
+"Female Tutor selected.";
+
+};
+
+$("maleTutor").onclick =
+()=>{
+
+selectedTutor =
+"male";
+
+$("voiceStatus").textContent =
+"Male Tutor selected.";
+
+};
+
+$("studentSpeak").onclick =
+startSpeech;
+
+$("stopVoice").onclick =
+()=>{
+
+if("speechSynthesis" in window){
+
+speechSynthesis.cancel();
+
+}
+
+try{
+
+recognition?.stop();
+
+}catch(e){}
+
+$("voiceStatus").textContent =
+"Voice stopped.";
+
+};
+
+$("saveExit").onclick =
+()=>{
+
+save();
+
+location.href =
+"education.html";
+
+};
+
+
+/* -------------------------------
+   START PAGE
+-------------------------------- */
+
+renderProfile();
+
+fillTopics();
+
+renderMastery();
+
+renderStats();
+
+/*
+Start with the student's highest-priority diagnostic area.
+*/
+
+startPriority();
+
 </script>
 
 </body>
