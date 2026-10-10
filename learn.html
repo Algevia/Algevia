@@ -33,7 +33,7 @@
 <div class="classroom"><div class="tutorCol"><div class="card tutor"><img id="tutorImg" alt="Algevia AI tutor"><div class="shade"></div><div class="tutorInfo"><div class="tutorName" id="tutorName">Karen - Female Tutor</div><div id="tutorState" class="speaking">Ready</div></div></div><div class="gender"><button id="female" class="sel" onclick="setGender('female')">Female Tutor</button><button id="male" class="alt" onclick="setGender('male')">Male Tutor</button></div><div class="voicePanel"><label for="voiceSelect"><b>Test tutor voice</b></label><select id="voiceSelect" aria-label="Browser voice selection"></select><button class="alt" onclick="testVoice()" type="button">Play voice sample</button><div class="small" id="voiceStatus">Browser voice test. Real lip-sync requires a streaming avatar provider.</div></div><div class="avatarNote">This is a browser speech layer with a static tutor image, not a lip-synchronised avatar. The lesson steps are separate from the voice renderer.</div></div>
 <div class="lessonCol"><div class="card"><div class="lessonSelect"><label>Topic<select id="topic"></select></label><label>Lesson<select id="skill"></select></label><button onclick="startSelected()">Start Lesson</button></div></div>
 <div class="card"><div class="sectionHead"><h2>Worked Example <span class="small">- related example, not your question</span></h2><button class="alt" onclick="workedExample()">Worked Example</button></div><div class="topicIntro" id="topicIntro">Choose a lesson to begin.</div><div class="board workedBoard"><div class="boardGrid"><div class="visual" id="workedVisual">Press Worked Example to begin.</div><div><div class="question" id="workedQuestion">A related example will appear here.</div><div class="liveLine" id="workedSpoken">Tutor speech appears here progressively.</div><div class="boardSteps" id="workedText"><span class="small">The example will be written one teaching step at a time.</span></div></div></div></div></div>
-<div class="card"><div class="sectionHead"><h2>Practice Question</h2><span class="small" id="qMeta"></span></div><div class="board practiceBoard"><div class="boardGrid"><div class="visual" id="visual"></div><div><div class="question" id="question"></div><div class="liveLine" id="spoken">Press Teach This Question when you are ready.</div><div class="boardSteps" id="working"><span class="small">Mathematical working appears step by step as the tutor explains.</span></div></div></div><div class="teachingText" id="teachingText">Try the question first, or ask the tutor to teach, explain again, or give a staged hint.</div><div class="answer"><input id="answer" autocomplete="off" placeholder="Enter your answer"><button onclick="check()">Check Answer</button></div><div class="feedback" id="feedback"></div><div class="controls"><button onclick="teachQuestion()">Teach This Question</button><button class="alt" onclick="repeatLast()">Explain Again</button><button class="alt" onclick="hint()">Hint</button><button class="good" onclick="studentSpeak()">Student Speak</button><button class="alt" onclick="toggleSpeed()" id="speed">Slower</button><button class="stop" onclick="togglePause()" id="pauseButton">Pause Tutor</button></div><div class="nextRow"><button onclick="nextQuestion()">Next Question</button></div></div></div></div></div>
+<div class="card"><div class="sectionHead"><h2>Practice Question</h2><span class="small" id="qMeta"></span></div><div class="board practiceBoard"><div class="boardGrid"><div class="visual" id="visual"></div><div><div class="question" id="question"></div><div class="liveLine" id="spoken">Press Teach This Question when you are ready.</div><div class="boardSteps" id="working"><span class="small">Mathematical working appears step by step as the tutor explains.</span></div></div></div><div class="teachingText" id="teachingText">Try the question first, or ask the tutor to teach, explain again, or give a staged hint.</div><div class="answer"><input id="answer" autocomplete="off" placeholder="Enter your answer"><button onclick="check()">Check Answer</button></div><div class="feedback" id="feedback"></div><div class="teachingText" id="conversationStatus" aria-live="polite">Ask Tutor: type a question above, or use Student Speak then Ask Tutor. The tutor will answer using the current maths question.</div><div class="controls"><button onclick="teachQuestion()">Teach This Question</button><button class="alt" onclick="repeatLast()">Explain Again</button><button class="alt" onclick="hint()">Hint</button><button class="good" onclick="studentSpeak()">Student Speak</button><button class="alt" onclick="askTutor()">Ask Tutor</button><button class="alt" onclick="toggleSpeed()" id="speed">Slower</button><button class="stop" onclick="togglePause()" id="pauseButton">Pause Tutor</button></div><div class="nextRow"><button onclick="nextQuestion()">Next Question</button></div></div></div></div></div>
 <div class="lower"><div class="card"><h3 style="margin-top:0">Current question transcript</h3><div class="small">Clears automatically when a new practice question is shown.</div><div class="transcript" id="transcript"></div></div><div class="card"><h3 style="margin-top:0">Adaptive learning</h3><div id="adaptMsg">Algevia is collecting evidence from this prototype lesson.</div><div style="margin-top:12px"><span id="masteryLabel">Skill mastery 50%</span><div class="track"><div class="fill" id="masteryFill" style="width:50%"></div></div></div><div class="small" style="margin-top:10px">Independent success reduces scaffolding. Hints and repeated errors increase visual support and smaller teaching steps.</div></div></div></div>
 <script>
 // V30 Synchronized Maths Tutor - avatar-ready presentation layer
@@ -396,7 +396,7 @@ function studentSpeak(){
   recognition.onresult=e=>{
     let words=Array.from(e.results).map(r=>r[0].transcript).join(' ').trim();
     if(words){heard=true;$('answer').value=words;$('tutorState').textContent='Heard: '+words;
-      if(e.results[e.results.length-1].isFinal){addLine('Student',words);finished=true;}}
+      if(e.results[e.results.length-1].isFinal){finished=true;$('conversationStatus').textContent='I heard: '+words+' â€” press Ask Tutor to get an explanation.';}}
   };
   recognition.onerror=e=>{
     const code=e.error||'unknown';
@@ -417,6 +417,55 @@ function studentSpeak(){
     if(!heard&&$('tutorState').textContent.startsWith('Listening'))$('tutorState').textContent='No speech captured. Try again or use keyboard dictation.';
   };
   try{recognition.start()}catch(e){$('tutorState').textContent='Speech input could not start: '+e.message;activeRecognition=null}
+}
+// V33: separate conversational turn from scripted lesson. Server decides explanation;
+// browser owns speech and board presentation. Never put an API key in HTML.
+let conversationSerial=0;
+const previousStopAll=stopAll;
+stopAll=function(){conversationSerial++;previousStopAll()};
+function localTutorResponse(question){
+ const q=question.toLowerCase();
+ const items=[];
+ if(skill==='Solving linear equations'){
+  if(/why|add|minus|negative|balance|both sides/.test(q)){
+   items.push(step('We do the same operation to both sides to keep the equation balanced.','3x - 8 = 5'));
+   items.push(step('Adding eight cancels negative eight on the left.','3x - 8 + 8 = 5 + 8'));
+   items.push(step('Now three x equals thirteen. What should we do next?','3x = 13'));
+  }else items.push(step('To isolate x, undo addition or subtraction first, then multiplication or division.','3x - 8 = 5'));
+ }else if(skill==='Expanding brackets'){
+  items.push(step('Multiply every term inside the bracket by the number outside.','2(3x + 4) + x = 6x + 8 + x'));
+  items.push(step('Remember the extra x outside the bracket. Combine six x and one x.','6x + x + 8 = 7x + 8'));
+ }else if(skill==='Pythagoras'){
+  items.push(step('The hypotenuse is the side opposite the right angle.','a^2 + b^2 = c^2'));
+  items.push(step('If finding a shorter side, subtract its known square from the hypotenuse squared.','b^2 = c^2 - a^2'));
+ }else items.push(step('Let us identify what the question gives us and what we must calculate.',current.q));
+ return items;
+}
+function validateTutorReply(data){
+ if(!data||!Array.isArray(data.steps)||!data.steps.length||data.steps.length>8)throw Error('Invalid tutor response');
+ return data.steps.map(x=>({speech:String(x.speech||'').slice(0,450),math:String(x.math||'').slice(0,180),why:String(x.why||'').slice(0,180)})).filter(x=>x.speech);
+}
+async function askTutor(){
+ const question=$('answer').value.trim();
+ if(!question){$('conversationStatus').textContent='Type your question in the answer field or use Student Speak first.';return}
+ if(!current)return;
+ stopAll();const turn=conversationSerial;
+ addLine('Student',question);
+ $('conversationStatus').textContent='Preparing a response for '+skill+'...';
+ const context={topic,skill,question:current.q,expectedAnswers:current.a,solution:current.sol,grade:current.g,studentQuestion:question,priorWorking:($('working').innerText||'').slice(-1200)};
+ let steps;
+ try{
+  const response=await fetch('/api/tutor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(context)});
+  if(!response.ok)throw Error('AI tutor service unavailable ('+response.status+')');
+  steps=validateTutorReply(await response.json());
+  $('conversationStatus').textContent='AI tutor response for this question.';
+ }catch(err){
+  steps=localTutorResponse(question);
+  $('conversationStatus').textContent='Using the built-in demonstration response. To enable open-ended questions, deploy the Vercel API function and set OPENAI_API_KEY.';
+ }
+ if(turn!==conversationSerial)return;
+ // Keep the student's practice question and diagram unchanged.
+ runStructuredSteps(steps,'Answering your question',false);
 }
 function saveExit(){save();location.href='education.html'} $('answer').addEventListener('keydown',e=>{if(e.key==='Enter')check()}); init();
 </script></body></html>
