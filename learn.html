@@ -497,14 +497,21 @@ async function askTutor(){
  const context={topic,skill,question:current.q,expectedAnswers:current.a,solution:current.sol,grade:current.g,studentQuestion:question,priorWorking:($('working').innerText||'').slice(-1200)};
  let steps,mode='demo';
  const controller=new AbortController();
- const timeout=setTimeout(()=>controller.abort(),3500);
+ const timeout=setTimeout(()=>controller.abort(),25000);
  try{
   const response=await fetch('/api/tutor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(context),signal:controller.signal});
-  if(!response.ok)throw Error('AI tutor service unavailable ('+response.status+')');
+  if(!response.ok){const problem=await response.json().catch(()=>({}));throw Error('AI backend HTTP '+response.status+(problem.error?': '+problem.error:''));}
   steps=validateTutorReply(await response.json());mode='ai';
- }catch(err){steps=localTutorResponse(question)}finally{clearTimeout(timeout);button.disabled=false;button.textContent='Ask Tutor'}
+ }catch(err){
+  clearTimeout(timeout);button.disabled=false;button.textContent='Ask Tutor';
+  if(turn!==conversationSerial)return;
+  const reason=err.name==='AbortError'?'AI response timed out after 25 seconds.':err.message;
+  status.textContent='AI CONNECTION ERROR: '+reason+' No demonstration answer was substituted.';
+  addLine('System',status.textContent);
+  return;
+ }finally{clearTimeout(timeout);button.disabled=false;button.textContent='Ask Tutor'}
  if(turn!==conversationSerial)return;
- status.textContent=mode==='ai'?'AI tutor is answering your question.':'Demonstration tutor is answering. Open-ended AI requires the Vercel API backend.';
+ status.textContent='LIVE AI response received from /api/tutor. Teaching your question now.';
  runStructuredSteps(steps,'Answering your question',false);
 }
 function saveExit(){save();location.href='education.html'} $('answer').addEventListener('keydown',e=>{if(e.key==='Enter')check()}); init();
