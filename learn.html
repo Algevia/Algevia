@@ -214,7 +214,7 @@ function curatedPracticeSteps(){
    step(`First multiply ${k} by ${a===1?'x':a+' x'}.`,`${k} \u00d7 ${a===1?'x':a+'x'} = ${k*a}x`),
    step(`Next multiply ${k} by ${b}.`,`${k} \u00d7 ${b} = ${k*b}`),
    step('Write the expanded expression.',`${k*a}x + ${k*b}${extra?' + '+extra+'x':''}`),
-   ...(extra?[step('Collect the like terms.',`${k*a}x + ${extra}x = ${k*a+extra}x`)]:[]),
+   ...(extra?[step(`There is another ${extra}x outside the bracket. Add it to ${k*a}x.`,`${k*a}x + ${k*b} + ${extra}x = (${k*a} + ${extra})x + ${k*b}`)]:[]),
    step('The final simplified expression is shown.',`${k*a+extra}x + ${k*b}`)];}
  }
  if(skill==='Pythagoras'){
@@ -358,7 +358,51 @@ function selectedVoice(){const uri=$('voiceSelect')?.value;return ('speechSynthe
 function testVoice(){stopAll();if(!('speechSynthesis'in window)){$('voiceStatus').textContent='Speech synthesis is unavailable here.';return}const u=new SpeechSynthesisUtterance('Hello. I am your Algevia maths tutor. I will explain each step while the mathematics appears on the board.');u.voice=selectedVoice();u.rate=speed;u.onstart=()=>{$('tutorState').textContent='Voice test...'};u.onend=()=>{$('tutorState').textContent='Ready'};u.onerror=()=>{$('tutorState').textContent='Voice unavailable'};speechSynthesis.speak(u)}
 if('speechSynthesis'in window){speechSynthesis.addEventListener?.('voiceschanged',refreshVoiceList);setTimeout(refreshVoiceList,0)}
 function setGender(g){stopAll();gender=g;$('tutorImg').src=g==='female'?FEMALE:MALE;$('tutorName').textContent=g==='female'?'Karen - Female Tutor':'Daniel - Male Tutor';$('female').className=g==='female'?'sel':'alt';$('male').className=g==='male'?'sel':'alt';$('tutorState').textContent='Ready';refreshVoiceList()}
-function studentSpeak(){stopAll();let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addLine('Tutor','Speech input is not available in this browser. Type your answer instead.');return}let r=new SR();r.lang='en-GB';r.onstart=()=>$('tutorState').textContent='Listening...';r.onresult=e=>{let t=e.results[0][0].transcript;$('answer').value=t;addLine('Student',t);$('tutorState').textContent='Ready'};r.onerror=()=>$('tutorState').textContent='Could not hear clearly';r.start()}
+let activeRecognition=null;
+function studentSpeak(){
+  stopAll();
+  if(activeRecognition){try{activeRecognition.abort()}catch(e){} activeRecognition=null}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    $('tutorState').textContent='Microphone unavailable';
+    addLine('Tutor','Safari speech recognition is unavailable. Tap the answer box and use the iPad keyboard microphone to dictate, or type your answer.');
+    $('answer').focus();
+    return;
+  }
+  let recognition=new SR(), heard=false, finished=false;
+  activeRecognition=recognition;
+  recognition.lang='en-GB';
+  recognition.interimResults=true;
+  recognition.continuous=false;
+  recognition.maxAlternatives=1;
+  $('tutorState').textContent='Starting microphone...';
+  recognition.onstart=()=>{$('tutorState').textContent='Listening - speak now'};
+  recognition.onspeechstart=()=>{$('tutorState').textContent='Hearing your answer...'};
+  recognition.onresult=e=>{
+    let words=Array.from(e.results).map(r=>r[0].transcript).join(' ').trim();
+    if(words){heard=true;$('answer').value=words;$('tutorState').textContent='Heard: '+words;
+      if(e.results[e.results.length-1].isFinal){addLine('Student',words);finished=true;}}
+  };
+  recognition.onerror=e=>{
+    const code=e.error||'unknown';
+    const messages={
+      'not-allowed':'Microphone permission denied. In Safari, check website microphone permissions, or use the keyboard microphone.',
+      'service-not-allowed':'Speech recognition service is blocked on this browser. Use the iPad keyboard microphone.',
+      'audio-capture':'No microphone was detected. Check the iPad microphone permissions.',
+      'network':'Speech recognition needs a network service that could not be reached. Try the iPad keyboard microphone.',
+      'no-speech':'No speech detected. Tap Student Speak again, then speak clearly after Listening appears.',
+      'language-not-supported':'The selected speech recognition language is unavailable.'
+    };
+    $('tutorState').textContent=messages[code]||('Speech input error: '+code);
+    addLine('Tutor',$('tutorState').textContent);
+  };
+  recognition.onend=()=>{
+    if(activeRecognition===recognition)activeRecognition=null;
+    if(heard&&!finished){addLine('Student',$('answer').value)}
+    if(!heard&&$('tutorState').textContent.startsWith('Listening'))$('tutorState').textContent='No speech captured. Try again or use keyboard dictation.';
+  };
+  try{recognition.start()}catch(e){$('tutorState').textContent='Speech input could not start: '+e.message;activeRecognition=null}
+}
 function saveExit(){save();location.href='education.html'} $('answer').addEventListener('keydown',e=>{if(e.key==='Enter')check()}); init();
 </script></body></html>
 
