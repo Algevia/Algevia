@@ -424,8 +424,33 @@ let conversationSerial=0;
 const previousStopAll=stopAll;
 stopAll=function(){conversationSerial++;previousStopAll()};
 function localTutorResponse(question){
- const q=question.toLowerCase();
+ const q=question.toLowerCase().replace(/[^a-z0-9 ]/g,' ');
  const items=[];
+ // Interpret the student's requested concept BEFORE looking at the current exercise.
+ const wantsCos=/(\bcah\b|\bcos\b|\bcosine\b|adjacent.*hypotenuse)/.test(q);
+ const wantsSin=/(\bsoh\b|\bsin\b|\bsine\b|opposite.*hypotenuse)/.test(q);
+ const wantsTan=/(\btoa\b|\btan\b|\btangent\b|opposite.*adjacent)/.test(q);
+ if(wantsCos){
+  items.push(step('CAH means cosine equals adjacent divided by hypotenuse.','cos(theta) = adjacent / hypotenuse'));
+  items.push(step('Adjacent means the side next to the chosen angle, excluding the hypotenuse. The hypotenuse is opposite the right angle.','CAH: cos(theta) = A / H'));
+  items.push(step('For example, if the adjacent side is four and the hypotenuse is five, cosine of the angle is four fifths.','cos(theta) = 4 / 5 = 0.8'));
+  return items;
+ }
+ if(wantsSin){
+  items.push(step('SOH means sine equals opposite divided by hypotenuse.','sin(theta) = opposite / hypotenuse'));
+  items.push(step('Opposite is the side across from the chosen angle.','SOH: sin(theta) = O / H'));
+  items.push(step('For example, if opposite is three and hypotenuse is five, sine is three fifths.','sin(theta) = 3 / 5 = 0.6'));
+  return items;
+ }
+ if(wantsTan){
+  items.push(step('TOA means tangent equals opposite divided by adjacent.','tan(theta) = opposite / adjacent'));
+  items.push(step('Identify the sides relative to the chosen angle.','TOA: tan(theta) = O / A'));
+  items.push(step('For example, opposite three and adjacent four gives tangent three quarters.','tan(theta) = 3 / 4 = 0.75'));
+  return items;
+ }
+ if(/sohcahtoa|trigonometr|which ratio/.test(q)){
+  return [step('SOH, CAH and TOA are three different ratios.','sin(theta) = O / H'),step('CAH is cosine, using adjacent and hypotenuse.','cos(theta) = A / H'),step('TOA is tangent, using opposite and adjacent.','tan(theta) = O / A')];
+ }
  if(skill==='Solving linear equations'){
   if(/why|add|minus|negative|balance|both sides/.test(q)){
    items.push(step('We do the same operation to both sides to keep the equation balanced.','3x - 8 = 5'));
@@ -436,9 +461,9 @@ function localTutorResponse(question){
   items.push(step('Multiply every term inside the bracket by the number outside.','2(3x + 4) + x = 6x + 8 + x'));
   items.push(step('Remember the extra x outside the bracket. Combine six x and one x.','6x + x + 8 = 7x + 8'));
  }else if(skill==='Pythagoras'){
-  items.push(step('The hypotenuse is the side opposite the right angle.','a^2 + b^2 = c^2'));
-  items.push(step('If finding a shorter side, subtract its known square from the hypotenuse squared.','b^2 = c^2 - a^2'));
- }else items.push(step('Let us identify what the question gives us and what we must calculate.',current.q));
+  items.push(step('The hypotenuse is the side opposite the right angle.','aÂ² + bÂ² = cÂ²'));
+  items.push(step('If finding a shorter side, subtract its known square from the hypotenuse squared.','bÂ² = cÂ² - aÂ²'));
+ }else items.push(step('I can explain SOH, CAH, TOA, expanding brackets, and basic algebra in demonstration mode. For other questions, connect the AI backend for a tailored answer.',''));
  return items;
 }
 function validateTutorReply(data){
