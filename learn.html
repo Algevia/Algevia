@@ -448,6 +448,20 @@ function localTutorResponse(question){
   items.push(step('For example, opposite three and adjacent four gives tangent three quarters.','tan(theta) = 3 / 4 = 0.75'));
   return items;
  }
+ // Explicit area requests take priority over the active exercise.
+ const wantsArea=/\b(area|square units|square centimetres|cm2|cm squared)\b/.test(q);
+ if(wantsArea){
+  const wantsTriangle=/\btriangle\b/.test(q);
+  const wantsRectangle=/\b(rectangle|rectangular)\b/.test(q);
+  const areaSkill=(skill==='Area of shapes');
+  if(wantsTriangle||(!wantsRectangle&&areaSkill&&/triangle/i.test(current?.q||''))){
+   return [step('Area measures the space inside a shape, in square units. For a triangle, multiply the base by the perpendicular height and halve the result.','Area = 1/2 Ã— base Ã— height'),step('For example, with base eight centimetres and perpendicular height five centimetres, multiply eight by five and divide by two.','Area = 1/2 Ã— 8 Ã— 5'),step('That gives twenty square centimetres.','Area = 20 cmÂ²')];
+  }
+  if(wantsRectangle||(!wantsTriangle&&areaSkill&&/rectangle/i.test(current?.q||''))){
+   return [step('Area measures the space inside the rectangle. Multiply its length by its width.','Area = length Ã— width'),step('For example, a rectangle eight centimetres by five centimetres has area forty square centimetres.','Area = 8 Ã— 5 = 40 cmÂ²')];
+  }
+  return [step('Area means the amount of space inside a two-dimensional shape. We measure it in square units, such as square centimetres.','Area is measured in cmÂ²'),step('For a rectangle, multiply length by width.','Rectangle area = length Ã— width'),step('For a triangle, multiply the base by the perpendicular height and divide by two.','Triangle area = 1/2 Ã— base Ã— height')];
+ }
  if(/sohcahtoa|trigonometr|which ratio/.test(q)){
   return [step('SOH, CAH and TOA are three different ratios.','sin(theta) = O / H'),step('CAH is cosine, using adjacent and hypotenuse.','cos(theta) = A / H'),step('TOA is tangent, using opposite and adjacent.','tan(theta) = O / A')];
  }
@@ -463,7 +477,7 @@ function localTutorResponse(question){
  }else if(skill==='Pythagoras'){
   items.push(step('The hypotenuse is the side opposite the right angle.','aÂ² + bÂ² = cÂ²'));
   items.push(step('If finding a shorter side, subtract its known square from the hypotenuse squared.','bÂ² = cÂ² - aÂ²'));
- }else items.push(step('I can explain SOH, CAH, TOA, expanding brackets, and basic algebra in demonstration mode. For other questions, connect the AI backend for a tailored answer.',''));
+ }else items.push(step('I do not yet have a reliable demonstration explanation for that question. Please ask about a specific concept or connect the AI backend for a tailored response.',''));
  return items;
 }
 function validateTutorReply(data){
