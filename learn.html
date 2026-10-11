@@ -520,7 +520,7 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
 .voicePanel label{font-size:14px}.voicePanel #voiceStatus{line-height:1.45}
 </style>
 <script>
-/* V39.1 fixed tutor voices. Preserves existing teaching and /api/tutor logic. */
+/* V40.1: correct tutor voice gender priority; preserve teaching and /api/tutor logic. */
 (function(){
  const synth=window.speechSynthesis;
  const prefKey='algeviaV39VoicePrefs';
@@ -529,7 +529,7 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
  const names={female:/Samantha|Karen|Moira|Tessa|Fiona|Serena|Kate|Susan|Hazel|Libby|Sonia|Ava|Victoria|Zira|Jenny|Aria|Martha|Maisie/i,
  male:/Daniel|George|Oliver|Ryan|Alex|Arthur|Fred|Guy|James|Thomas|William|Aaron|Eddy/i};
  const voiceList=()=>synth?synth.getVoices().filter(v=>/^en(?:-|$)/i.test(v.lang)):[];
- const rank=(v,g)=>{let n=v.name||'';return (/^en-GB$/i.test(v.lang)?100:0)+(names[g].test(n)?50:0)+(/premium|enhanced|natural|neural/i.test(n)?25:0)+(v.localService?3:0)};
+ const rank=(v,g)=>{const n=v.name||'';const other=g==='female'?'male':'female';const match=names[g].test(n);const opposite=names[other].test(n);const explicitFemale=/\bfemale\b|\bwoman\b/i.test(n);const explicitMale=/\bmale\b|\bman\b/i.test(n)&&!explicitFemale;const indicated=g==='female'?explicitFemale:explicitMale;const wrong=g==='female'?explicitMale:explicitFemale;return (match?1000:0)+(indicated?900:0)-(opposite||wrong?2000:0)+(/^en-GB$/i.test(v.lang)?100:0)+(/premium|enhanced|natural|neural/i.test(n)?25:0)+(v.localService?3:0)};
  const sorted=g=>voiceList().slice().sort((a,b)=>rank(b,g)-rank(a,g)||a.name.localeCompare(b.name));
  function store(){try{localStorage.setItem(prefKey,JSON.stringify(prefs))}catch(e){}}
  function chosen(){const voices=voiceList();return voices.find(v=>v.voiceURI===$v('voiceSelect')?.value)||sorted(gender)[0]||null}
