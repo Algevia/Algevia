@@ -35,13 +35,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r verification/requirements.txt
 
+      
       - name: Run independent verification
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          BATCH_SIZE: ${{ inputs.batch_size }}
         run: |
-          mkdir -p verification/results
-          python verification/run.py
+          python verification/run.py \
+            --limit ${{ inputs.batch_size }} \
+            --out verification/results \
+            --max-api-calls 20 \
+            --max-estimated-usd 2
+
 
       - name: Save verification results
         if: always()
