@@ -1,19 +1,13 @@
-
 name: Algevia Maths Verification
 
 on:
   workflow_dispatch:
     inputs:
-      batch_size:
-        description: "Number of questions to verify"
+      batch_number:
+        description: "Batch number 0 to 26 (0 covers items 11-100; 1 covers 101-200)"
         required: true
-        default: "10"
-        type: choice
-        options:
-          - "10"
-          - "50"
-          - "100"
-          - "250"
+        default: "0"
+        type: string
 
 permissions:
   contents: read
@@ -21,8 +15,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
+    timeout-minutes: 180
     steps:
       - name: Download repository
         uses: actions/checkout@v4
@@ -35,23 +28,39 @@ jobs:
       - name: Install dependencies
         run: pip install -r verification/requirements.txt
 
-      
       - name: Run independent verification
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          BATCH_NUMBER: ${{ inputs.batch_number }}
+        shell: bash
         run: |
+          set -euo pipefail
+          if ! [[ "$BATCH_NUMBER" =~ ^(0|[1-9][0-9]?)$ ]] || (( BATCH_NUMBER > 26 )); then
+            echo "Batch number must be an integer from 0 through 26"
+            exit 1
+          fi
+          start=$((BATCH_NUMBER * 100))
+          limit=100
+          if (( BATCH_NUMBER == 0 )); then
+            start=10
+            limit=90
+          fi
+          if (( BATCH_NUMBER == 26 )); then
+            limit=29
+          fi
+          echo "Verifying items $((start + 1)) through $((start + limit))"
           python verification/run.py \
-            --limit ${{ inputs.batch_size }} \
+            --start "$start" \
+            --limit "$limit" \
             --out verification/results \
-            --max-api-calls 20 \
-            --max-estimated-usd 2
-
+            --max-api-calls 200 \
+            --max-estimated-usd 5
 
       - name: Save verification results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: algevia-verification-results
+          name: algevia-batch-${{ inputs.batch_number }}-run-${{ github.run_id }}
           path: verification/results/
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 90
