@@ -48,6 +48,10 @@ jobs:
           if (( BATCH_NUMBER == 26 )); then
             limit=29
           fi
+          if (( BATCH_NUMBER == 4 )); then
+  start=462
+  limit=38
+fi
           echo "Verifying items $((start + 1)) through $((start + limit))"
           python verification/run.py \
             --start "$start" \
