@@ -100,6 +100,7 @@
     }
 
     .question {
+      white-space: pre-line;
       font-size: 22px;
       font-weight: 700;
       line-height: 1.5;
@@ -271,6 +272,8 @@
         Loading question...
       </div>
 
+      <div id="diagramBox" style="margin:0 0 22px;max-width:100%;overflow:auto;color:#172033"></div>
+
       <div class="answer-area">
         <input
           type="text"
@@ -367,11 +370,12 @@
   &copy; Algevia &mdash; The right person. The right solution. No more guesswork.
 </footer>
 
+<script src="algevia_marking_v1.js"></script>
 <script>
 "use strict";
 
 /*
-  ALGEVIA DIAGNOSTIC v2
+  ALGEVIA DIAGNOSTIC v3 (GCSE Maths, Foundation + Higher, Edexcel / AQA / OCR)
 
   Architecture:
   Education selections
@@ -521,10 +525,10 @@ function getBankFile(selection) {
   if (
     stage === "gcse" &&
     (subject === "maths" || subject === "mathematics") &&
-    board === "aqa" &&
-    tier === "higher"
+    ["aqa", "edexcel", "ocr", "other", ""].includes(board) &&
+    ["higher", "foundation"].includes(tier)
   ) {
-  return "data/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";  
+    return "data/algevia_gcse_maths_diagnostic_bank_v1.json";
   }
 
   return "";
@@ -583,7 +587,15 @@ function compatibleQuestions(selection) {
       (qSubject === "mathematics" && subject === "maths") ||
       (qSubject === "maths" && subject === "mathematics");
 
-    const boardMatch = !qBoard || qBoard === board;
+    const qBoards = Array.isArray(question.boards)
+      ? question.boards.map(normalise)
+      : null;
+    const knownBoard = ["aqa", "edexcel", "ocr"].includes(board);
+    const boardMatch = !knownBoard
+      ? true
+      : (qBoards
+          ? qBoards.includes(board)
+          : (!qBoard || qBoard === board));
     const tierMatch = !qTier || qTier === tier;
 
     return stageMatch && subjectMatch && boardMatch && tierMatch;
@@ -751,17 +763,16 @@ function buildDiagnostic(selection) {
     );
   }
 
-  function addQuestion(question, allowRepeatedSkill = false) {
+  function canAdd(question, allowRepeatedSkill, allowRepeatedSubtopic) {
     if (!question || isDuplicate(question)) {
       return false;
     }
 
-    const topic = topicKey(question);
     const subtopic = subtopicKey(question);
     const skill = skillKey(question);
-    const questionType = questionTypeKey(question);
 
     if (
+      !allowRepeatedSubtopic &&
       subtopic &&
       usedSubtopics.has(subtopic)
     ) {
@@ -775,6 +786,19 @@ function buildDiagnostic(selection) {
     ) {
       return false;
     }
+
+    return true;
+  }
+
+  function addQuestion(question, allowRepeatedSkill = false, allowRepeatedSubtopic = false) {
+    if (!canAdd(question, allowRepeatedSkill, allowRepeatedSubtopic)) {
+      return false;
+    }
+
+    const topic = topicKey(question);
+    const subtopic = subtopicKey(question);
+    const skill = skillKey(question);
+    const questionType = questionTypeKey(question);
 
     selected.push(question);
 
@@ -867,9 +891,9 @@ function buildDiagnostic(selection) {
     return score;
   }
 
-  function chooseBest(candidates, desiredGrade) {
+  function chooseBest(candidates, desiredGrade, allowRepeatedSkill = false, allowRepeatedSubtopic = false) {
     const available = candidates.filter(
-      question => !isDuplicate(question)
+      question => canAdd(question, allowRepeatedSkill, allowRepeatedSubtopic)
     );
 
     if (available.length === 0) {
@@ -1004,7 +1028,8 @@ function buildDiagnostic(selection) {
       chosen =
         chooseBest(
           finalCandidates,
-          targetGrade
+          targetGrade,
+          true
         );
 
       if (chosen) {
@@ -1050,6 +1075,7 @@ function buildDiagnostic(selection) {
 
       addQuestion(
         question,
+        true,
         true
       );
     }
@@ -1111,6 +1137,17 @@ elements.topicLabel.textContent =
   elements.questionText.textContent =
     question.question || "";
 
+  const diagramBox = document.getElementById("diagramBox");
+  if (question.diagram_svg) {
+    diagramBox.innerHTML = question.diagram_svg;
+    diagramBox.setAttribute("role", "img");
+    diagramBox.setAttribute("aria-label", question.diagram_alt || "Diagram");
+  } else {
+    diagramBox.innerHTML = "";
+    diagramBox.removeAttribute("role");
+    diagramBox.removeAttribute("aria-label");
+  }
+
   elements.answerInput.value = "";
   elements.errorMessage.textContent = "";
 
@@ -1132,7 +1169,16 @@ function normaliseAnswer(value) {
     .replace(/\s+/g, "");
 }
 
-function answersMatch(studentAnswer, correctAnswer) {
+function answersMatch(studentAnswer, correctAnswer, question) {
+  if (question && window.AlgeviaMarking && question.answer_kind) {
+    try {
+      return AlgeviaMarking.mark(studentAnswer, question);
+    } catch (error) {
+      console.warn("Marking error:", error);
+      return false;
+    }
+  }
+
   const a = normaliseAnswer(studentAnswer);
   const b = normaliseAnswer(correctAnswer);
 
@@ -1172,7 +1218,8 @@ function submitAnswer() {
   const correct =
     answersMatch(
       studentAnswer,
-      question.answer
+      question.answer,
+      question
     );
 
   if (correct) score++;
@@ -1184,6 +1231,7 @@ function submitAnswer() {
     difficulty: question.difficulty,
     studentAnswer,
     correctAnswer: question.answer,
+    grade: questionGrade(question),
     correct
   });
 
@@ -1196,24 +1244,84 @@ function submitAnswer() {
   }
 }
 
+/*
+  Grade estimate weighted by question grade.
+  Each question has a grade g. A student whose true level is G is modelled as
+  answering a grade-g question correctly with probability
+  p = 0.03 + 0.92 * sigmoid((G - g) / 0.7 + 0.6)
+  (about 62% when G equals g, much higher below, much lower above, with a small
+  guess/slip allowance). We pick the G that best explains the 20 answers (maximum
+  likelihood) with a gentle pull towards the grade the student selected, then
+  keep it inside the evidence (not above the highest grade asked, not below one
+  grade under the lowest asked) and inside the tier.
+*/
+function estimateGradeFromAnswers(results, selectedCurrent, tier) {
+  const usable = results.filter(r => Number.isFinite(r.grade));
+  if (usable.length === 0) return null;
+
+  const prior = Number.isFinite(selectedCurrent) ? selectedCurrent : 5;
+  let bestG = prior;
+  let bestScore = -Infinity;
+
+  for (let G = 0.5; G <= 9.5001; G += 0.05) {
+    let logLik = -((G - prior) * (G - prior)) / (2 * 2.5 * 2.5);
+
+    for (const r of usable) {
+      const sig = 1 / (1 + Math.exp(-((G - r.grade) / 0.7 + 0.6)));
+      const p = 0.03 + 0.92 * sig;
+      logLik += Math.log(r.correct ? p : 1 - p);
+    }
+
+    if (logLik > bestScore) {
+      bestScore = logLik;
+      bestG = G;
+    }
+  }
+
+  const grades = usable.map(r => r.grade);
+  let g = Math.round(bestG);
+
+  g = Math.min(g, Math.max(...grades));
+  g = Math.max(g, Math.min(...grades) - 1);
+
+  g = Math.max(1, Math.min(9, g));
+  const t = String(tier || "").toLowerCase();
+  if (t === "foundation") g = Math.min(g, 5);
+  if (t === "higher") g = Math.max(g, 4);
+
+  return g;
+}
+
 function profileStatus(percentage) {
   if (percentage >= 75) return "Strong";
   if (percentage >= 50) return "Developing";
   return "Priority";
 }
 
-function estimateLevel() {
-  const percentage =
-    (score / QUESTION_COUNT) * 100;
+function estimatedGradeValue() {
+  const selection = getParams();
+  const g = estimateGradeFromAnswers(
+    answers,
+    selection.currentGrade,
+    selection.tier
+  );
 
-  if (percentage >= 90) return "Grade 9 range";
-  if (percentage >= 80) return "Grade 8 range";
-  if (percentage >= 70) return "Grade 7 range";
-  if (percentage >= 60) return "Grade 6 range";
-  if (percentage >= 50) return "Grade 5 range";
-  if (percentage >= 40) return "Grade 4 range";
-  if (percentage >= 30) return "Grade 3 range";
-  return "Below Grade 3 range";
+  if (g !== null) return g;
+
+  // Fallback if question grades are missing: use the percentage score.
+  const percentage = (score / QUESTION_COUNT) * 100;
+  if (percentage >= 90) return 9;
+  if (percentage >= 80) return 8;
+  if (percentage >= 70) return 7;
+  if (percentage >= 60) return 6;
+  if (percentage >= 50) return 5;
+  if (percentage >= 40) return 4;
+  if (percentage >= 30) return 3;
+  return 2;
+}
+
+function estimateLevel() {
+  return "Grade " + estimatedGradeValue() + " range";
 }
 
 function finishDiagnostic() {
@@ -1290,15 +1398,7 @@ function finishDiagnostic() {
   const selection = getParams();
 
   function estimatedGradeNumber() {
-    const percentage = (score / QUESTION_COUNT) * 100;
-    if (percentage >= 90) return 9;
-    if (percentage >= 80) return 8;
-    if (percentage >= 70) return 7;
-    if (percentage >= 60) return 6;
-    if (percentage >= 50) return 5;
-    if (percentage >= 40) return 4;
-    if (percentage >= 30) return 3;
-    return 2;
+    return estimatedGradeValue();
   }
 
   // Do not estimate outside the student's selected diagnostic pathway.
@@ -1428,8 +1528,7 @@ async function startDiagnostic() {
 
     currentBankFile = bankFile;
 
-    const GITHUB_BANK_URL =
-      "https://raw.githubusercontent.com/Algevia/Algevia/refs/heads/main/Algevia_GCSE_Maths_AQA_Higher_Diagnostic_QuestionBank_AQA_Higher_150_v1.json";
+    const GITHUB_BANK_URL = "";
 
     let data = null;
 
@@ -1449,7 +1548,7 @@ async function startDiagnostic() {
       );
     }
 
-    if (!data || !Array.isArray(data.questions)) {
+    if ((!data || !Array.isArray(data.questions)) && GITHUB_BANK_URL) {
       try {
         const githubResponse =
           await fetch(GITHUB_BANK_URL, {
@@ -1477,7 +1576,7 @@ async function startDiagnostic() {
 
     if (!data || !Array.isArray(data.questions)) {
       throw new Error(
-        "Question bank format is invalid."
+        "Question bank could not be loaded."
       );
     }
 
