@@ -124,7 +124,7 @@ def main():
   with results_file.open('a',encoding='utf-8') as f:f.write(json.dumps(row,ensure_ascii=False)+'\n')
   existing[q['id']]=row
   print(f"{len(existing)}/{len(items)} {q['id']} {row['status']} approx run cost ${estimated_usd:.3f}",flush=True)
-  if row['status']=='API_ERROR_RETRY':break
+  if row['status']=='API_ERROR_RETRY':continue
  # Always generate a complete report, including unattempted items
  report=[]
  for kind,q in items:
