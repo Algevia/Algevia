@@ -667,8 +667,12 @@ window.hint=function(){
 };
 window.workedExample=function(){
  if(!active)return;
- let pool=examples.filter(q=>q.skill_id===active.skill_id);
- if(!pool.length)pool=bank.filter(q=>q.skill_id===active.skill_id&&q.id!==active.id);
+ /* Dedicated worked examples first; top up with other checked questions on the same skill so there are always several variants. */
+ let pool=examples.filter(q=>q.skill_id===active.skill_id&&q.id!==active.id);
+ const have=new Set(pool.map(q=>q.id));
+ const extra=bank.filter(q=>q.skill_id===active.skill_id&&q.id!==active.id&&!have.has(q.id)&&q.steps&&q.steps.length)
+  .sort((a,b)=>Math.abs(a.grade-active.grade)-Math.abs(b.grade-active.grade)).slice(0,6);
+ pool=pool.concat(extra);
  if(!pool.length){el('workedQuestion').textContent='More worked examples are being prepared for this skill.';return;}
  const q=pool[exampleOffset++%pool.length];
  el('workedQuestion').style.whiteSpace='pre-line';
