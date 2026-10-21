@@ -567,7 +567,7 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
 <script src="algevia_adaptive_engine_v48.js"></script>
 <script src="algevia_marking_v1.js"></script>
 <script>
-/* V50: uses algevia_gcse_question_bank_merged_v2.json (Edexcel / AQA / OCR, Foundation + Higher).
+/* V50: uses algevia_gcse_question_bank_merged_v3.json (Edexcel / AQA / OCR, Foundation + Higher).
    Adds: equivalent-answer marking, three staged hints, diagrams, board + tier filtering, step-by-step teaching. */
 (function(){
 'use strict';
@@ -579,17 +579,59 @@ const uniq=a=>[...new Set(a)];
 const grades=()=>{const a=Number(profile?.diagnostic?.estimatedGrade)||4,b=Number(profile?.targetGrade)||7;return {currentGrade:Math.min(a,b),targetGrade:Math.max(a,b)};};
 const board=()=>profile?.examBoard||'AQA';
 const tier=()=>profile?.tier||'Higher';
-const fits=q=>(SHOW_UNVERIFIED||['blind_solved_and_validated','answer_independently_matched'].includes(q.verification))&&(!q.boards||!['AQA','Edexcel','OCR'].includes(board())||q.boards.includes(board()))&&(!q.tier||q.tier===tier());
+const fits=q=>(SHOW_UNVERIFIED||['blind_solved_and_validated','answer_independently_matched'].includes(q.verification))&&(!q.boards||!['AQA','Edexcel','OCR'].includes(board())||q.boards.includes(board()))&&(q.tiers?q.tiers.includes(tier()):(!q.tier||q.tier===tier()));
 const SEP=' · ';
+
+/* ---- V55: grade ladder + variety-aware question picker ---- */
+let level=null, recent=[], levelStreak=0;
+const tplOf=q=>q.tpl||q.skill_id;
+function gradeRange(){const g=grades();return {lo:Math.max(1,g.currentGrade),hi:Math.min(9,g.targetGrade)};}
+function resetLevel(){const r=gradeRange();level=r.lo;levelStreak=0;recent=[];}
+function setAdapt(){const r=gradeRange();el('adaptMsg').textContent='Working at Grade '+level+(r.hi>level?' → aiming for Grade '+r.hi:' (your target grade)')+'. Two correct answers in a row move you up a grade.';}
+function pickQuestion(area,topic){
+ const av=engine.available().filter(q=>(!area||q.area===area)&&(!topic||q.topic===topic));
+ if(!av.length)return {error:'No questions available for these grade/topic filters.'};
+ const hist=engine.state.questionHistory||{};
+ let pool=av.filter(q=>!active||q.id!==active.id);if(!pool.length)pool=av;
+ const unseen=pool.filter(q=>!hist[q.id]);if(unseen.length)pool=unseen;
+ const last=recent[recent.length-1],last2=recent[recent.length-2];
+ const run=(last&&last2&&last.tpl===last2.tpl)?2:(last?1:0);
+ /* a question type may appear at most twice in a row; after a mistake a second one of the same type is allowed */
+ let diff=pool.filter(q=>!last||last.tpl!==tplOf(q));
+ const same=pool.filter(q=>last&&last.tpl===tplOf(q));
+ if(lastOutcome==='incorrect'&&run<2&&same.length)pool=same;
+ else if(diff.length)pool=diff;
+ else if(run>=2){const alt=av.filter(q=>last.tpl!==tplOf(q));if(alt.length)pool=alt;}
+ /* grade ladder: nearest to the student's working grade */
+ const dist=q=>Math.abs(q.grade-level);
+ const best=Math.min(...pool.map(dist));
+ let near=pool.filter(q=>dist(q)<=best);
+ /* prefer a different question type, then a different context, from what was just shown */
+ const types=[...new Set(near.map(tplOf))];
+ const pickT=types[Math.floor(Math.random()*types.length)];
+ let cands=near.filter(q=>tplOf(q)===pickT);
+ const lastCtx=last&&last.ctx;
+ const freshCtx=cands.filter(q=>!lastCtx||q.ctx!==lastCtx);
+ if(freshCtx.length)cands=freshCtx;
+ const question=cands[Math.floor(Math.random()*cands.length)];
+ engine.state.lastPresentedId=question.id;engine.state.active={id:question.id,skillId:question.skill_id,answered:false};engine.save();
+ recent.push({tpl:tplOf(question),ctx:question.ctx||'',grade:question.grade});if(recent.length>6)recent.shift();
+ return {question,skill:engine.skill(question.skill_id),poolSize:av.length,uniqueRemaining:unseen.length,insufficientPool:av.length<4};
+}
+function movePath(kind){
+ const r=gradeRange();
+ if(kind==='correct'){levelStreak++;if(levelStreak>=2&&level<r.hi){level++;levelStreak=0;}}
+ else if(kind==='incorrect'){levelStreak=0;if(level>r.lo)level--;}
+}
 function fillAreas(){
- const old=el('topic').value;el('topic').innerHTML='';
+ const old=el('topic').value;el('topic').innerHTML='';el('topic').add(new Option('All topics (mixed practice)',''));
  uniq(engine.available().map(q=>q.area)).sort().forEach(v=>el('topic').add(new Option(v,v)));
  if([...el('topic').options].some(o=>o.value===old))el('topic').value=old;
  fillTopics();
 }
 function fillTopics(){
- const old=el('skill').value;el('skill').innerHTML='';
- uniq(engine.available().filter(q=>q.area===el('topic').value).map(q=>q.topic)).sort().forEach(v=>el('skill').add(new Option(v,v)));
+ const old=el('skill').value;el('skill').innerHTML='';el('skill').add(new Option('All lessons (mixed practice)',''));
+ if(el('topic').value)uniq(engine.available().filter(q=>q.area===el('topic').value).map(q=>q.topic)).sort().forEach(v=>el('skill').add(new Option(v,v)));
  if([...el('skill').options].some(o=>o.value===old))el('skill').value=old;
 }
 function setVisual(node,q){node.innerHTML=q&&q.diagram_svg?'<div style="max-width:100%;overflow:auto;color:#10203a" role="img" aria-label="'+String(q.diagram_alt||'Diagram').replace(/"/g,'&quot;')+'">'+q.diagram_svg+'</div>':'';}
@@ -612,25 +654,14 @@ function present(result){
  el('workedSpoken').textContent='Tutor explanation appears here.';
  el('workedText').innerHTML='<span class="small">Worked steps appear here.</span>';
  el('workedVisual').innerHTML='';
- el('adaptMsg').textContent='Practice is tailored to your learning progress.';
+ setAdapt();
  const st=result.skill;const pct=Math.min(100,Math.round(100*Math.min(2,st.streak)/2));
  el('masteryLabel').textContent=active.topic+': '+st.correct+' correct'+SEP+st.wrong+' to revisit';
  el('masteryFill').style.width=pct+'%';
 }
-function choose(){if(!engine)return;engine.configure(grades());fillAreas();present(engine.chooseQuestion({area:el('topic').value,topic:el('skill').value}));}
-function advance(){if(!engine)return;
- const options={area:el('topic').value,topic:el('skill').value};
- let result=lastOutcome?engine.nextAfter(lastOutcome,options):engine.chooseQuestion(options);
- if(result.question&&active&&result.question.id===active.id&&engine.skill(active.skill_id).unlocked){
-   const alt=engine.chooseQuestion({area:el('topic').value});if(alt.question)result=alt;
- }
- if(result.question && result.question.topic!==el('skill').value){
-   const area=result.question.area;
-   el('topic').value=area;fillTopics();el('skill').value=result.question.topic;
- }
- present(result);
-}
-window.startSelected=function(){transition++;if(!engine)return;engine.configure(grades());present(engine.chooseQuestion({area:el('topic').value,topic:el('skill').value}));};
+function choose(){if(!engine)return;engine.configure(grades());resetLevel();fillAreas();present(pickQuestion(el('topic').value,el('skill').value));}
+function advance(){if(!engine)return;present(pickQuestion(el('topic').value,el('skill').value));}
+window.startSelected=function(){transition++;if(!engine)return;engine.configure(grades());resetLevel();lastOutcome=null;present(pickQuestion(el('topic').value,el('skill').value));};
 window.nextQuestion=function(){
  transition++;if(!engine)return;
  if(active&&!engine.state.active?.answered){try{engine.record({questionId:active.id,kind:'skip'});lastOutcome='skip';}catch(e){}}
@@ -642,7 +673,7 @@ window.check=function(){
  let ok=false;try{ok=AlgeviaMarking.mark(value,active);}catch(e){ok=false;}
  const outcome=ok?'correct':'incorrect';
  let result;try{result=engine.record({questionId:active.id,kind:outcome})}catch(e){return;}
- lastOutcome=outcome;addLine('Student',value);
+ lastOutcome=outcome;movePath(outcome);addLine('Student',value);
  el('feedback').style.display='block';el('feedback').className='feedback '+(ok?'ok':'bad');
  if(ok){
    el('feedback').textContent='Correct. '+(result.streak>=2?'Well done. Moving on.':'Here is another question.');
@@ -687,7 +718,7 @@ window.askTutor=function(){return previousAsk()};
 (async function(){
  try{
   if(!window.AlgeviaAdaptive||!window.AlgeviaMarking)throw Error('Learning engine missing');
-  const data=await AlgeviaAdaptive.loadBank('algevia_gcse_question_bank_merged_v2.json');
+  const data=await AlgeviaAdaptive.loadBank('algevia_gcse_question_bank_merged_v3.json');
   bank=data.questions.filter(q=>q.id&&q.area&&q.topic&&q.skill_id&&q.prompt&&q.answer&&fits(q));
   examples=(data.worked_examples||[]).filter(q=>q.skill_id&&q.prompt&&fits(q));
   engine=new AlgeviaAdaptive.AdaptiveEngine(bank,grades());
