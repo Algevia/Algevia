@@ -29,7 +29,7 @@
 .gradeControls label{font-size:14px}
 #gradeNotice{font-size:13px;color:#244a78}
 <style>.askBox{display:grid;gap:7px;margin:12px 0}.askBox textarea{width:100%;box-sizing:border-box;border:1px solid #b7c7db;border-radius:9px;padding:12px;font:inherit;min-height:72px;resize:vertical}.voicePanel{display:grid;gap:7px;padding:12px;background:white;border-radius:12px;margin-top:10px}.voicePanel select{width:100%;padding:9px;border:1px solid #cad6e6;border-radius:7px}.voicePanel button{width:100%}.topicIntro{margin-bottom:12px}.mathLine{white-space:pre-wrap}</style></head><body><div class="top"><div class="brand">Algevia <span style="font-weight:400">| AI Tutor</span></div><div class="context" id="course">GCSE Maths - AQA Higher</div><button class="stop" onclick="saveExit()">Save & Exit</button></div><div class="wrap"><div class="profile"><span>Diagnostic: <b id="diag">Not linked</b></span><span>Current grade: <b id="cg">5</b></span><span>Target grade: <b id="tg">7</b></span><span>Mode: <b>Visual adaptive teaching</b></span></div>
-<div class="gradeControls"><strong>Learning target</strong><label>Target grade <select id="targetSelect" aria-label="Target grade"></select></label><label><input type="checkbox" id="autoProgress"> Automatically suggest/advance when sustained evidence supports it</label><span id="gradeNotice">Grade advancement requires performance at the target grade across multiple skills.</span></div>
+<div class="gradeControls"><strong>Learning target</strong><label>Target grade <select id="targetSelect" aria-label="Target grade"></select></label><label>Practise at <select id="startGrade" aria-label="Practice grade"><option value="">Auto (my grade)</option></select></label><label><input type="checkbox" id="autoProgress"> Automatically suggest/advance when sustained evidence supports it</label><span id="gradeNotice">Grade advancement requires performance at the target grade across multiple skills.</span></div>
 <div class="classroom"><div class="tutorCol"><div class="card tutor"><img id="tutorImg" alt="Algevia AI tutor"><div class="shade"></div><div class="tutorInfo"><div class="tutorName" id="tutorName">Karen - Female Tutor</div><div id="tutorState" class="speaking">Ready</div></div></div><div class="gender"><button id="female" class="sel" onclick="setGender('female')">Female Tutor</button><button id="male" class="alt" onclick="setGender('male')">Male Tutor</button></div><div class="voicePanel" aria-label="Tutor voice"><div class="small">Voice and speaking style are set automatically for each tutor.</div><select id="voiceSelect" hidden aria-hidden="true"></select><div id="voiceStatus" class="small" hidden></div></div><div class="avatarNote">Karen and Daniel use fixed browser voices. Realistic facial animation is being developed separately.</div></div>
 <div class="lessonCol"><div class="card"><div class="lessonSelect"><label>Topic<select id="topic"></select></label><label>Lesson<select id="skill"></select></label><button onclick="startSelected()">Start Lesson</button></div></div>
 <div class="card"><div class="sectionHead"><h2>Worked Example <span class="small">- related example, not your question</span></h2><button class="alt" onclick="workedExample()">Worked Example</button></div><div class="topicIntro" id="topicIntro">Choose a lesson to begin.</div><div class="board workedBoard"><div class="boardGrid"><div class="visual" id="workedVisual">Press Worked Example to begin.</div><div><div class="question" id="workedQuestion">A related example will appear here.</div><div class="liveLine" id="workedSpoken">Tutor speech appears here progressively.</div><div class="boardSteps" id="workedText"><span class="small">The example will be written one teaching step at a time.</span></div></div></div></div></div>
@@ -576,52 +576,124 @@ const SHOW_UNVERIFIED=false;
 let engine=null, bank=[], examples=[], active=null, lastOutcome=null, exampleOffset=0, transition=0, hintsShown=0;
 const el=id=>document.getElementById(id);
 const uniq=a=>[...new Set(a)];
-const grades=()=>{const a=Number(profile?.diagnostic?.estimatedGrade)||4,b=Number(profile?.targetGrade)||7;return {currentGrade:Math.min(a,b),targetGrade:Math.max(a,b)};};
+let startOverride=0;
+const grades=()=>{let a=Number(profile?.diagnostic?.estimatedGrade)||4,b=Number(profile?.targetGrade)||7;if(startOverride)a=startOverride;return {currentGrade:Math.min(a,b),targetGrade:Math.max(a,b)};};
 const board=()=>profile?.examBoard||'AQA';
 const tier=()=>profile?.tier||'Higher';
-const fits=q=>(SHOW_UNVERIFIED||['blind_solved_and_validated','answer_independently_matched'].includes(q.verification))&&(!q.boards||!['AQA','Edexcel','OCR'].includes(board())||q.boards.includes(board()))&&(q.tiers?q.tiers.includes(tier()):(!q.tier||q.tier===tier()));
+const fits=q=>(SHOW_UNVERIFIED||['blind_solved_and_validated','answer_independently_matched','generated_code_verified'].includes(q.verification))&&(!q.boards||!['AQA','Edexcel','OCR'].includes(board())||q.boards.includes(board()))&&(q.tiers?q.tiers.includes(tier()):(!q.tier||q.tier===tier()));
 const SEP=' · ';
 
-/* ---- V55: grade ladder + variety-aware question picker ---- */
-let level=null, recent=[], levelStreak=0;
+/* ---- V56: grade ladder + variety-aware question picker + wording variation ---- */
+let level=null, recent=[], levelStreak=0, widenedNote=false, gradeHist=[];
+const COLW='red|blue|green|yellow|white|black|pink|purple|orange|grey|brown', OBJW='counter|marble|bead|ball|disc|token|cube|button|sweet';
+const FN='Aisha Grace Sofia Joy Ruth Maya Priya Chloe Zara Leah Nina Tara Hannah Olivia Amelia Isla Lily Mia Ella Freya Layla Esme Anika Fatima Amina Dina Rosa Daisy Keira Jade Nia Hana Anya Amara Imani Xena Kira Elsie Poppy Ivy Yasmin Bella Holly Naomi Sana Emily Ayesha Lucy Megan'.split(' ');
+const MN='Idris Isaac Gabriel Arjun Jamal Noah Elijah Kofi Ibrahim Mohammed Yusuf Harry Theo Finn Kwame Felix Ali Callum Carlos Owen Qasim Dev Kai Jamie Sam Leo Max Omar Ravi Tom Ben Luca Hugo Zane Danny Ethan Adam Jacob Samir Tariq'.split(' ');
+const NEUTRAL=['Casey','Morgan','Robin','Charlie'];
 const tplOf=q=>q.tpl||q.skill_id;
+const NAMERE=new RegExp('\\b('+FN.concat(MN,NEUTRAL).join('|')+')\\b','g');
+const skelOf=q=>q._sk||(q._sk=String(q.prompt).toLowerCase().replace(/\d+(\.\d+)?/g,'#').replace(new RegExp('\\b('+COLW+')s?\\b','g'),'c').replace(new RegExp('\\b('+OBJW+')s?\\b','g'),'o').replace(NAMERE.source?new RegExp(NAMERE.source,'gi'):/x^/,'n').replace(/\s+/g,' ').slice(0,80));
 function gradeRange(){const g=grades();return {lo:Math.max(1,g.currentGrade),hi:Math.min(9,g.targetGrade)};}
-function resetLevel(){const r=gradeRange();level=r.lo;levelStreak=0;recent=[];}
-function setAdapt(){const r=gradeRange();el('adaptMsg').textContent='Working at Grade '+level+(r.hi>level?' → aiming for Grade '+r.hi:' (your target grade)')+'. Two correct answers in a row move you up a grade.';}
+function resetLevel(){const r=gradeRange();level=r.lo;levelStreak=0;recent=[];gradeHist=[];}
+function setAdapt(){const r=gradeRange();el('adaptMsg').textContent='Working at Grade '+level+(r.hi>level?' → aiming for Grade '+r.hi:' (your target grade)')+'. Once you answer most questions at this grade correctly (3 of your last 4), you move up to the next grade.'+(widenedNote?' This lesson has few questions at your grade, so related lessons are mixed in.':'');}
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+/* wording variation: same maths, different names, objects and colours (only when the wording is plain text) */
+function vary(q){
+ if(q.diagram_svg)return q;
+ const ans=[q.answer].concat(q.accept||[]).join(' ');
+ const fields=['prompt','worked_solution','common_mistake','key_idea','diagram_alt'];
+ const arrs=['steps','hints'];
+ const txt=[q.prompt].join(' ');
+ const hasObj=new RegExp('\\b('+OBJW+')s?\\b','i').test(txt)||/spinner/i.test(txt);
+ const hasName=NAMERE.test(txt);NAMERE.lastIndex=0;
+ if(!hasObj&&!hasName)return q;
+ if(new RegExp('\\b('+COLW+'|'+OBJW+')','i').test(ans))return q;
+ const subs=[];let objTarget=null;
+ if(hasObj){
+  const colours=[...new Set((txt.toLowerCase().match(new RegExp('\\b('+COLW+')s?\\b','g'))||[]).map(c=>c.replace(/s$/,'')))];
+  if(colours.length){const pal=shuffle(COLW.split('|').filter(c=>true));const used=new Set();colours.forEach(c=>{let t=pal.find(x=>!used.has(x)&&(x===c||!colours.includes(x)))||c;used.add(t);subs.push([new RegExp('\\b'+c+'(s?)\\b','gi'),t]);});}
+  const objM=txt.toLowerCase().match(new RegExp('\\b('+OBJW+')s?\\b'));
+  if(objM){const others=OBJW.split('|').filter(x=>x!==objM[1]);objTarget=pick(others);}
+ }
+ if(hasName){
+  const found=[...new Set(txt.match(NAMERE)||[])];const taken=new Set(found);
+  found.forEach(nm=>{const list=FN.includes(nm)?FN:MN.includes(nm)?MN:null;if(!list)return;const t=pick(list.filter(x=>!taken.has(x)));taken.add(t);subs.push([new RegExp('\\b'+nm+'\\b','g'),t]);});
+ }
+ /* two-pass so a swap never gets swapped again */
+ const OBJALL=new RegExp('\\b('+OBJW+')(s?)\\b','gi');
+ const objFix=str=>objTarget?str.replace(OBJALL,(m,w,pl)=>(w[0]===w[0].toUpperCase()?objTarget[0].toUpperCase()+objTarget.slice(1):objTarget)+pl):str;
+ const tag=(str)=>{if(typeof str!=='string')return str;str=objFix(str);subs.forEach((r,i)=>{str=str.replace(r[0],(m,pl)=>'\u0001'+i+'\u0002'+(pl!==undefined&&typeof pl==='string'?pl:''));});return str;};
+ const fin=(str)=>{if(typeof str!=='string')return str;str=str.replace(/\u0001(\d+)\u0002(s?)/g,(m,i,pl)=>{const t=subs[+i][1];const r=subs[+i][0].source;if(/\(s\?\)/.test(r)&&r.indexOf('\\b')===0&&OBJW.split('|').includes(t))return t+pl;if(/\(s\?\)/.test(r))return t+pl;return t;});return str.replace(/\b([Aa])n? (?=(red|blue|green|yellow|white|black|pink|purple|orange|grey|brown)\b)/g,(m,A,c)=>m).replace(/\b(a|an) (red|blue|green|yellow|white|black|pink|purple|orange|grey|brown)\b/gi,(m,A,c)=>(/^[aeiou]/i.test(c)?'an ':'a ')+c);};
+ const o=Object.assign({},q);
+ fields.forEach(f=>{if(typeof o[f]==='string')o[f]=fin(tag(o[f]));});
+ arrs.forEach(f=>{if(Array.isArray(o[f]))o[f]=o[f].map(x=>fin(tag(x)));});
+ if(Array.isArray(o.mark_scheme))o.mark_scheme=o.mark_scheme.map(m=>Object.assign({},m,{for:fin(tag(m.for))}));
+ return o;
+}
 function pickQuestion(area,topic){
- const av=engine.available().filter(q=>(!area||q.area===area)&&(!topic||q.topic===topic));
+ const all=engine.available().filter(q=>!area||q.area===area);
+ let av=all.filter(q=>!topic||q.topic===topic);
  if(!av.length)return {error:'No questions available for these grade/topic filters.'};
  const hist=engine.state.questionHistory||{};
+ const near1=q=>Math.abs(q.grade-level)<=1, isNew=q=>!hist[q.id];
+ /* a single lesson with few different question types near the working grade gets related lessons from the same topic area mixed in */
+ widenedNote=false;
+ if(topic){
+  const have=new Set(av.filter(near1).map(skelOf)).size;
+  if(have<6){const wide=new Set(all.filter(near1).map(skelOf)).size;if(wide>have){
+   const lessonAv=av;av=all;widenedNote=true;
+   /* mostly stay in the chosen lesson, using related lessons to break up repeats */
+   const rs=new Set(recent.slice(-3).map(r=>r.sk));
+   if(Math.random()<0.4&&lessonAv.some(q=>!rs.has(skelOf(q))&&(!active||q.id!==active.id)))av=lessonAv;
+  }}
+ }
  let pool=av.filter(q=>!active||q.id!==active.id);if(!pool.length)pool=av;
- const unseen=pool.filter(q=>!hist[q.id]);if(unseen.length)pool=unseen;
+ /* stay on the ladder first (within 1 grade), then prefer unseen questions inside that band */
+ let band=pool.filter(q=>near1(q)&&isNew(q));
+ if(!band.length)band=pool.filter(near1);
+ if(!band.length)band=pool.filter(isNew);
+ if(band.length)pool=band;
  const last=recent[recent.length-1],last2=recent[recent.length-2];
- const run=(last&&last2&&last.tpl===last2.tpl)?2:(last?1:0);
- /* a question type may appear at most twice in a row; after a mistake a second one of the same type is allowed */
- let diff=pool.filter(q=>!last||last.tpl!==tplOf(q));
- const same=pool.filter(q=>last&&last.tpl===tplOf(q));
+ const run=(last&&last2&&last.sk===last2.sk)?2:(last?1:0);
+ /* a question type (same wording, different numbers) appears at most twice in a row; after a mistake one more of the same type is allowed */
+ let same=pool.filter(q=>last&&last.sk===skelOf(q));
+ if(!same.length&&last&&lastOutcome==='incorrect'&&run<2){
+  const sib=av.filter(q=>skelOf(q)===last.sk&&(!active||q.id!==active.id));
+  const sibNear=sib.filter(near1);same=sibNear.length?sibNear:sib;
+ }
+ const recentSk=new Set(recent.slice(-6).map(r=>r.sk));
+ let fresh=pool.filter(q=>!recentSk.has(skelOf(q)));
+ let diff=pool.filter(q=>!last||last.sk!==skelOf(q));
  if(lastOutcome==='incorrect'&&run<2&&same.length)pool=same;
+ else if(fresh.length)pool=fresh;
  else if(diff.length)pool=diff;
- else if(run>=2){const alt=av.filter(q=>last.tpl!==tplOf(q));if(alt.length)pool=alt;}
+ else if(run>=2){const alt=av.filter(q=>last.sk!==skelOf(q));if(alt.length)pool=alt;}
  /* grade ladder: nearest to the student's working grade */
  const dist=q=>Math.abs(q.grade-level);
  const best=Math.min(...pool.map(dist));
  let near=pool.filter(q=>dist(q)<=best);
- /* prefer a different question type, then a different context, from what was just shown */
- const types=[...new Set(near.map(tplOf))];
+ const types=[...new Set(near.map(skelOf))];
  const pickT=types[Math.floor(Math.random()*types.length)];
- let cands=near.filter(q=>tplOf(q)===pickT);
+ let cands=near.filter(q=>skelOf(q)===pickT);
  const lastCtx=last&&last.ctx;
  const freshCtx=cands.filter(q=>!lastCtx||q.ctx!==lastCtx);
  if(freshCtx.length)cands=freshCtx;
- const question=cands[Math.floor(Math.random()*cands.length)];
+ const raw=cands[Math.floor(Math.random()*cands.length)];
+ const question=vary(raw);
  engine.state.lastPresentedId=question.id;engine.state.active={id:question.id,skillId:question.skill_id,answered:false};engine.save();
- recent.push({tpl:tplOf(question),ctx:question.ctx||'',grade:question.grade});if(recent.length>6)recent.shift();
- return {question,skill:engine.skill(question.skill_id),poolSize:av.length,uniqueRemaining:unseen.length,insufficientPool:av.length<4};
+ recent.push({tpl:tplOf(raw),sk:skelOf(raw),ctx:raw.ctx||'',grade:raw.grade});if(recent.length>8)recent.shift();
+ return {question,skill:engine.skill(question.skill_id),poolSize:av.length,uniqueRemaining:av.filter(isNew).length,insufficientPool:av.length<4};
 }
 function movePath(kind){
  const r=gradeRange();
- if(kind==='correct'){levelStreak++;if(levelStreak>=2&&level<r.hi){level++;levelStreak=0;}}
- else if(kind==='incorrect'){levelStreak=0;if(level>r.lo)level--;}
+ /* mastery rule: answers are tracked at the current grade only.
+    Move up when at least 3 of the last 4 are correct (min. 3 answered). Move down after 2 wrong in the last 3. */
+ if(kind!=='correct'&&kind!=='incorrect')return;
+ gradeHist.push(kind==='correct');
+ const h=gradeHist.slice(-4),ok=h.filter(Boolean).length;
+ if(gradeHist.length>=3&&ok>=3&&level<r.hi){level++;gradeHist=[];levelStreak=0;}
+ else if(gradeHist.slice(-3).filter(x=>!x).length>=2&&level>r.lo){level--;gradeHist=[];levelStreak=0;}
+ levelStreak=gradeHist.length;
 }
 function fillAreas(){
  const old=el('topic').value;el('topic').innerHTML='';el('topic').add(new Option('All topics (mixed practice)',''));
@@ -719,7 +791,8 @@ window.askTutor=function(){return previousAsk()};
  try{
   if(!window.AlgeviaAdaptive||!window.AlgeviaMarking)throw Error('Learning engine missing');
   const data=await AlgeviaAdaptive.loadBank('algevia_gcse_question_bank_merged_v3.json');
-  bank=data.questions.filter(q=>q.id&&q.area&&q.topic&&q.skill_id&&q.prompt&&q.answer&&fits(q));
+  data.questions.forEach(q=>{if(q.id==='V57-compound_probability_independent-02'){['prompt','worked_solution'].forEach(f=>{if(typeof q[f]==='string')q[f]=q[f].replace(/two reds/g,'two pinks').replace(/\bred\b/g,'pink');});}});
+ {const seenP=new Set();bank=data.questions.filter(q=>q.id&&q.area&&q.topic&&q.skill_id&&q.prompt&&q.answer&&fits(q)).filter(q=>{const k=q.prompt.replace(/\s+/g,' ').trim()+'|'+q.answer;if(seenP.has(k))return false;seenP.add(k);return true;});}
   examples=(data.worked_examples||[]).filter(q=>q.skill_id&&q.prompt&&fits(q));
   engine=new AlgeviaAdaptive.AdaptiveEngine(bank,grades());
   el('topic').onchange=()=>{fillTopics();startSelected()};
@@ -727,6 +800,8 @@ window.askTutor=function(){return previousAsk()};
   choose();
   if(location.hash==='#choose'){try{el('topic').scrollIntoView({block:'center'});el('topic').focus();}catch(e){}}
   el('targetSelect').addEventListener('change',()=>setTimeout(choose,0));
+  for(let g=1;g<=9;g++)el('startGrade').add(new Option('Grade '+g,g));
+  el('startGrade').onchange=()=>{startOverride=Number(el('startGrade').value)||0;choose();};
  }catch(e){el('feedback').style.display='block';el('feedback').textContent='Question bank could not load: '+e.message+'. The original lesson remains available.';}
 })();
 })();
