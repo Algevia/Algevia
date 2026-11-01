@@ -1,4 +1,4 @@
-/* Algevia V47 draft adaptive engine. Standalone data layer; does not change learn.html.
+/* Algevia V48 adaptive engine (skill unlock: 3 of last 4 correct). Standalone data layer; does not change learn.html.
    Questions require curriculum/answer review before student-facing production use. */
 (function (global) {
 'use strict';
@@ -16,7 +16,7 @@ class AdaptiveEngine {
   save(){try{localStorage.setItem(STORAGE,JSON.stringify(this.state))}catch(e){}}
   configure(settings){this.settings={...this.settings,...settings};this.state.active=null;this.save();}
   gradeBounds(){const current=clamp(+this.settings.currentGrade||4,1,9),target=clamp(+this.settings.targetGrade||6,current,9);return {current,target,max:Math.min(9,target+(this.settings.extension?1:0))};}
-  skill(skillId){return this.state.skills[skillId] ||= {streak:0,correct:0,wrong:0,skipped:0,attempts:0,unlocked:false,reviewDue:0,misconceptions:{}};}
+  skill(skillId){return this.state.skills[skillId] ||= {recent:[],streak:0,correct:0,wrong:0,skipped:0,attempts:0,unlocked:false,reviewDue:0,misconceptions:{}};}
   available(){const {current,max}=this.gradeBounds();return this.questions.filter(q=>+q.grade>=current&&+q.grade<=max);}
   skills(area,topic){return unique(this.available().filter(q=>(!area||q.area===area)&&(!topic||q.topic===topic)).map(q=>q.skill_id));}
   chooseQuestion({area=null,topic=null,skillId=null,revision=false}={}){
@@ -42,9 +42,13 @@ class AdaptiveEngine {
     if(!['correct','incorrect','skip'].includes(kind))throw new Error('Invalid outcome');
     const s=this.skill(a.skillId);const hist=this.state.questionHistory[questionId]||{seen:0};
     hist.seen++;hist.lastSeen=Date.now();hist.lastOutcome=kind;this.state.questionHistory[questionId]=hist;
-    if(kind==='correct'){s.correct++;s.attempts++;s.streak++;if(s.streak>=2){s.unlocked=true;s.reviewDue=Date.now()+24*3600*1000;}}
-    if(kind==='incorrect'){s.wrong++;s.attempts++;s.streak=0;if(misconception)s.misconceptions[misconception]=(s.misconceptions[misconception]||0)+1;}
+    s.recent=s.recent||[];
+    if(kind==='correct'){s.correct++;s.attempts++;s.streak++;s.recent.push(1);}
+    if(kind==='incorrect'){s.wrong++;s.attempts++;s.streak=0;s.recent.push(0);if(misconception)s.misconceptions[misconception]=(s.misconceptions[misconception]||0)+1;}
     if(kind==='skip'){s.skipped++;/* no mastery credit and no penalty */}
+    /* mastery rule shared with learn.html: at least 3 of the last 4 answers correct, with at least 3 answered */
+    if(s.recent.length>4)s.recent=s.recent.slice(-4);
+    if(!s.unlocked&&s.recent.length>=3&&s.recent.reduce((x,y)=>x+y,0)>=3){s.unlocked=true;s.reviewDue=Date.now()+24*3600*1000;}
     a.answered=true;this.state.lastSkill=a.skillId;this.save();
     return {skillId:a.skillId,streak:s.streak,unlocked:s.unlocked,masteryEvidence:s.correct,revisionDue:s.reviewDue,kind};
   }
