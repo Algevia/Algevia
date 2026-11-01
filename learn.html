@@ -29,7 +29,7 @@
 .gradeControls label{font-size:14px}
 #gradeNotice{font-size:13px;color:#244a78}
 <style>.askBox{display:grid;gap:7px;margin:12px 0}.askBox textarea{width:100%;box-sizing:border-box;border:1px solid #b7c7db;border-radius:9px;padding:12px;font:inherit;min-height:72px;resize:vertical}.voicePanel{display:grid;gap:7px;padding:12px;background:white;border-radius:12px;margin-top:10px}.voicePanel select{width:100%;padding:9px;border:1px solid #cad6e6;border-radius:7px}.voicePanel button{width:100%}.topicIntro{margin-bottom:12px}.mathLine{white-space:pre-wrap}</style></head><body><div class="top"><div class="brand">Algevia <span style="font-weight:400">| AI Tutor</span></div><div class="context" id="course">GCSE Maths - AQA Higher</div><button class="stop" onclick="saveExit()">Save & Exit</button></div><div class="wrap"><div class="profile"><span>Diagnostic: <b id="diag">Not linked</b></span><span>Current grade: <b id="cg">5</b></span><span>Target grade: <b id="tg">7</b></span><span>Mode: <b>Visual adaptive teaching</b></span></div>
-<div class="gradeControls"><strong>Learning target</strong><label>Target grade <select id="targetSelect" aria-label="Target grade"></select></label><label>Practise at <select id="startGrade" aria-label="Practice grade"><option value="">Auto (my grade)</option></select></label><label><input type="checkbox" id="autoProgress"> Automatically suggest/advance when sustained evidence supports it</label><span id="gradeNotice">Grade advancement requires performance at the target grade across multiple skills.</span></div>
+<div class="gradeControls"><strong>Learning target</strong><label>Target grade <select id="targetSelect" aria-label="Target grade"></select></label><label>Practise at <select id="startGrade" aria-label="Practice grade"><option value="">Auto (my grade)</option></select></label><label>Paper <select id="paperSel" aria-label="Calculator or non-calculator paper"><option value="">Both papers</option><option value="non-calculator">Non-calculator</option><option value="calculator">Calculator</option></select></label><label><input type="checkbox" id="autoProgress"> Automatically suggest/advance when sustained evidence supports it</label><span id="gradeNotice">Grade advancement requires performance at the target grade across multiple skills.</span></div>
 <div class="classroom"><div class="tutorCol"><div class="card tutor"><img id="tutorImg" alt="Algevia AI tutor"><div class="shade"></div><div class="tutorInfo"><div class="tutorName" id="tutorName">Karen - Female Tutor</div><div id="tutorState" class="speaking">Ready</div></div></div><div class="gender"><button id="female" class="sel" onclick="setGender('female')">Female Tutor</button><button id="male" class="alt" onclick="setGender('male')">Male Tutor</button></div><div class="voicePanel" aria-label="Tutor voice"><div class="small">Voice and speaking style are set automatically for each tutor.</div><select id="voiceSelect" hidden aria-hidden="true"></select><div id="voiceStatus" class="small" hidden></div></div><div class="avatarNote">Karen and Daniel use fixed browser voices. Realistic facial animation is being developed separately.</div></div>
 <div class="lessonCol"><div class="card"><div class="lessonSelect"><label>Topic<select id="topic"></select></label><label>Lesson<select id="skill"></select></label><button onclick="startSelected()">Start Lesson</button></div></div>
 <div class="card"><div class="sectionHead"><h2>Worked Example <span class="small">- related example, not your question</span></h2><button class="alt" onclick="workedExample()">Worked Example</button></div><div class="topicIntro" id="topicIntro">Choose a lesson to begin.</div><div class="board workedBoard"><div class="boardGrid"><div class="visual" id="workedVisual">Press Worked Example to begin.</div><div><div class="question" id="workedQuestion">A related example will appear here.</div><div class="liveLine" id="workedSpoken">Tutor speech appears here progressively.</div><div class="boardSteps" id="workedText"><span class="small">The example will be written one teaching step at a time.</span></div></div></div></div></div>
@@ -576,11 +576,12 @@ const SHOW_UNVERIFIED=false;
 let engine=null, bank=[], examples=[], active=null, lastOutcome=null, exampleOffset=0, transition=0, hintsShown=0;
 const el=id=>document.getElementById(id);
 const uniq=a=>[...new Set(a)];
-let startOverride=0;
-const grades=()=>{let a=Number(profile?.diagnostic?.estimatedGrade)||4,b=Number(profile?.targetGrade)||7;if(startOverride)a=startOverride;return {currentGrade:Math.min(a,b),targetGrade:Math.max(a,b)};};
+let startOverride=0, paper='', bankAll=[];
+const paperOK=q=>!paper||!q.calculator||q.calculator==='either'||q.calculator===paper;
+const grades=()=>{let a=Number(profile?.diagnostic?.estimatedGrade)||4,b=Number(profile?.targetGrade)||7;if(startOverride)a=startOverride;/* Foundation papers only reach grade 5 */const cap=(profile?.tier||'Higher')==='Foundation'?5:9;a=Math.min(a,cap);b=Math.min(b,cap);return {currentGrade:Math.min(a,b),targetGrade:Math.max(a,b)};};
 const board=()=>profile?.examBoard||'AQA';
 const tier=()=>profile?.tier||'Higher';
-const fits=q=>(SHOW_UNVERIFIED||['blind_solved_and_validated','answer_independently_matched','generated_code_verified'].includes(q.verification))&&(!q.boards||!['AQA','Edexcel','OCR'].includes(board())||q.boards.includes(board()))&&(q.tiers?q.tiers.includes(tier()):(!q.tier||q.tier===tier()));
+const fits=q=>(SHOW_UNVERIFIED||['blind_solved_and_validated','answer_independently_matched','generated_code_verified'].includes(q.verification))&&(!q.boards||!['AQA','Edexcel','OCR'].includes(board())||q.boards.includes(board()))&&(q.tiers?(q.tiers.includes(tier())||(tier()==='Higher'&&q.grade<=3&&q.tiers.includes('Foundation'))):(!q.tier||q.tier===tier()||(tier()==='Higher'&&q.grade<=3&&q.tier==='Foundation')));
 const SEP=' · ';
 
 /* ---- V56: grade ladder + variety-aware question picker + wording variation ---- */
@@ -630,6 +631,29 @@ function vary(q){
  if(Array.isArray(o.mark_scheme))o.mark_scheme=o.mark_scheme.map(m=>Object.assign({},m,{for:fin(tag(m.for))}));
  return o;
 }
+/* Related-lesson families: a thin lesson may borrow questions only from lessons in the same family (never from the whole topic area). */
+const FAMILIES=[
+ ['Collecting like terms','Multiplying and dividing terms','Expanding single brackets','Expanding double brackets','Factorising single brackets','Substitution','Index laws with algebra'],
+ ['Factorising quadratics','Difference of two squares','Solving quadratic equations by factorising','Completing the square','Solving quadratics with the formula','Quadratic inequalities'],
+ ['Solving linear equations','Forming and solving equations','Solving linear inequalities','Changing the subject','Changing the subject (harder)','Simultaneous linear equations','Simultaneous equations (one linear, one quadratic)','Algebraic fractions','Algebraic proof'],
+ ['Linear sequences and nth term','Quadratic sequences','Geometric sequences','Iteration'],
+ ['Straight-line graphs','Parallel and perpendicular lines','Midpoint and distance between points','Quadratic graphs','Transformations of graphs','Equation of a circle and tangents','Distance-time graphs','Velocity-time graphs','Function notation, composite and inverse functions'],
+ ['Angles on lines, at a point and vertically opposite','Angles in parallel lines','Angles in triangles','Polygons: interior and exterior angles','Circle theorems','Bearings'],
+ ['Area and perimeter of 2D shapes','Circumference and area of a circle','Arc length and sector area','Surface area of solids','Volume of solids','Similar shapes','Faces, edges and vertices of 3D shapes','Symmetry and properties of shapes'],
+ ["Pythagoras' theorem",'Right-angled triangle trigonometry','Exact trigonometric values','Sine rule, cosine rule and area of a triangle','Trigonometry in 3D'],
+ ['Transformations of shapes','Vectors'],
+ ['Adding and subtracting fractions','Multiplying and dividing fractions','Simplifying and equivalent fractions','Fractions of amounts','Fraction problems in context','Converting between FDP','Ordering numbers'],
+ ['BIDMAS','Calculating with negative numbers','Rounding','Estimation','Multiplication, division and remainders','Money, time and measures'],
+ ['Factors, multiples and primes','HCF and LCM','Product of prime factors','Squares, cubes and roots','Systematic listing and the product rule'],
+ ['Index laws with numbers','Negative and fractional indices','Simplifying and manipulating surds','Calculating with standard form','Writing numbers in standard form','Recurring decimals','Error intervals and bounds'],
+ ['Simplifying ratios','Sharing in a ratio','Ratios in the form 1 : n','Ratio and algebra','Ratio problems with changing amounts','Ratio, fractions and percentages','Scale drawings and maps'],
+ ['Direct proportion problems (unitary method)','Inverse proportion in context','Direct and inverse proportion with formulae','Best buys','Exchange rates','Converting units','Speed and unit conversions in context','Speed, density and pressure'],
+ ['Percentages','Reverse percentages','Simple and compound interest','Exponential growth and decay','Money problems: VAT, wages and tax'],
+ ['Mean, median, mode and range','Averages from frequency tables','Moving averages'],
+ ['Pie charts','Stem-and-leaf diagrams','Scatter graphs and correlation','Sampling methods'],
+ ['Box plots','Cumulative frequency graphs','Histograms']];
+const famOf={};FAMILIES.forEach((f,i)=>f.forEach(t=>famOf[t]=i));
+const sameFam=(a,b)=>a===b||(famOf[a]!==undefined&&famOf[a]===famOf[b]);
 function pickQuestion(area,topic){
  const all=engine.available().filter(q=>!area||q.area===area);
  let av=all.filter(q=>!topic||q.topic===topic);
@@ -640,8 +664,9 @@ function pickQuestion(area,topic){
  widenedNote=false;
  if(topic){
   const have=new Set(av.filter(near1).map(skelOf)).size;
-  if(have<6){const wide=new Set(all.filter(near1).map(skelOf)).size;if(wide>have){
-   const lessonAv=av;av=all;widenedNote=true;
+  const famAll=area&&topic?all.filter(q=>sameFam(q.topic,topic)):av;
+  if(have<6){const wide=new Set(famAll.filter(near1).map(skelOf)).size;if(wide>have){
+   const lessonAv=av;av=famAll;widenedNote=true;
    /* mostly stay in the chosen lesson, using related lessons to break up repeats */
    const rs=new Set(recent.slice(-3).map(r=>r.sk));
    if(Math.random()<0.4&&lessonAv.some(q=>!rs.has(skelOf(q))&&(!active||q.id!==active.id)))av=lessonAv;
@@ -771,11 +796,15 @@ window.hint=function(){
 window.workedExample=function(){
  if(!active)return;
  /* Dedicated worked examples first; top up with other checked questions on the same skill so there are always several variants. */
- let pool=examples.filter(q=>q.skill_id===active.skill_id&&q.id!==active.id);
- const have=new Set(pool.map(q=>q.id));
- const extra=bank.filter(q=>q.skill_id===active.skill_id&&q.id!==active.id&&!have.has(q.id)&&q.steps&&q.steps.length)
-  .sort((a,b)=>Math.abs(a.grade-active.grade)-Math.abs(b.grade-active.grade)).slice(0,6);
- pool=pool.concat(extra);
+ /* Worked examples are chosen by LESSON (not the old per-question skill id): dedicated examples first, then other solved questions from the same lesson, nearest grade first, preferring a different question type from the one being practised. */
+ const lessonKey=q=>(q.area||'')+'|'+(q.topic||'');
+ if(!window.__skillLesson){window.__skillLesson={};bank.forEach(q=>{if(!__skillLesson[q.skill_id])__skillLesson[q.skill_id]=lessonKey(q)});}
+ const me=lessonKey(active),gd=q=>Math.abs((q.grade||active.grade)-active.grade);
+ const dSk=new Set();const dedicated=examples.filter(q=>q.id!==active.id&&(lessonKey(q)===me||__skillLesson[q.skill_id]===me)).sort((x,y)=>gd(x)-gd(y)||Math.random()-.5).filter(q=>{const k=skelOf(q);if(dSk.has(k))return false;dSk.add(k);return true;});
+ const have=new Set(dedicated.map(q=>q.id));const mySk=skelOf(active);
+ const same=bank.filter(q=>lessonKey(q)===me&&q.id!==active.id&&!have.has(q.id)&&q.steps&&q.steps.length&&Math.abs(q.grade-active.grade)<=1);
+ const seenSk=new Set();const extra=same.sort((x,y)=>(skelOf(x)===mySk)-(skelOf(y)===mySk)||gd(x)-gd(y)||Math.random()-.5).filter(q=>{const k=skelOf(q);if(seenSk.has(k))return false;seenSk.add(k);return true;}).slice(0,6);
+ let pool=dedicated.slice(0,4).concat(extra);
  if(!pool.length){el('workedQuestion').textContent='More worked examples are being prepared for this skill.';return;}
  const q=pool[exampleOffset++%pool.length];
  el('workedQuestion').style.whiteSpace='pre-line';
@@ -794,7 +823,10 @@ window.askTutor=function(){return previousAsk()};
   data.questions.forEach(q=>{if(q.id==='V57-compound_probability_independent-02'){['prompt','worked_solution'].forEach(f=>{if(typeof q[f]==='string')q[f]=q[f].replace(/two reds/g,'two pinks').replace(/\bred\b/g,'pink');});}});
  {const seenP=new Set();bank=data.questions.filter(q=>q.id&&q.area&&q.topic&&q.skill_id&&q.prompt&&q.answer&&fits(q)).filter(q=>{const k=q.prompt.replace(/\s+/g,' ').trim()+'|'+q.answer;if(seenP.has(k))return false;seenP.add(k);return true;});}
   examples=(data.worked_examples||[]).filter(q=>q.skill_id&&q.prompt&&fits(q));
+  bankAll=bank;try{paper=localStorage.getItem('algevia_paper')||'';}catch(e){}
+  if(paper){bank=bankAll.filter(paperOK);el('paperSel').value=paper;}
   engine=new AlgeviaAdaptive.AdaptiveEngine(bank,grades());
+  el('paperSel').onchange=()=>{paper=el('paperSel').value;try{localStorage.setItem('algevia_paper',paper);}catch(e){}bank=bankAll.filter(paperOK);engine.questions=bank;fillAreas();choose();};
   el('topic').onchange=()=>{fillTopics();startSelected()};
   el('skill').onchange=startSelected;
   choose();
