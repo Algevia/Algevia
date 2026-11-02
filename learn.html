@@ -633,7 +633,7 @@ function vary(q){
 }
 /* Related-lesson families: a thin lesson may borrow questions only from lessons in the same family (never from the whole topic area). */
 const FAMILIES=[
- ['Collecting like terms','Multiplying and dividing terms','Expanding single brackets','Expanding double brackets','Factorising single brackets','Substitution','Index laws with algebra'],
+ ['Collecting like terms','Multiplying and dividing terms','Expanding single brackets','Expanding double brackets','Factorising single brackets','Substitution','Index laws with algebra','Algebra vocabulary'],
  ['Factorising quadratics','Difference of two squares','Solving quadratic equations by factorising','Completing the square','Solving quadratics with the formula','Quadratic inequalities'],
  ['Solving linear equations','Forming and solving equations','Solving linear inequalities','Changing the subject','Changing the subject (harder)','Simultaneous linear equations','Simultaneous equations (one linear, one quadratic)','Algebraic fractions','Algebraic proof'],
  ['Linear sequences and nth term','Quadratic sequences','Geometric sequences','Iteration'],
@@ -649,9 +649,13 @@ const FAMILIES=[
  ['Simplifying ratios','Sharing in a ratio','Ratios in the form 1 : n','Ratio and algebra','Ratio problems with changing amounts','Ratio, fractions and percentages','Scale drawings and maps'],
  ['Direct proportion problems (unitary method)','Inverse proportion in context','Direct and inverse proportion with formulae','Best buys','Exchange rates','Converting units','Speed and unit conversions in context','Speed, density and pressure'],
  ['Percentages','Reverse percentages','Simple and compound interest','Exponential growth and decay','Money problems: VAT, wages and tax'],
- ['Mean, median, mode and range','Averages from frequency tables','Moving averages'],
- ['Pie charts','Stem-and-leaf diagrams','Scatter graphs and correlation','Sampling methods'],
- ['Box plots','Cumulative frequency graphs','Histograms']];
+ ['Mean, median, mode and range','Averages from frequency tables'],
+ ['Pie charts','Stem-and-leaf diagrams','Scatter graphs and correlation','Sampling methods','Charts and graphs for data'],
+ ['Box plots','Cumulative frequency graphs','Histograms','Comparing distributions'],
+ ['Frequency trees','Two-way tables','Venn diagrams and set notation'],
+ ['Recognising graphs','Quadratic graphs','Inequality regions','Rates of change and tangents'],
+ ['Congruent triangles','Constructions and loci','Circle vocabulary','Geometric reasoning','Geometry notation and terms'],
+ ['Plans and elevations','Units of measure']];
 const famOf={};FAMILIES.forEach((f,i)=>f.forEach(t=>famOf[t]=i));
 const sameFam=(a,b)=>a===b||(famOf[a]!==undefined&&famOf[a]===famOf[b]);
 function pickQuestion(area,topic){
