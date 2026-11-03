@@ -1,8 +1,9 @@
-// Algevia V38.1: Redis-backed rolling-window pilot protection.
+// Algevia V38.2 (V38.1 + any lesson name accepted): Redis-backed rolling-window pilot protection.
 // Vercel environment: OPENAI_API_KEY, KV_REST_API_URL, KV_REST_API_TOKEN.
 // IMPORTANT: This is NOT authentication or a guaranteed monetary spending cap.
 const crypto = require('crypto');
-const skills = ['Solving linear equations','Expanding brackets','Pythagoras','Area of shapes','SOHCAHTOA','Fractions and percentages','Ratio','Straight-line graphs'];
+// V38.2: the allowlist of 8 lesson names was removed. The question bank now has about 120 lessons, so
+// any lesson outside the old list was rejected with 400. Skill is now only checked as a short string.
 const MAX_BODY_BYTES = 12000;
 
 async function redisEval(script, keys, args) {
@@ -59,7 +60,7 @@ module.exports = async function handler(req, res) {
   const d = req.body;
   if (!d || typeof d !== 'object' || Array.isArray(d) ||
       typeof d.studentQuestion !== 'string' || !d.studentQuestion.trim() || d.studentQuestion.length > 800 ||
-      typeof d.question !== 'string' || d.question.length > 1500 || !skills.includes(d.skill))
+      typeof d.question !== 'string' || d.question.length > 1500 || typeof d.skill !== 'string' || !d.skill.trim() || d.skill.length > 120)
     return res.status(400).json({ error: 'Invalid tutor request' });
 
   // Prefer Vercel's edge-provided header. Header trust must be validated in the actual deployment.
