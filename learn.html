@@ -33,7 +33,7 @@
 <div class="classroom"><div class="tutorCol"><div class="card tutor"><img id="tutorImg" alt="Algevia AI tutor"><div class="shade"></div><div class="tutorInfo"><div class="tutorName" id="tutorName">Karen - Female Tutor</div><div id="tutorState" class="speaking">Ready</div></div></div><div class="gender"><button id="female" class="sel" onclick="setGender('female')">Female Tutor</button><button id="male" class="alt" onclick="setGender('male')">Male Tutor</button></div><div class="voicePanel" aria-label="Tutor voice"><div class="small">Voice and speaking style are set automatically for each tutor.</div><select id="voiceSelect" hidden aria-hidden="true"></select><div id="voiceStatus" class="small" hidden></div></div><div class="avatarNote">Karen and Daniel use fixed browser voices. Realistic facial animation is being developed separately.</div></div>
 <div class="lessonCol"><div class="card"><div class="lessonSelect"><label>Topic<select id="topic"></select></label><label>Lesson<select id="skill"></select></label><button onclick="startSelected()">Start Lesson</button></div></div>
 <div class="card"><div class="sectionHead"><h2>Worked Example <span class="small">- related example, not your question</span></h2><button class="alt" onclick="workedExample()">Worked Example</button></div><div class="topicIntro" id="topicIntro">Choose a lesson to begin.</div><div class="board workedBoard"><div class="boardGrid"><div class="visual" id="workedVisual">Press Worked Example to begin.</div><div><div class="question" id="workedQuestion">A related example will appear here.</div><div class="liveLine" id="workedSpoken">Tutor speech appears here progressively.</div><div class="boardSteps" id="workedText"><span class="small">The example will be written one teaching step at a time.</span></div></div></div></div></div>
-<div class="card"><div class="sectionHead"><h2>Practice Question</h2><span class="small" id="qMeta"></span></div><div class="board practiceBoard"><div class="boardGrid"><div class="visual" id="visual"></div><div><div class="question" id="question"></div><div class="liveLine" id="spoken">Press Teach This Question when you are ready.</div><div class="boardSteps" id="working"><span class="small">Mathematical working appears step by step as the tutor explains.</span></div></div></div><div class="teachingText" id="teachingText">Try the question first, or ask the tutor to teach, explain again, or give a staged hint.</div><div class="answer"><input id="answer" autocomplete="off" placeholder="Enter your answer"><button onclick="check()">Check Answer</button></div><div class="feedback" id="feedback"></div><div class="askBox"><label for="tutorQuestion"><b>Ask Karen or Daniel a question</b></label><textarea id="tutorQuestion" rows="2" placeholder="For example: Why do we add 8 to both sides?"></textarea></div><div class="teachingText" id="conversationStatus" aria-live="polite">Ask Tutor: type your question in the dedicated box, then press Ask Tutor. Student Speak can also fill this box.</div><div class="controls"><button onclick="teachQuestion()">Teach This Question</button><button class="alt" onclick="repeatLast()">Explain Again</button><button class="alt" onclick="hint()">Hint</button><button class="good" onclick="studentSpeak()">Student Speak</button><button class="alt" onclick="askTutor()" id="askTutorButton">Ask Tutor</button><button class="stop" onclick="togglePause()" id="pauseButton">Pause Tutor</button></div><div class="nextRow"><button onclick="nextQuestion()">Next Question / Skip</button></div></div></div></div></div>
+<div class="card"><div class="sectionHead"><h2>Practice Question</h2><span class="small" id="qMeta"></span></div><div class="board practiceBoard"><div class="boardGrid"><div class="visual" id="visual"></div><div><div class="question" id="question"></div><div class="liveLine" id="spoken">Press Teach This Question when you are ready.</div><div class="boardSteps" id="working"><span class="small">Mathematical working appears step by step as the tutor explains.</span></div></div></div><div class="teachingText" id="teachingText">Try the question first, or ask the tutor to teach, explain again, or give a staged hint.</div><div class="answer"><input id="answer" autocomplete="off" placeholder="Enter your answer"><button onclick="check()">Check Answer</button></div><div class="feedback" id="feedback"></div><div class="askBox"><label for="tutorQuestion"><b>Ask Karen or Daniel a question</b></label><textarea id="tutorQuestion" rows="2" placeholder="For example: Why do we add 8 to both sides?"></textarea></div><div class="teachingText" id="conversationStatus" aria-live="polite">Ask Tutor: type your question in the dedicated box, then press Ask Tutor. Student Speak can also fill this box.</div><div class="controls"><button onclick="teachQuestion()">Teach This Question</button><button class="alt" onclick="repeatLast()">Explain Again</button><button class="alt" onclick="hint()">Hint</button><button class="good" onclick="studentSpeak()">Student Speak</button><button class="alt" onclick="askTutor()" id="askTutorButton">Ask Tutor</button><button class="stop" onclick="togglePause()" id="pauseButton">Pause Tutor</button></div><div class="nextRow"><button onclick="nextQuestion()">Next Question / Skip</button><select id="aiGrade" title="Grade for the extra AI question" aria-label="Grade for the extra AI question"><option value="">Same grade</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option><option value="9">Grade 9</option></select><button id="aiQBtn" onclick="aiQuestion()">Give me an extra question (AI)</button></div></div></div></div></div>
 <div class="lower"><div class="card"><h3 style="margin-top:0">Current question transcript</h3><div class="small">Clears automatically when a new practice question is shown.</div><div class="transcript" id="transcript"></div></div><div class="card"><h3 style="margin-top:0">Learning progress</h3><div id="adaptMsg">Algevia tracks practice by skill; review questions are scheduled after mastery.</div><div style="margin-top:12px"><span id="masteryLabel">Skill mastery 50%</span><div class="track"><div class="fill" id="masteryFill" style="width:50%"></div></div></div><div class="small" style="margin-top:10px">Independent success reduces scaffolding. Hints and repeated errors increase visual support and smaller teaching steps.</div></div></div></div>
 <script>
 // V30 Synchronized Maths Tutor - avatar-ready presentation layer
@@ -540,7 +540,17 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
    const v=chosen();$v('voiceStatus').textContent=`${gender==='female'?'Karen':'Daniel'}: ${v?v.name+' ('+v.lang+')':'no voice found'}. Device voice quality varies. No paid voice API.`;
  }
  function settings(){return {rate:0.90,pitch:1.0}}
- function prepare(text){return String(text).replace(/\bSOHCAHTOA\b/gi,'soh cah toa').replace(/\bSOH\b/g,'soh').replace(/\bCAH\b/g,'cah').replace(/\bTOA\b/g,'toa').replace(/\bx\^2\b/g,'x squared').replace(/\b([a-z])\^2\b/gi,'$1 squared').replace(/\b([a-z])\^3\b/gi,'$1 cubed').replace(/=/g,' equals ').replace(/\+/g,' plus ').replace(/\*/g,' times ').replace(/\s+/g,' ').trim()}
+ function prepare(text){let s=String(text);
+ s=s.replace(/\bSOHCAHTOA\b/gi,'soh cah toa').replace(/\bSOH\b/g,'soh').replace(/\bCAH\b/g,'cah').replace(/\bTOA\b/g,'toa').replace(/\bx\^2\b/g,'x squared').replace(/\b([a-z])\^2\b/gi,'$1 squared').replace(/\b([a-z])\^3\b/gi,'$1 cubed');
+ s=s.replace(/->|→/g,' so ').replace(/√/g,' square root of ').replace(/π/g,' pi ').replace(/²/g,' squared ').replace(/³/g,' cubed ').replace(/⁴/g,' to the power 4 ');
+ s=s.replace(/°C/g,' degrees Celsius ').replace(/°/g,' degrees ').replace(/(\d)\s*%/g,'$1 percent ').replace(/£\s*(\d[\d,.]*)/g,'$1 pounds ').replace(/€\s*(\d[\d,.]*)/g,'$1 euros ').replace(/\$\s*(\d[\d,.]*)/g,'$1 dollars ');
+ s=s.replace(/≤|<=/g,' is less than or equal to ').replace(/≥|>=/g,' is greater than or equal to ').replace(/≠/g,' is not equal to ').replace(/±/g,' plus or minus ').replace(/</g,' is less than ').replace(/>/g,' is greater than ');
+ s=s.replace(/[×·]/g,' times ').replace(/(\d|\))\s+[xX]\s+(\d|\()/g,'$1 times $2').replace(/÷/g,' divided by ');
+ s=s.replace(/\bkm\/h\b/g,'kilometres per hour').replace(/\bm\/s\b/g,'metres per second').replace(/(\d)\s*\/\s*(\d)/g,'$1 over $2').replace(/\b([a-zA-Z]{1,4})\/([a-zA-Z]{1,4})\b/g,'$1 per $2');
+ s=s.replace(/[−–]/g,'-').replace(/([\w)])\s*-\s+(?=[\w(\-])/g,'$1 minus ').replace(/(\d)-(?=\d)/g,'$1 minus ');
+ s=s.replace(/(^|[=(,:]\s*|\b(?:is|to|and|by|equals|be|get|gives|than|from|minus|plus|times)\s+)-(?=[\d(a-z])/gi,'$1negative ');
+ s=s.replace(/=/g,' equals ').replace(/\+/g,' plus ').replace(/\*/g,' times ');
+ return s.replace(/\s+/g,' ').trim()}
  let generation=0;
  function say(text,target,done){const generationAtStart=++generation;let finished=false;const finish=()=>{if(finished||generationAtStart!==generation)return;finished=true;if(target&&$v(target))$v(target).textContent=text;$v('tutorState').textContent='Ready';if(typeof done==='function')done()};
    if(!synth||!window.SpeechSynthesisUtterance){if(target&&$v(target))$v(target).textContent=text;finish();return}
@@ -819,7 +829,87 @@ window.workedExample=function(){
  runStructuredSteps(steps,'Worked example',true);
 };
 const previousAsk=window.askTutor;
-window.askTutor=function(){return previousAsk()};
+function lessonFromText(t){
+ const stop=new Set(['and','the','with','of','in','to','for','from','using']);
+ const norm=s=>s.toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
+ const nt=' '+norm(t)+' ';let best=null,bs=0;
+ const names=[...new Set((bankAll||bank).map(q=>q.topic))];
+ const freq={};names.forEach(n=>new Set(norm(n).split(' ').map(x=>x.replace(/s$/,''))).forEach(x=>{freq[x]=(freq[x]||0)+1}));
+ for(const n of names){
+  const w=norm(n).split(' ').filter(x=>x.length>3&&!stop.has(x));if(!w.length)continue;
+  const hits=w.filter(x=>nt.includes(' '+x+' ')||nt.includes(' '+x+'s ')||nt.includes(' '+x.replace(/s$/,'')+' '));const hit=hits.length;
+  const full=nt.includes(' '+norm(n)+' ');
+  const unique=hits.some(x=>x.length>=6&&(freq[x.replace(/s$/,'')]||0)===1);
+  const score=full?2+w.length:((hit/w.length>=0.67||unique)?hit/w.length+hit/10+(unique?0.5:0):0);
+  if(score>bs){bs=score;best=n;}
+ }
+ return best;
+}
+function wantsQuestion(t){
+ return /\b(another|similar|new|different|more|extra|harder|easier|tougher|simpler)\b[^.?!]{0,25}\b(question|problem|one|practice)\b/i.test(t)
+  ||/\b(give|set|make|show|get)\s+(me|us)\b[^.?!]{0,30}\b(question|problem)\b/i.test(t)
+  ||/\bgrade\s*[1-9]\b[^.?!]{0,30}\b(question|problem)\b/i.test(t);
+}
+window.askTutor=function(){
+ const t=(el('tutorQuestion').value||'');
+ if(active&&wantsQuestion(t)){
+  el('tutorQuestion').value='';const o={};
+  const m=t.match(/\bgrade\s*([1-9])\b/i);
+  if(m)o.grade=+m[1];
+  else if(/\b(harder|tougher|more difficult)\b/i.test(t))o.grade=Math.min(9,active.grade+1);
+  else if(/\b(easier|simpler)\b/i.test(t))o.grade=Math.max(1,active.grade-1);
+  const l=lessonFromText(t);if(l)o.topic=l;
+  else if(/\b(on|about|for)\s+[a-z]{4,}/i.test(t))addLine('Tutor','I could not match that to one lesson, so this question is from '+active.topic+'. Pick a lesson in the Lesson menu to choose a different one.');
+  return window.aiQuestion(o);
+ }
+ return previousAsk();
+};
+/* AI-made extra practice: /api/question only returns a question when three independent solves agree.
+   These questions are marked in the page but never recorded by the adaptive engine (no mastery, no unlocking). */
+function presentAI(q){
+ transition++;stopAll();clearTranscript();
+ active=q;lastOutcome=null;hintsShown=0;
+ current={q:q.prompt,a:[q.answer],sol:(q.steps||[]).join(' '),g:q.grade,h:q.hints,vis:'',_bank:false};
+ el('question').style.whiteSpace='pre-line';el('question').dataset.qid=q.id;el('question').textContent=q.prompt;
+ el('qMeta').textContent=q.area+SEP+q.topic+SEP+'Grade '+q.grade+SEP+'AI-made extra practice (not counted in your progress)';
+ el('answer').value='';el('feedback').style.display='none';el('feedback').textContent='';
+ el('spoken').textContent='Ask your tutor to explain the question if needed.';
+ el('working').innerHTML='<span class="small">Your tutor will explain the working here.</span>';
+ el('teachingText').textContent='Try the question, or ask Karen or Daniel for help.';
+ setVisual(el('visual'),null);
+}
+window.aiQuestion=async function(opt){
+ opt=(opt&&typeof opt==='object'&&!opt.target)?opt:{};
+ if(!active||!engine)return;
+ const sel=el('aiGrade');
+ let g=Number(opt.grade)||Number(sel&&sel.value)||Number(active.grade)||5;g=Math.max(1,Math.min(9,Math.round(g)));
+ const topicName=opt.topic||active.topic;
+ let pool=(bankAll||bank).filter(q=>q.topic===topicName);
+ const plain=pool.filter(q=>!q.diagram_svg);if(plain.length)pool=plain;
+ let ex=active;
+ if(pool.length){const dmin=Math.min(...pool.map(q=>Math.abs(q.grade-g)));const near=pool.filter(q=>Math.abs(q.grade-g)===dmin);ex=near[Math.floor(Math.random()*near.length)];}
+ const btn=el('aiQBtn');const label=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Making a checked question...';}
+ try{
+  const r=await fetch('/api/question',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({area:ex.area||active.area,topic:topicName,grade:g,example:ex.prompt,calculator:ex.calculator||''})});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok||!j.question)throw Error(j.error||('HTTP '+r.status));
+  presentAI(j.question);
+ }catch(e){el('feedback').style.display='block';el('feedback').className='feedback bad';el('feedback').textContent='Extra question unavailable: '+e.message+' Press Next Question for one from the bank.';}
+ finally{if(btn){btn.disabled=false;btn.textContent=label;}}
+};
+(function(){
+ const bankCheck=window.check,bankNext=window.nextQuestion;
+ window.check=function(){
+  if(!(active&&active.ai))return bankCheck();
+  const value=el('answer').value.trim();if(!value||active.done)return;
+  let ok=false;try{ok=AlgeviaMarking.mark(value,active);}catch(e){ok=false;}
+  active.done=true;addLine('Student',value);
+  el('feedback').style.display='block';el('feedback').className='feedback '+(ok?'ok':'bad');
+  if(ok){el('feedback').textContent='Correct. This was extra practice, so it is not counted in your progress. Press Next Question to continue.';}
+  else{el('feedback').textContent='Not quite. Your tutor will explain this one. It is not counted in your progress.';window.teachQuestion();}
+ };
+ window.nextQuestion=function(){if(active&&active.ai){transition++;advance();return;}return bankNext();};
+})();
 (async function(){
  try{
   if(!window.AlgeviaAdaptive||!window.AlgeviaMarking)throw Error('Learning engine missing');
