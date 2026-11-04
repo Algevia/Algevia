@@ -3,7 +3,7 @@
 // Uses its own limits (separate counters from the tutor) because each question costs 3 AI calls.
 const crypto = require('crypto');
 const MAX_BODY_BYTES = 12000;
-const PER_MINUTE = 2, PER_DAY = 10, GLOBAL_DAY = 60;
+const PER_MINUTE = 4, PER_DAY = 30, GLOBAL_DAY = 300;
 const MODEL = process.env.OPENAI_TUTOR_MODEL || 'gpt-4.1-mini';
 
 async function redisEval(script, keys, args) {
@@ -32,16 +32,23 @@ redis.call('ZREMRANGEBYSCORE', rolling, '-inf', now - 60000)
 local perMinute = redis.call('ZCARD', rolling)
 local perDay = tonumber(redis.call('GET', daily) or '0')
 local totalDay = tonumber(redis.call('GET', global) or '0')
-if perMinute >= pm then return {0, 60} end
-if perDay >= pd then return {0, 3600} end
-if totalDay >= gd then return {0, 3600} end
+if perMinute >= pm then return {0, 60, 1} end
+if perDay >= pd then return {0, 3600, 2} end
+if totalDay >= gd then return {0, 3600, 3} end
 redis.call('ZADD', rolling, now, unique)
 redis.call('PEXPIRE', rolling, 61000)
 redis.call('INCR', daily)
 redis.call('EXPIRE', daily, dailyttl)
 redis.call('INCR', global)
 redis.call('EXPIRE', global, dailyttl)
-return {1, 0}
+return {1, 0, 0}
+`;
+// A question that failed the three-way check (or the AI failed) is not the student's fault, so give the allowance back.
+const REFUND_SCRIPT = `
+redis.call('ZREM', KEYS[1], ARGV[1])
+if tonumber(redis.call('GET', KEYS[2]) or '0') > 0 then redis.call('DECR', KEYS[2]) end
+if tonumber(redis.call('GET', KEYS[3]) or '0') > 0 then redis.call('DECR', KEYS[3]) end
+return {1}
 `;
 
 async function chat(system, user, temperature, signal) {
@@ -81,11 +88,19 @@ module.exports = async function handler(req, res) {
   if (!ip || ip.length > 100) return res.status(503).json({ error: 'Client identity unavailable' });
   const id = crypto.createHash('sha256').update(ip + ':' + (process.env.RATE_LIMIT_SALT || 'algevia-v38')).digest('hex').slice(0, 24);
   const now = Date.now(), day = Math.floor(now / 86400000), ttl = Math.ceil(((day + 1) * 86400000 - now) / 1000) + 60;
+  const keys = [`algevia:q1:rolling:${id}`, `algevia:q1:day:${id}:${day}`, `algevia:q1:global:${day}`];
+  const uniq = `${now}:${crypto.randomUUID()}`;
   try {
-    const [ok, retry] = await redisEval(LIMIT_SCRIPT, [`algevia:q1:rolling:${id}`, `algevia:q1:day:${id}:${day}`, `algevia:q1:global:${day}`],
-      [now, `${now}:${crypto.randomUUID()}`, ttl, PER_MINUTE, PER_DAY, GLOBAL_DAY]);
-    if (!ok) { res.setHeader('Retry-After', String(retry)); return res.status(429).json({ error: 'Extra-question limit reached. Please try again later.' }); }
+    const [ok, retry, why] = await redisEval(LIMIT_SCRIPT, keys, [now, uniq, ttl, PER_MINUTE, PER_DAY, GLOBAL_DAY]);
+    if (!ok) {
+      res.setHeader('Retry-After', String(retry));
+      const msg = why === 1 ? 'Too many extra questions in the last minute. Wait a minute and try again.'
+        : why === 2 ? 'You have used all of today\'s extra questions. Try again tomorrow.'
+        : 'Extra questions are busy today. Please try again later.';
+      return res.status(429).json({ error: msg });
+    }
   } catch (e) { console.error('Limiter failure:', e.message); return res.status(503).json({ error: 'Temporarily unavailable: security check failed' }); }
+  const refund = async () => { try { await redisEval(REFUND_SCRIPT, keys, [uniq]); } catch (e) { console.error('Refund failed:', e.message); } };
 
   const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 24000);
   try {
@@ -99,13 +114,14 @@ module.exports = async function handler(req, res) {
     const solveSys = `Solve this GCSE maths question carefully, checking each calculation twice. Return only JSON: {"answer":"the single final number only"}`;
     const [s1, s2] = await Promise.all([chat(solveSys, prompt, 0, ctl.signal), chat(solveSys, prompt, 0.4, ctl.signal)]);
     const a1 = toNum(s1.answer), a2 = toNum(s2.answer);
-    if (!Number.isFinite(a1) || !Number.isFinite(a2) || !same(a1, ans) || !same(a2, ans)) return res.status(422).json({ error: 'Could not make a verified question. Try again.' });
+    if (!Number.isFinite(a1) || !Number.isFinite(a2) || !same(a1, ans) || !same(a2, ans)) { await refund(); return res.status(422).json({ error: 'Could not make a verified question. Try again.' }); }
     const text = String(ans);
     return res.status(200).json({ question: {
       id: 'AI-' + crypto.randomUUID().slice(0, 8), prompt, answer: text, accept: [text], answer_kind: 'number', answer_value: ans,
       steps, hints: [String(q.hint || 'Identify what is being asked, then choose the method.').slice(0, 200)],
       grade: g, area: d.area, topic: d.topic, calculator: calc, marks: 1, ai: true } });
   } catch (e) {
+    await refund();
     return res.status(502).json({ error: ctl.signal.aborted ? 'AI timed out' : 'Could not make a question right now' });
   } finally { clearTimeout(timer); }
 };
