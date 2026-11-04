@@ -845,10 +845,21 @@ function lessonFromText(t){
  }
  return best;
 }
+function areaFromText(t){
+ const s=' '+t.toLowerCase()+' ';
+ if(/\bprobabilit/.test(s))return 'Probability';
+ if(/\bstat(istic)?s?\b|\bdata\b|\baverages?\b/.test(s))return 'Statistics';
+ if(/\balgebra|\balgebraic\b/.test(s))return 'Algebra';
+ if(/\bgeometry\b|\bshapes?\b|\bangles?\b/.test(s))return 'Geometry';
+ if(/\bratio|\bproportion\b/.test(s))return 'Ratio and proportion';
+ if(/\bnumber\b|\barithmetic\b/.test(s))return 'Number';
+ return null;
+}
 function wantsQuestion(t){
  return /\b(another|similar|new|different|more|extra|harder|easier|tougher|simpler)\b[^.?!]{0,25}\b(question|problem|one|practice)\b/i.test(t)
   ||/\b(give|set|make|show|get)\s+(me|us)\b[^.?!]{0,30}\b(question|problem)\b/i.test(t)
-  ||/\bgrade\s*[1-9]\b[^.?!]{0,30}\b(question|problem)\b/i.test(t);
+  ||/\bgrade\s*[1-9]\b[^.?!]{0,30}\b(question|problem)\b/i.test(t)
+  ||/^\s*(a|an|one|some)\b[^.?!]{0,40}\b(question|problem)s?\s*[.!]?\s*$/i.test(t);
 }
 window.askTutor=function(){
  const t=(el('tutorQuestion').value||'');
@@ -858,8 +869,9 @@ window.askTutor=function(){
   if(m)o.grade=+m[1];
   else if(/\b(harder|tougher|more difficult)\b/i.test(t))o.grade=Math.min(9,active.grade+1);
   else if(/\b(easier|simpler)\b/i.test(t))o.grade=Math.max(1,active.grade-1);
-  const l=lessonFromText(t);if(l)o.topic=l;
-  else if(/\b(on|about|for)\s+[a-z]{4,}/i.test(t))addLine('Tutor','I could not match that to one lesson, so this question is from '+active.topic+'. Pick a lesson in the Lesson menu to choose a different one.');
+  const l=lessonFromText(t);const ar=areaFromText(t);
+  if(l)o.topic=l;else if(ar)o.area=ar;
+  else if(m||/\b(on|about|for)\s+[a-z]{4,}/i.test(t))addLine('Tutor','I could not match that to a topic, so this question is from '+active.topic+'. Name a topic such as probability, statistics, algebra, geometry, number or ratio, or pick a lesson in the Lesson menu.');
   return window.aiQuestion(o);
  }
  return previousAsk();
@@ -883,18 +895,25 @@ window.aiQuestion=async function(opt){
  if(!active||!engine)return;
  const sel=el('aiGrade');
  let g=Number(opt.grade)||Number(sel&&sel.value)||Number(active.grade)||5;g=Math.max(1,Math.min(9,Math.round(g)));
- const topicName=opt.topic||active.topic;
+ let topicName=opt.topic||active.topic;
+ if(!opt.topic&&opt.area){
+  const all=(bankAll||bank).filter(q=>q.area===opt.area);
+  const near=all.filter(q=>Math.abs(q.grade-g)<=1);
+  const src=near.length?near:all;
+  if(src.length){const names=[...new Set(src.map(q=>q.topic))];topicName=names[Math.floor(Math.random()*names.length)];}
+ }
  let pool=(bankAll||bank).filter(q=>q.topic===topicName);
  const plain=pool.filter(q=>!q.diagram_svg);if(plain.length)pool=plain;
  let ex=active;
  if(pool.length){const dmin=Math.min(...pool.map(q=>Math.abs(q.grade-g)));const near=pool.filter(q=>Math.abs(q.grade-g)===dmin);ex=near[Math.floor(Math.random()*near.length)];}
  const btn=el('aiQBtn');const label=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Making a checked question...';}
  try{
-  const r=await fetch('/api/question',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({area:ex.area||active.area,topic:topicName,grade:g,example:ex.prompt,calculator:ex.calculator||''})});
+  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),40000);
+  let r;try{r=await fetch('/api/question',{method:'POST',signal:ac.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({area:ex.area||active.area,topic:topicName,grade:g,example:ex.prompt,calculator:ex.calculator||''})});}finally{clearTimeout(tm);}
   const j=await r.json().catch(()=>({}));
   if(!r.ok||!j.question)throw Error(j.error||('HTTP '+r.status));
   presentAI(j.question);
- }catch(e){el('feedback').style.display='block';el('feedback').className='feedback bad';el('feedback').textContent='Extra question unavailable: '+e.message+' Press Next Question for one from the bank.';}
+ }catch(e){const why=e&&e.name==='AbortError'?'the AI took too long':(e&&e.message)||'unknown problem';const msg='Extra question unavailable: '+why+' Press Next Question for one from the bank.';el('feedback').style.display='block';el('feedback').className='feedback bad';el('feedback').textContent=msg;try{addLine('System',msg)}catch(_){}}
  finally{if(btn){btn.disabled=false;btn.textContent=label;}}
 };
 (function(){
