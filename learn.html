@@ -575,6 +575,107 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
 })();
 </script>
 <script src="algevia_adaptive_engine_v48.js"></script>
+<script>
+/* Algevia line-by-line algebra proof checker.
+   Student writes one step per line. Each step must be mathematically equal to the one before,
+   the first step must start from the given expression, and the last step must reach the required form. */
+(function(root){
+function norm(s){
+  return String(s).replace(/[−–—]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/²/g,'^2').replace(/³/g,'^3').replace(/≡/g,'=').replace(/\s+/g,'');
+}
+function tokenize(s){
+  const t=[];let i=0;
+  while(i<s.length){
+    const c=s[i];
+    if(/[0-9.]/.test(c)){let j=i;while(j<s.length&&/[0-9.]/.test(s[j]))j++;t.push({k:'n',v:parseFloat(s.slice(i,j))});i=j;}
+    else if(/[a-zA-Z]/.test(c)){t.push({k:'v',v:c});i++;}
+    else if('+-*/^()'.includes(c)){t.push({k:'o',v:c});i++;}
+    else throw new Error('bad char '+c);
+  }
+  // implicit multiplication
+  const out=[];
+  for(let i=0;i<t.length;i++){
+    const a=out[out.length-1],b=t[i];
+    if(a){
+      const aVal=(a.k==='n'||a.k==='v'||(a.k==='o'&&a.v===')'));
+      const bVal=(b.k==='n'||b.k==='v'||(b.k==='o'&&b.v==='('));
+      if(aVal&&bVal&&!(a.k==='n'&&b.k==='n'))out.push({k:'o',v:'*'});
+    }
+    out.push(b);
+  }
+  return out;
+}
+function parse(s){
+  const t=tokenize(norm(s));let p=0;
+  const peek=()=>t[p],next=()=>t[p++];
+  function expr(){let l=term();while(peek()&&peek().k==='o'&&(peek().v==='+'||peek().v==='-')){const o=next().v;const r=term();const L=l;l=o==='+'?(e)=>L(e)+r(e):(e)=>L(e)-r(e);}return l;}
+  function term(){let l=unary();while(peek()&&peek().k==='o'&&(peek().v==='*'||peek().v==='/')){const o=next().v;const r=unary();const L=l;l=o==='*'?(e)=>L(e)*r(e):(e)=>L(e)/r(e);}return l;}
+  function unary(){if(peek()&&peek().k==='o'&&peek().v==='-'){next();const u=unary();return(e)=>-u(e);}if(peek()&&peek().k==='o'&&peek().v==='+'){next();return unary();}return power();}
+  function power(){const b=atom();if(peek()&&peek().k==='o'&&peek().v==='^'){next();const x=unary();return(e)=>Math.pow(b(e),x(e));}return b;}
+  function atom(){const x=next();if(!x)throw new Error('unexpected end');
+    if(x.k==='n')return()=>x.v;
+    if(x.k==='v')return(e)=>{if(!(x.v in e))throw new Error('unknown '+x.v);return e[x.v];};
+    if(x.v==='('){const v=expr();const c=next();if(!c||c.v!==')')throw new Error('missing )');return v;}
+    throw new Error('unexpected '+x.v);}
+  const f=expr();if(p<t.length)throw new Error('extra input');return f;
+}
+const SAMPLES=[[2,3,5],[3,-2,4],[5,7,-3],[-4,1.5,2],[0.5,6,-1],[7,2,9]];
+function env(vars,i){const e={};vars.forEach((v,j)=>{e[v]=SAMPLES[i%SAMPLES.length][j%3]+(j>=3?j:0)});return e;}
+function equal(f,g,vars){
+  for(let i=0;i<SAMPLES.length;i++){
+    const e=env(vars,i);const a=f(e),b=g(e);
+    if(!isFinite(a)||!isFinite(b))return false;
+    if(Math.abs(a-b)>1e-7*Math.max(1,Math.abs(a),Math.abs(b)))return false;
+  }
+  return true;
+}
+function exprs(text){
+  // split into lines, then each line into parts at '=' ; returns [{text,line}]
+  const out=[];
+  String(text).split(/\n+|;/).map(s=>s.trim()).filter(Boolean).forEach((ln,i)=>{
+    norm(ln).split('=').filter(x=>x!=='').forEach(part=>out.push({text:part,line:i+1}));
+  });
+  return out;
+}
+function check(text,spec){
+  const vars=spec.vars||['n'];
+  const steps=exprs(text);
+  if(steps.length<(spec.minSteps||3))return{ok:false,msg:'Show your working: write each step on its own line, starting from the expression in the question and finishing in the form asked for.'};
+  const fs=[];
+  for(const s of steps){try{const f=parse(s.text);f(env(vars,0));fs.push(f)}catch(e){return{ok:false,msg:'I could not read line '+s.line+'. Use only the letters in the question, check the brackets, and use ^ for powers, for example n^2.'}}}
+  let start;try{start=parse(spec.start)}catch(e){return{ok:false,msg:'This question has a problem. Press Next Question.'}}
+  if(!equal(fs[0],start,vars))return{ok:false,msg:'Line '+steps[0].line+' should start from the expression in the question.'};
+  for(let i=1;i<fs.length;i++){
+    if(!equal(fs[i-1],fs[i],vars))return{ok:false,msg:'Line '+steps[i].line+' is not equal to the line before it. Check that step again.'};
+  }
+  const last=norm(steps[steps.length-1].text),fin=spec.final||{};
+  const ok=(m)=>({ok:true,msg:m||'Every step is correct and you reached the required form.'});
+  if(fin.type==='multiple'){
+    const re=new RegExp('^'+fin.k+'(\\*|\\(|[a-zA-Z])');
+    if(!re.test(last))return{ok:false,msg:'Every step is valid, but finish by taking out the factor '+fin.k+', for example '+fin.k+'(...).'};
+    return ok('Correct. It is '+fin.k+' times a whole number, so it is a multiple of '+fin.k+'.');
+  }
+  if(fin.type==='expanded'){
+    if(last.includes('('))return{ok:false,msg:'Every step is valid, but your last line still has brackets. Expand and simplify fully.'};
+    if(fin.target&&!equal(fs[fs.length-1],parse(fin.target),vars))return{ok:false,msg:'The last line does not match the right-hand side.'};
+    return ok();
+  }
+  if(fin.type==='equals'){
+    if(!equal(fs[fs.length-1],parse(fin.target),vars))return{ok:false,msg:'The last line does not match the right-hand side.'};
+    if(fin.simplest&&/\(/.test(last)&&!/\(/.test(norm(fin.target)))return{ok:false,msg:'Every step is valid, but simplify your last line fully.'};
+    return ok();
+  }
+  if(fin.type==='regex'){
+    if(!new RegExp(fin.pattern).test(last))return{ok:false,msg:fin.hint||'Every step is valid, but finish in the form asked for.'};
+    return ok(fin.good);
+  }
+  return ok();
+}
+const api={check,parse,equal,norm};
+if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.AlgeviaProof=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+</script>
 <script src="algevia_marking_v1.js"></script>
 <script>
 /* V50: uses algevia_gcse_question_bank_merged_v3.json (Edexcel / AQA / OCR, Foundation + Higher).
@@ -592,6 +693,7 @@ const grades=()=>{let a=Number(profile?.diagnostic?.estimatedGrade)||4,b=Number(
 const board=()=>profile?.examBoard||'AQA';
 const tier=()=>profile?.tier||'Higher';
 const fits=q=>(SHOW_UNVERIFIED||['blind_solved_and_validated','answer_independently_matched','generated_code_verified'].includes(q.verification))&&(!q.boards||!['AQA','Edexcel','OCR'].includes(board())||q.boards.includes(board()))&&(q.tiers?(q.tiers.includes(tier())||(tier()==='Higher'&&q.grade<=3&&q.tiers.includes('Foundation'))):(!q.tier||q.tier===tier()||(tier()==='Higher'&&q.grade<=3&&q.tier==='Foundation')));
+function paperLabel(c){const b=board(),t=tier();let p='';if(c==='non-calculator'){p=b==='OCR'?(t==='Higher'?'Paper 5':'Paper 2'):'Paper 1'}else if(c==='calculator'){p=b==='OCR'?(t==='Higher'?'Paper 4 or 6':'Paper 1 or 3'):'Paper 2 or 3'}else return b;return b+' '+p+' style ('+c+')'}
 const SEP=' · ';
 
 /* ---- V56: grade ladder + variety-aware question picker + wording variation ---- */
@@ -754,7 +856,7 @@ function present(result){
  current={q:tutorText,a:[active.answer].concat(active.accept||[]),sol:(active.steps||[active.worked_solution||'']).join(' '),g:active.grade,h:(active.hints&&active.hints.length?active.hints:['Think about the mathematical operation and what the question asks.']),vis:'',_bank:true};
  stopAll();clearTranscript();hintIndex=0;
  el('question').style.whiteSpace='pre-line';el('question').dataset.qid=active.id;
- el('question').textContent=active.prompt;el('qMeta').textContent=active.area+SEP+active.topic+SEP+'Grade '+active.grade+(active.marks?SEP+active.marks+(active.marks===1?' mark':' marks'):'')+(active.calculator?SEP+active.calculator:'');
+ el('question').textContent=active.prompt;el('qMeta').textContent=active.area+SEP+active.topic+SEP+'Grade '+active.grade+(active.marks?SEP+active.marks+(active.marks===1?' mark':' marks'):'')+(paperLabel(active.calculator)?SEP+paperLabel(active.calculator):'');
  el('answer').value='';el('feedback').style.display='none';el('feedback').textContent='';
  el('spoken').textContent='Ask your tutor to explain the question if needed.';
  el('working').innerHTML='<span class="small">Your tutor will explain the working here.</span>';
@@ -778,6 +880,24 @@ window.nextQuestion=function(){
  if(active&&!engine.state.active?.answered){try{engine.record({questionId:active.id,kind:'skip'});lastOutcome='skip';}catch(e){}}
  advance();
 };
+function specificFeedback(value,q){
+ try{
+  const ms=q&&q.misconceptions;if(!ms||!ms.length)return '';
+  const raw=String(value).replace(/[£,\s]/g,'').replace(/\u2212/g,'-');
+  const norm=raw.toLowerCase();
+  let nums=[];
+  (raw.match(/-?\d+(?:\.\d+)?\/-?\d+(?:\.\d+)?/g)||[]).forEach(f=>{const p=f.split('/');if(+p[1])nums.push(+p[0]/+p[1]);});
+  const plain=raw.replace(/-?\d+(?:\.\d+)?\/-?\d+(?:\.\d+)?/g,' ');
+  (plain.match(/-?\d+(?:\.\d+)?/g)||[]).forEach(n=>nums.push(+n));
+  nums.sort((a,b)=>a-b);
+  for(const m of ms){
+   if(m.t!=null&&norm===String(m.t))return m.m;
+   if(m.n){const t=m.n.slice().sort((a,b)=>a-b);
+    if(t.length===nums.length&&t.every((v,i)=>Math.abs(v-nums[i])<=Math.max(0.0051,Math.abs(v)*0.002)))return m.m;}
+  }
+ }catch(e){}
+ return '';
+}
 window.check=function(){
  if(!active||!engine||engine.state.active?.answered)return;
  const value=el('answer').value.trim();if(!value)return;
@@ -790,7 +910,8 @@ window.check=function(){
    el('feedback').textContent='Correct. '+(result.streak>=2?'Well done. Moving on.':'Here is another question.');
    const t=++transition;setTimeout(()=>{if(t===transition)advance()},1400);
  }else{
-   el('feedback').textContent='Not quite. Your tutor will explain this method, then you can try another question.';
+   const sp=specificFeedback(value,active);
+   el('feedback').textContent='Not quite. '+(sp?sp+' ':'')+'Your tutor will explain this method, then you can try another question.';
    window.teachQuestion();
  }
 };
@@ -801,11 +922,30 @@ window.teachQuestion=function(){
  if(active.common_mistake)steps.push({speech:'Watch out: '+active.common_mistake,math:'',why:''});
  runStructuredSteps(steps,'Explaining this practice question',false);
 };
+let hintBusy=false;
 window.hint=function(){
- if(!active)return;
+ if(!active||hintBusy)return;
  const h=(active.hints&&active.hints.length)?active.hints:['Identify what the question is asking, then choose the method before calculating.'];
- const i=Math.min(hintsShown,h.length-1);hintsShown=Math.min(hintsShown+1,h.length);
- runStructuredSteps([{speech:'Hint '+(i+1)+' of '+h.length+'. '+h[i],math:'',why:''}],'Hint',false);
+ const attempt=(el('answer').value||'').trim().slice(0,300);
+ const used=active.__aiHints||(active.__aiHints=[]);
+ const wantAI=!active.proof&&active.answer&&hintsShown>=1&&(attempt||hintsShown>=h.length)&&used.length<3;
+ const staticHint=()=>{const i=Math.min(hintsShown,h.length-1);hintsShown=Math.min(hintsShown+1,h.length);
+  runStructuredSteps([{speech:'Hint '+(i+1)+' of '+h.length+'. '+h[i],math:'',why:''}],'Hint',false);};
+ if(!wantAI)return staticHint();
+ const key='algeviaHint|'+active.id+'|'+attempt.toLowerCase().replace(/\s+/g,'')+'|'+used.length;
+ let cached=null;try{cached=sessionStorage.getItem(key);}catch(e){}
+ const show=t=>{used.push(t);runStructuredSteps([{speech:'Personal hint. '+t,math:'',why:''}],'Hint',false);};
+ if(cached)return show(cached);
+ hintBusy=true;const btn=document.querySelector('button[onclick="hint()"]'),label=btn&&btn.textContent;if(btn){btn.disabled=true;btn.textContent='Thinking…';}
+ const shown=h.slice(0,Math.min(hintsShown,h.length)).concat(used);
+ const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),16000),qid=active.id;
+ fetch('/api/hint',{method:'POST',headers:{'Content-Type':'application/json'},signal:ctl.signal,body:JSON.stringify({
+  question:String(active.prompt).slice(0,1500),answer:String(active.answer).slice(0,200),accept:(active.accept||[]).slice(0,10).map(x=>String(x).slice(0,200)),
+  attempt,topic:String(active.topic||'').slice(0,120),grade:active.grade,shown:shown.slice(-6).map(x=>String(x).slice(0,400))})})
+ .then(r=>r.ok?r.json():Promise.reject(new Error('status '+r.status)))
+ .then(j=>{if(!j||!j.hint)throw Error('empty');if(!active||active.id!==qid)return;try{sessionStorage.setItem(key,j.hint);}catch(e){}show(j.hint);})
+ .catch(()=>{if(active&&active.id===qid)staticHint();})
+ .finally(()=>{clearTimeout(timer);hintBusy=false;if(btn){btn.disabled=false;btn.textContent=label;}});
 };
 window.workedExample=function(){
  if(!active)return;
@@ -890,6 +1030,30 @@ function presentAI(q){
  el('teachingText').textContent='Try the question, or ask Karen or Daniel for help.';
  setVisual(el('visual'),null);
 }
+function bankFallback(topicName,g,opt,why){
+ try{
+  const src=(bankAll||bank).filter(q=>q.verification!==undefined?true:true);
+  const used=bankFallback.used||(bankFallback.used=new Set());
+  let pool=src.filter(q=>q.topic===topicName&&q.grade===g);
+  if(opt&&opt.area&&!pool.length)pool=src.filter(q=>q.area===opt.area&&q.grade===g);
+  if(!pool.length)pool=src.filter(q=>q.topic===topicName&&Math.abs(q.grade-g)<=1);
+  if(!pool.length)return false;
+  const fresh=pool.filter(q=>!used.has(q.id));const pick=(fresh.length?fresh:pool)[Math.floor(Math.random()*(fresh.length?fresh.length:pool.length))];
+  used.add(pick.id);
+  const q=Object.assign({},pick,{ai:true,fromBank:true});
+  transition++;stopAll();clearTranscript();
+  active=q;lastOutcome=null;hintsShown=0;
+  current={q:q.prompt,a:[q.answer].concat(q.accept||[]),sol:(q.worked_solution||(q.steps||[]).join(' ')),g:q.grade,h:q.hints,vis:'',_bank:true};
+  el('question').style.whiteSpace='pre-line';el('question').dataset.qid=q.id;el('question').textContent=q.prompt;
+  el('qMeta').textContent=q.area+SEP+q.topic+SEP+'Grade '+q.grade+SEP+'Extra practice from the bank (not counted in your progress)';
+  el('answer').value='';el('feedback').style.display='none';el('feedback').textContent='';
+  el('spoken').textContent='Ask your tutor to explain the question if needed.';
+  el('working').innerHTML='<span class="small">Your tutor will explain the working here.</span>';
+  el('teachingText').textContent='The AI could not make a checked question ('+why+'), so here is one from the bank.';
+  setVisual(el('visual'),q);
+  return true;
+ }catch(_){return false;}
+}
 window.aiQuestion=async function(opt){
  opt=(opt&&typeof opt==='object'&&!opt.target)?opt:{};
  if(!active||!engine)return;
@@ -904,16 +1068,18 @@ window.aiQuestion=async function(opt){
  }
  let pool=(bankAll||bank).filter(q=>q.topic===topicName);
  const plain=pool.filter(q=>!q.diagram_svg);if(plain.length)pool=plain;
+ const numeric=pool.filter(q=>q.answer_kind==='number'||q.answer_kind==='money');if(numeric.length>=3)pool=numeric;
  let ex=active;
  if(pool.length){const dmin=Math.min(...pool.map(q=>Math.abs(q.grade-g)));const near=pool.filter(q=>Math.abs(q.grade-g)===dmin);ex=near[Math.floor(Math.random()*near.length)];}
  const btn=el('aiQBtn');const label=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Making a checked question...';}
  try{
-  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),40000);
+  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),65000);
   let r;try{r=await fetch('/api/question',{method:'POST',signal:ac.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({area:ex.area||active.area,topic:topicName,grade:g,example:ex.prompt,calculator:ex.calculator||''})});}finally{clearTimeout(tm);}
   const j=await r.json().catch(()=>({}));
   if(!r.ok||!j.question)throw Error(j.error||('HTTP '+r.status));
   presentAI(j.question);
- }catch(e){const why=e&&e.name==='AbortError'?'the AI took too long':(e&&e.message)||'unknown problem';const msg='Extra question unavailable: '+why+' Press Next Question for one from the bank.';el('feedback').style.display='block';el('feedback').className='feedback bad';el('feedback').textContent=msg;try{addLine('System',msg)}catch(_){}}
+ }catch(e){const why=e&&e.name==='AbortError'?'the AI took too long':(e&&e.message)||'unknown problem';
+  if(bankFallback(topicName,g,opt,why))return;const msg='Extra question unavailable: '+why+' Press Next Question for one from the bank.';el('feedback').style.display='block';el('feedback').className='feedback bad';el('feedback').textContent=msg;try{addLine('System',msg)}catch(_){}}
  finally{if(btn){btn.disabled=false;btn.textContent=label;}}
 };
 (function(){
@@ -929,6 +1095,36 @@ window.aiQuestion=async function(opt){
  };
  window.nextQuestion=function(){if(active&&active.ai){transition++;advance();return;}return bankNext();};
 })();
+
+/* Proof mode: line-by-line algebra proof checking (questions with a "proof" field). */
+function syncProof(){
+ const ta=el('proofBox'),hint=el('proofHint');if(!ta)return;
+ const on=!!(active&&active.proof);
+ ta.style.display=on?'block':'none';hint.style.display=on?'block':'none';el('answer').style.display=on?'none':'';
+ if(on&&ta.dataset.qid!==String(active.id)){ta.value='';ta.dataset.qid=String(active.id);}
+}
+(function(){
+ const a=el('answer');if(!a||el('proofBox'))return;
+ const ta=document.createElement('textarea');ta.id='proofBox';ta.rows=6;ta.placeholder='Write each step of your proof on a new line.';
+ ta.style.cssText='display:none;width:100%;box-sizing:border-box;font:inherit;padding:10px;border-radius:10px;border:1px solid currentColor;margin-top:6px';
+ const h=document.createElement('div');h.id='proofHint';h.className='small';h.style.display='none';
+ h.textContent='Start with the expression in the question. Put each step on a new line. Use ^ for powers, for example n^2. Each line must equal the one before.';
+ a.parentNode.insertBefore(ta,a.nextSibling);ta.parentNode.insertBefore(h,ta.nextSibling);
+ new MutationObserver(syncProof).observe(el('question'),{childList:true,characterData:true,subtree:true});
+ const prevCheck=window.check;
+ window.check=function(){
+  if(!(active&&active.proof&&window.AlgeviaProof))return prevCheck();
+  if(engine&&engine.state.active?.answered)return;
+  const text=ta.value.trim();if(!text)return;
+  const res=AlgeviaProof.check(text,active.proof);
+  el('answer').value=text.replace(/\n+/g,' ; ');
+  const om=AlgeviaMarking.mark;AlgeviaMarking.mark=()=>res.ok;
+  try{prevCheck();}finally{AlgeviaMarking.mark=om;}
+  el('feedback').style.display='block';
+  el('feedback').textContent=(res.ok?'Correct. '+res.msg.replace(/^Correct\.\s*/,''):'Not quite. '+res.msg);
+ };
+})();
+
 (async function(){
  try{
   if(!window.AlgeviaAdaptive||!window.AlgeviaMarking)throw Error('Learning engine missing');
