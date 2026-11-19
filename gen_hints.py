@@ -102,7 +102,50 @@ def strip_units(t):
         t = re.sub(r'\s*' + UNIT + r'\s*$', '', t).strip()
         t = re.sub(r'\s*%\s*$', '', t).strip()
     return t
+SUP = str.maketrans('\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079\u207b', '0123456789-')
+def _norm_expr(t):
+    t = strip_units(t)
+    t = re.sub(r'([\u2070\u00b9\u00b2\u00b3\u2074-\u207b]+)', lambda m: '^' + m.group(1).translate(SUP), t)
+    t = t.replace('\u00d7', '*').replace('\u00b7', '*').replace('\u00f7', '/').replace('\u2212', '-')
+    t = t.replace('pi', '\u03c0').replace('\u03c0', '(3.141592653589793)')
+    t = re.sub(r'\s+', '', t)
+    t = re.sub(r'^[a-z]=', '', t)
+    if '=' in t or '%' in t: return None
+    t = re.sub(r'(?<=[\d\)])(?=[a-z\(])', '*', t)
+    t = re.sub(r'(?<=[a-z])(?=[\d\(])', '*', t) if False else re.sub(r'(?<=[a-z\)])(?=\()', '*', t)
+    t = re.sub(r'(?<=[a-z])(?=[a-z])', '*', t)
+    t = t.replace('^', '**')
+    return t
+def _eval(t, env):
+    try:
+        v = eval(t, {'__builtins__': {}}, env)
+        return float(v) if isinstance(v, (int, float)) else None
+    except Exception:
+        return None
+def _nums(t):
+    return sorted(float(x) for x in re.findall(r'-?\d+(?:\.\d+)?', clean(t).replace('\u2212', '-')))
+def equiv(a, b):
+    """Equal as expressions (powers, pi, fractions, ordering), or equal lists of numbers, or equal within rounding."""
+    ea, eb = _norm_expr(a), _norm_expr(b)
+    if ea and eb:
+        letters = sorted(set(re.findall(r'[a-z]', ea + eb)))
+        for k in range(2):
+            env = {c: 1.37 + 0.61 * i + 0.9 * k for i, c in enumerate(letters)}
+            va, vb = _eval(ea, env), _eval(eb, env)
+            if va is None or vb is None: break
+            if abs(va - vb) > 5e-3 * max(1, abs(vb)) and not (not letters and abs(va - vb) <= 5e-3 * max(abs(vb), 1e-9)): break
+            if letters and abs(va - vb) > 1e-9 * max(1, abs(vb)): break
+        else:
+            return True
+        if not letters and va is not None and vb is not None and abs(va - vb) <= 5e-3 * max(abs(vb), 1e-9): return True
+    na, nb = _nums(a), _nums(b)
+    if len(na) >= 3 and na == nb: return True
+    return False
 def same(a, b):
+    if _same(a, b): return True
+    try: return equiv(a, b)
+    except Exception: return False
+def _same(a, b):
     a2, b2 = strip_units(a), strip_units(b)
     na, nb = to_num(a2), to_num(b2)
     if na is not None and nb is not None: return abs(na - nb) <= 1e-6 * max(1, abs(nb))
