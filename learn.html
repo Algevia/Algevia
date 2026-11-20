@@ -590,7 +590,7 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
  /* ---- Natural voice (optional, online): one /api/speak call per step, falls back to the device voice on any problem ---- */
  const NAT_KEY='algeviaNaturalVoice';
  let natOn=true;try{natOn=localStorage.getItem(NAT_KEY)!=='0'}catch(e){}
- let natBlocked=false,natActive=false,natPaused=false,natResume=null;
+ let natBlocked=false,natActive=false,natPaused=false,natResume=null,revT=null;
  const A=new Audio();A.preload='auto';try{A.setAttribute('playsinline','')}catch(e){}
  const SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
  function unlockAudio(){try{A.src=SILENT;const p=A.play();if(p&&p.then)p.then(()=>A.pause()).catch(()=>{})}catch(e){}}
@@ -617,8 +617,8 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
   if(audioCache.size>60){const first=audioCache.keys().next().value,pr=audioCache.get(first);audioCache.delete(first);pr.then(u=>URL.revokeObjectURL(u)).catch(()=>{})}
   return p;
  }
- function chunksOf(list){const out=[];let cur='';for(const s of list){const t=ttsText(s);if(!t)continue;if(cur&&(cur+' '+t).length>520){out.push(cur);cur=t}else cur=cur?cur+' '+t:t}if(cur)out.push(cur);return out}
- function playNatural(chunks,idx,alive,done,onFail){
+ function chunksOf(list){const out=[],orig=[];let cur='',co='';for(const s of list){const t=ttsText(s);if(!t)continue;if(cur&&(cur+' '+t).length>520){out.push(cur);orig.push(co);cur=t;co=s}else{cur=cur?cur+' '+t:t;co=co?co+' '+s:s}}if(cur){out.push(cur);orig.push(co)}out.orig=orig;return out}
+ function playNatural(chunks,idx,alive,done,onFail,onPlay){
   if(!alive())return;
   if(idx>=chunks.length){natActive=false;done();return}
   if(chunks[idx+1])getAudio(chunks[idx+1]).catch(()=>{});
@@ -627,16 +627,16 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
    const start=()=>{
     if(!alive())return;
     natActive=true;
-    A.onended=()=>{if(!alive())return;playNatural(chunks,idx+1,alive,done,onFail)};
+    A.onplaying=()=>{A.onplaying=null;if(alive()&&onPlay)onPlay(idx)};A.onended=()=>{if(!alive())return;if(onPlay&&onPlay.end)onPlay.end(idx);playNatural(chunks,idx+1,alive,done,onFail,onPlay)};
     A.onerror=()=>{natActive=false;onFail(idx)};
     A.src=url;const p=A.play();
     if(p&&p.catch)p.catch(()=>{natActive=false;onFail(idx)});
    };
    if(natPaused){natActive=true;natResume=start}else start();
-  }).catch(e=>{natActive=false;if(e&&(e.status===429||e.status===503||e.status===404||e.status===401))natBlocked=true;onFail(idx)});
+  }).catch(e=>{natActive=false;if(e&&(e.status===429||e.status===503||e.status===404||e.status===401)){natBlocked=true;setTimeout(()=>{natBlocked=false},65000)}onFail(idx)});
  }
  const baseStop=stopAll;
- stopAll=function(){clearTimers();try{A.pause();A.onended=null;A.onerror=null}catch(e){}natActive=false;natPaused=false;natResume=null;baseStop()};
+ stopAll=function(){clearTimers();try{A.pause();A.onended=null;A.onerror=null;A.onplaying=null}catch(e){}clearInterval(revT);natActive=false;natPaused=false;natResume=null;baseStop()};
 
  const STARTERS=/^(first|next|now|then|finally|so|remember|notice|watch out|hint|okay|ok|let's|let us|great|good|here|look|that|this|because|since|once|after|we|you|your|if|when|to|in|the|and|but|also|do|don't|never|always|note|check|try)\b/i;
  const MID=['Next,','Now,','Then,'];
@@ -657,8 +657,8 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
   if(mode==='teach'&&i===0&&n>=3)t="Okay, let's work through this together. "+t;
   return t;
  }
- const stepPause=(item)=>{const w=String(item.speech||'').split(/\s+/).length;return Math.max(2200,Math.min(6500,2000+(item.math?1500:0)+w*45))};
- const gapAfter=s=>/[=√²^]|\d/.test(s)?750:450;
+ const stepPause=(item)=>{const w=String(item.speech||'').split(/\s+/).length;return Math.max(1300,Math.min(3800,900+(item.math?800:0)+w*28))};
+ const gapAfter=s=>/[=√²^]|\d/.test(s)?600:350;
 
  runStructuredSteps=function(items,title,toWorked){
   stopAll();toWorked=!!toWorked;
@@ -681,23 +681,40 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
     gapTimer=setTimeout(()=>speakList(list,idx+1,done),gapAfter(list[idx]));
    });
   }
-  function speakStep(list,cb){
+  function speakStep(list,cb,reveal){
+   reveal=reveal||(()=>{});
    if(natOn&&!natBlocked&&window.fetch){
-    D(live).textContent=list.join(' ');
+    D(live).textContent='';
     const chunks=chunksOf(list);
-    if(chunks.length){playNatural(chunks,0,alive,cb,idx=>{if(!alive())return;speakList(chunks.slice(idx),0,cb)});return}
+    if(chunks.length){
+     state('Getting ready...');
+     const done0=[];
+     const onPlay=idx=>{
+      reveal();state('Speaking...');
+      const before=chunks.orig.slice(0,idx).join(' '),words=chunks.orig[idx].split(/\s+/);
+      clearInterval(revT);
+      const tick=()=>{if(!alive()){clearInterval(revT);return}const d=A.duration;const r=d&&isFinite(d)?Math.min(1,A.currentTime/d):1;const n=Math.max(1,Math.ceil(words.length*Math.min(1,r*1.08)));D(live).textContent=(before?before+' ':'')+words.slice(0,n).join(' ');if(r>=1)clearInterval(revT)};
+      tick();revT=setInterval(tick,120);
+     };
+     onPlay.end=idx=>{clearInterval(revT);D(live).textContent=chunks.orig.slice(0,idx+1).join(' ')};
+     playNatural(chunks,0,alive,()=>{clearInterval(revT);cb()},idx=>{if(!alive())return;clearInterval(revT);reveal();D(live).textContent='';speakList(chunks.orig.slice(idx).flatMap(x=>sentences(x)),0,cb)},onPlay);return}
    }
-   speakList(list,0,cb);
+   reveal();speakList(list,0,cb);
+  }
+  function prefetch(item,j){
+   if(!item||!natOn||natBlocked||!window.fetch)return;
+   const l=item.raw?sentences(String(item.speech||'')):sentences(spokenFor(item,j,items.length,mode));
+   chunksOf(l.length?l:[item.speech||'']).forEach(c=>getAudio(c).catch(()=>{}));
   }
   function next(){
    if(!alive())return;
    if(i>=items.length){
-    if(closing){const c=closing;D(live).textContent='';gapTimer=setTimeout(()=>{if(!alive())return;speakStep([c],finish)},900);return}
+    if(closing){const c=closing;D(live).textContent='';gapTimer=setTimeout(()=>{if(!alive())return;speakStep([c],finish)},500);return}
     finish();return}
    const idx=i,item=items[i++];
    D(live).textContent='';
-   renderMathLine(item,box);addLine('Tutor',item.speech);
    const list=item.raw?sentences(String(item.speech||'')):sentences(spokenFor(item,idx,items.length,mode));
+   if(items[i])prefetch(items[i],i);else if(closing&&natOn&&!natBlocked)chunksOf([closing]).forEach(c=>getAudio(c).catch(()=>{}));
    speakStep(list.length?list:[item.speech||''],()=>{
     if(!alive())return;
     if(idx>=items.length-1&&!closing){finish();return}
@@ -708,7 +725,7 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
     if(waitMode){state('Waiting for you. Press Continue Tutor when ready.');return}
     state('Take a moment to think...');
     gapTimer=setTimeout(()=>{if(autoWait===go)go()},stepPause(item));
-   });
+   },()=>{renderMathLine(item,box);addLine('Tutor',item.speech)});
   }
   state('Speaking...');next();
  };
