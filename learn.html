@@ -586,8 +586,57 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
  const setBtn=t=>{const b=D('pauseButton');if(b)b.textContent=t};
  const state=t=>{const s=D('tutorState');if(s)s.textContent=t};
  const clearTimers=()=>{clearTimeout(gapTimer);gapTimer=null;autoWait=null};
+
+ /* ---- Natural voice (optional, online): one /api/speak call per step, falls back to the device voice on any problem ---- */
+ const NAT_KEY='algeviaNaturalVoice';
+ let natOn=true;try{natOn=localStorage.getItem(NAT_KEY)!=='0'}catch(e){}
+ let natBlocked=false,natActive=false,natPaused=false,natResume=null;
+ const A=new Audio();A.preload='auto';try{A.setAttribute('playsinline','')}catch(e){}
+ const SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+ function unlockAudio(){try{A.src=SILENT;const p=A.play();if(p&&p.then)p.then(()=>A.pause()).catch(()=>{})}catch(e){}}
+ document.addEventListener('pointerdown',unlockAudio,{once:true,capture:true});
+ document.addEventListener('keydown',unlockAudio,{once:true,capture:true});
+ function ttsText(t){let s=String(t);
+  s=s.replace(/\bx\^2\b/g,'x squared').replace(/\b([a-z])\^2\b/gi,'$1 squared').replace(/\b([a-z])\^3\b/gi,'$1 cubed').replace(/->|→/g,' so ').replace(/√/g,' square root of ').replace(/π/g,' pi ').replace(/²/g,' squared ').replace(/³/g,' cubed ')
+   .replace(/°C/g,' degrees Celsius ').replace(/°/g,' degrees ').replace(/(\d)\s*%/g,'$1 percent ').replace(/£\s*(\d[\d,.]*)/g,'$1 pounds ')
+   .replace(/≤|<=/g,' is less than or equal to ').replace(/≥|>=/g,' is greater than or equal to ').replace(/≠/g,' is not equal to ').replace(/±/g,' plus or minus ')
+   .replace(/[×·]/g,' times ').replace(/÷/g,' divided by ').replace(/(\d)\s*\/\s*(\d)/g,'$1 over $2')
+   .replace(/[−–]/g,'-').replace(/([\w)])\s*-\s+(?=[\w(\-])/g,'$1 minus ').replace(/(^|[=(,:]\s*)-(?=[\d(a-z])/gi,'$1negative ')
+   .replace(/=/g,' equals ').replace(/\+/g,' plus ').replace(/\*/g,' times ');
+  return s.replace(/\s+/g,' ').trim()}
+ const audioCache=new Map();
+ function getAudio(text){
+  const k=gender+'|'+text;
+  if(audioCache.has(k))return audioCache.get(k);
+  const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),16000);
+  const p=fetch('/api/speak',{method:'POST',headers:{'Content-Type':'application/json'},signal:ctl.signal,body:JSON.stringify({text:text.slice(0,590),voice:gender==='male'?'male':'female'})})
+   .then(r=>{if(!r.ok){const e=new Error('status '+r.status);e.status=r.status;throw e}return r.blob()})
+   .then(b=>{if(!b||!b.size)throw new Error('empty');return URL.createObjectURL(b)})
+   .finally(()=>clearTimeout(to));
+  audioCache.set(k,p);p.catch(()=>audioCache.delete(k));
+  if(audioCache.size>60){const first=audioCache.keys().next().value,pr=audioCache.get(first);audioCache.delete(first);pr.then(u=>URL.revokeObjectURL(u)).catch(()=>{})}
+  return p;
+ }
+ function chunksOf(list){const out=[];let cur='';for(const s of list){const t=ttsText(s);if(!t)continue;if(cur&&(cur+' '+t).length>520){out.push(cur);cur=t}else cur=cur?cur+' '+t:t}if(cur)out.push(cur);return out}
+ function playNatural(chunks,idx,alive,done,onFail){
+  if(!alive())return;
+  if(idx>=chunks.length){natActive=false;done();return}
+  if(chunks[idx+1])getAudio(chunks[idx+1]).catch(()=>{});
+  getAudio(chunks[idx]).then(url=>{
+   if(!alive())return;
+   const start=()=>{
+    if(!alive())return;
+    natActive=true;
+    A.onended=()=>{if(!alive())return;playNatural(chunks,idx+1,alive,done,onFail)};
+    A.onerror=()=>{natActive=false;onFail(idx)};
+    A.src=url;const p=A.play();
+    if(p&&p.catch)p.catch(()=>{natActive=false;onFail(idx)});
+   };
+   if(natPaused){natActive=true;natResume=start}else start();
+  }).catch(e=>{natActive=false;if(e&&(e.status===429||e.status===503||e.status===404||e.status===401))natBlocked=true;onFail(idx)});
+ }
  const baseStop=stopAll;
- stopAll=function(){clearTimers();baseStop()};
+ stopAll=function(){clearTimers();try{A.pause();A.onended=null;A.onerror=null}catch(e){}natActive=false;natPaused=false;natResume=null;baseStop()};
 
  const STARTERS=/^(first|next|now|then|finally|so|remember|notice|watch out|hint|okay|ok|let's|let us|great|good|here|look|that|this|because|since|once|after|we|you|your|if|when|to|in|the|and|but|also|do|don't|never|always|note|check|try)\b/i;
  const MID=['Next,','Now,','Then,'];
@@ -632,16 +681,24 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
     gapTimer=setTimeout(()=>speakList(list,idx+1,done),gapAfter(list[idx]));
    });
   }
+  function speakStep(list,cb){
+   if(natOn&&!natBlocked&&window.fetch){
+    D(live).textContent=list.join(' ');
+    const chunks=chunksOf(list);
+    if(chunks.length){playNatural(chunks,0,alive,cb,idx=>{if(!alive())return;speakList(chunks.slice(idx),0,cb)});return}
+   }
+   speakList(list,0,cb);
+  }
   function next(){
    if(!alive())return;
    if(i>=items.length){
-    if(closing){const c=closing;D(live).textContent='';gapTimer=setTimeout(()=>{if(!alive())return;speakProgressive(c,live,finish)},900);return}
+    if(closing){const c=closing;D(live).textContent='';gapTimer=setTimeout(()=>{if(!alive())return;speakStep([c],finish)},900);return}
     finish();return}
    const idx=i,item=items[i++];
    D(live).textContent='';
    renderMathLine(item,box);addLine('Tutor',item.speech);
-   const list=sentences(spokenFor(item,idx,items.length,mode));
-   speakList(list.length?list:[item.speech||''],0,()=>{
+   const list=item.raw?sentences(String(item.speech||'')):sentences(spokenFor(item,idx,items.length,mode));
+   speakStep(list.length?list:[item.speech||''],()=>{
     if(!alive())return;
     if(idx>=items.length-1&&!closing){finish();return}
     if(items.length===1&&mode==='plain'){finish();return}
@@ -658,6 +715,10 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
 
  togglePause=function(){
   if(autoWait){const g=autoWait;clearTimeout(gapTimer);gapTimer=null;autoWait=null;g();return}
+  if(natActive){
+   if(natPaused){natPaused=false;setBtn('Pause Tutor');state('Speaking...');if(natResume){const r=natResume;natResume=null;r()}else{try{const q=A.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}}}
+   else{natPaused=true;try{A.pause()}catch(e){}setBtn('Continue Tutor');state('Paused')}
+   return}
   if(!synth){state('Pause/resume needs browser speech support');return}
   if(lessonPaused){synth.resume();lessonPaused=false;setBtn('Pause Tutor');state('Speaking...')}
   else if(synth.speaking||synth.pending){synth.pause();lessonPaused=true;setBtn('Continue Tutor');state('Paused')}
@@ -672,6 +733,11 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
   b.insertAdjacentElement('afterend',l);
   const c=D('waitMode');c.checked=waitMode;
   c.addEventListener('change',()=>{waitMode=c.checked;try{localStorage.setItem(WAIT_KEY,waitMode?'1':'0')}catch(e){}});
+  const l2=document.createElement('label');l2.id='naturalVoiceBox';l2.style.cssText='display:inline-flex;align-items:center;gap:6px;margin:6px 10px;font-size:14px';
+  l2.innerHTML='<input type="checkbox" id="naturalVoice"> Natural voice (online, limited per day)';
+  l.insertAdjacentElement('afterend',l2);
+  const c2=D('naturalVoice');c2.checked=natOn;
+  c2.addEventListener('change',()=>{natOn=c2.checked;if(natOn)natBlocked=false;try{localStorage.setItem(NAT_KEY,natOn?'1':'0')}catch(e){}});
  }
  window.__spokenFor=spokenFor;window.__sentences=sentences;addSwitch();
  /* Gentler pace, and a hint on how to get a better voice on iPad */
@@ -1033,6 +1099,11 @@ window.check=function(){
 };
 window.teachQuestion=function(){
  if(!active)return;
+ if(active.spoken&&active.spoken.length){
+  const sp=active.spoken.map(x=>({speech:String(x.say||''),math:String(x.board||''),why:'',raw:true}));
+  if(active.common_mistake)sp.push({speech:'One thing to watch out for. '+active.common_mistake,math:'',why:'',raw:true});
+  runStructuredSteps(sp,'Explaining this practice question',false);return;
+ }
  const list=(active.steps&&active.steps.length?active.steps:String(active.worked_solution||'Review the question and identify the correct operation.').split(/(?<=[.!?])\s+/)).filter(Boolean);
  const steps=list.map(x=>({speech:x,math:x,why:''}));
  if(active.common_mistake)steps.push({speech:'Watch out: '+active.common_mistake,math:'',why:''});
