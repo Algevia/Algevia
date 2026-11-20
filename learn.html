@@ -336,7 +336,7 @@ function workedExample(){
 function hint(){let hints=current.h||[];let idx=Math.min(hintIndex,hints.length-1);let h=hints[idx];hintIndex=Math.min(hintIndex+1,hints.length);let prefix=idx===0?'Hint 1':`Hint ${idx+1}`;runStructuredSteps([step(h,skill==='Solving linear equations'?((equationPlan(current.q.replace(/^Solve\s+/i,''))||[])[Math.min(idx+1,2)]||{}).math||'':'')],prefix,false);changeMastery(-2)}
 function appendBoardStep(s,target){let box=$(target||'working');if(box.querySelector('.small'))box.innerHTML='';let line=document.createElement('div');line.className='stepLine';line.textContent=s;box.appendChild(line)}
 function runSteps(steps,title,toWorked=false){stopAll();lastSteps=steps.slice();lastWorked=toWorked;let token=++stepToken;let live=toWorked?'workedSpoken':'spoken', box=toWorked?'workedText':'working';$(box).innerHTML='';let i=0;function go(){if(token!==stepToken||i>=steps.length){$('tutorState').textContent='Ready';return}let s=steps[i++];$(live).textContent='';$('teachingText').textContent=toWorked?'Watch the related example develop one step at a time.':'Listen and follow the same step as it appears on the practice board.';addLine('Tutor',s);speakProgressive(s,live,()=>{if(token!==stepToken)return;appendBoardStep(s,box);go()})}go()}
-function speakProgressive(text,target,done){if(!('speechSynthesis'in window)){let words=text.split(' '),i=0;let t=setInterval(()=>{if(i>=words.length){clearInterval(t);done();return}$(target).textContent+=(i?' ':'')+words[i++]},Math.max(90,180*speed));return}let u=new SpeechSynthesisUtterance(text);u.rate=speed;let vs=speechSynthesis.getVoices();let rx=gender==='female'?/Samantha|Karen|Moira|Tessa|Fiona|Serena|Kate|Susan|Hazel|Libby|Sonia|Ava|Victoria|Zira|Jenny|Aria/i:/Daniel|George|Oliver|Ryan|Alex|Arthur|Fred|Guy|James|Thomas|William/i;u.voice=selectedVoice()||vs.find(v=>rx.test(v.name)&&/^en/i.test(v.lang))||vs.find(v=>/^en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;let last=0, wordTimer=null, startAt=0;u.onstart=()=>{$('tutorState').textContent='Speaking...';$(target).textContent='';startAt=Date.now();wordTimer=setInterval(()=>{if(last>0)return;let elapsed=(Date.now()-startAt)/1000;let count=Math.min(text.length,Math.floor(elapsed*11/Math.max(.5,speed)));$(target).textContent=text.slice(0,count)},140)};u.onboundary=e=>{if(typeof e.charIndex==='number'){let end=e.charIndex+(e.charLength||0);if(end<=last)end=Math.min(text.length,e.charIndex+text.slice(e.charIndex).search(/\s|$/));last=Math.max(last,end);$(target).textContent=text.slice(0,last).trim()}};u.onend=()=>{clearInterval(wordTimer);$(target).textContent=text;done()};u.onerror=()=>{clearInterval(wordTimer);$(target).textContent=text;done()};speechSynthesis.speak(u)}
+function speakProgressive(text,target,done,onStart){if(!('speechSynthesis'in window)){if(onStart)onStart();let words=text.split(' '),i=0;let t=setInterval(()=>{if(i>=words.length){clearInterval(t);done();return}$(target).textContent+=(i?' ':'')+words[i++]},Math.max(90,180*speed));return}let u=new SpeechSynthesisUtterance(text);u.rate=speed;let vs=speechSynthesis.getVoices();let rx=gender==='female'?/Samantha|Karen|Moira|Tessa|Fiona|Serena|Kate|Susan|Hazel|Libby|Sonia|Ava|Victoria|Zira|Jenny|Aria/i:/Daniel|George|Oliver|Ryan|Alex|Arthur|Fred|Guy|James|Thomas|William/i;u.voice=selectedVoice()||vs.find(v=>rx.test(v.name)&&/^en/i.test(v.lang))||vs.find(v=>/^en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;let last=0, wordTimer=null, startAt=0;u.onstart=()=>{if(onStart){const f=onStart;onStart=null;f()}$('tutorState').textContent='Speaking...';$(target).textContent='';startAt=Date.now();wordTimer=setInterval(()=>{if(last>0)return;let elapsed=(Date.now()-startAt)/1000;let count=Math.min(text.length,Math.floor(elapsed*11/Math.max(.5,speed)));$(target).textContent=text.slice(0,count)},140)};u.onboundary=e=>{if(typeof e.charIndex==='number'){let end=e.charIndex+(e.charLength||0);if(end<=last)end=Math.min(text.length,e.charIndex+text.slice(e.charIndex).search(/\s|$/));last=Math.max(last,end);$(target).textContent=text.slice(0,last).trim()}};u.onend=()=>{clearInterval(wordTimer);$(target).textContent=text;done()};u.onerror=()=>{clearInterval(wordTimer);$(target).textContent=text;done()};speechSynthesis.speak(u)}
 function speak(text,done){if(!('speechSynthesis'in window)){setTimeout(done,1500);return}let u=new SpeechSynthesisUtterance(text);u.rate=speed;let vs=speechSynthesis.getVoices();let rx=gender==='female'?/Samantha|Karen|Moira|Tessa|Fiona|Serena|Kate|Susan|Hazel|Libby|Sonia|Ava|Victoria|Zira|Jenny|Aria/i:/Daniel|George|Oliver|Ryan|Alex|Arthur|Fred|Guy|James|Thomas|William/i;u.voice=selectedVoice()||vs.find(v=>rx.test(v.name)&&/^en/i.test(v.lang))||vs.find(v=>/^en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;u.onstart=()=>$('tutorState').textContent='Speaking...';u.onend=done;u.onerror=done;speechSynthesis.speak(u)}
 let lessonPaused=false;
 function togglePause(){
@@ -552,17 +552,17 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
  s=s.replace(/=/g,' equals ').replace(/\+/g,' plus ').replace(/\*/g,' times ');
  return s.replace(/\s+/g,' ').trim()}
  let generation=0;
- function say(text,target,done){const generationAtStart=++generation;let finished=false;const finish=()=>{if(finished||generationAtStart!==generation)return;finished=true;if(target&&$v(target))$v(target).textContent=text;$v('tutorState').textContent='Ready';if(typeof done==='function')done()};
-   if(!synth||!window.SpeechSynthesisUtterance){if(target&&$v(target))$v(target).textContent=text;finish();return}
+ function say(text,target,done,onStart){const generationAtStart=++generation;let finished=false;const finish=()=>{if(finished||generationAtStart!==generation)return;finished=true;if(target&&$v(target))$v(target).textContent=text;$v('tutorState').textContent='Ready';if(typeof done==='function')done()};
+   if(!synth||!window.SpeechSynthesisUtterance){if(onStart)onStart();if(target&&$v(target))$v(target).textContent=text;finish();return}
    const u=new SpeechSynthesisUtterance(prepare(text));const voice=chosen();if(voice)u.voice=voice;u.lang=voice?.lang||'en-GB';const cfg=settings();u.rate=cfg.rate;u.pitch=cfg.pitch;u.volume=1;
-   u.onstart=()=>{if(generationAtStart!==generation)return;$v('tutorState').textContent='Speaking...';if(target&&$v(target))$v(target).textContent=''};
+   u.onstart=()=>{if(generationAtStart!==generation)return;if(onStart){const f=onStart;onStart=null;f()}$v('tutorState').textContent='Speaking...';if(target&&$v(target))$v(target).textContent=''};
    u.onboundary=e=>{if(generationAtStart!==generation||!target||!$v(target))return;/* Browser boundary positions refer to the spoken text, not original math text. */if(typeof e.charIndex==='number'&&e.charIndex>=0){const portion=u.text.slice(0,e.charIndex+(e.charLength||0));$v(target).textContent=portion.trim()}};
    u.onend=finish;u.onerror=e=>{if(e.error!=='canceled'&&e.error!=='interrupted'){$v('voiceStatus').textContent='Speech is unavailable on this device.'}finish()};
    try{synth.speak(u)}catch(e){finish()}
  }
  const oldStop=stopAll;
  stopAll=function(){generation++;oldStop()};
- speakProgressive=function(text,target,done){say(text,target,done)};
+ speakProgressive=function(text,target,done,onStart){say(text,target,done,onStart)};
  speak=function(text,done){say(text,null,done)};
  selectedVoice=chosen;
  refreshVoiceList=populate;
@@ -672,14 +672,14 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
   let i=0;
   const alive=()=>token===stepToken;
   function finish(){if(!alive())return;state('Ready');lessonPaused=false;setBtn('Pause Tutor');if(card)card.classList.remove('activeTeaching')}
-  function speakList(list,idx,done){
+  function speakList(list,idx,done,reveal){
    if(!alive())return;
    if(idx>=list.length){done();return}
    speakProgressive(list[idx],live,()=>{
     if(!alive())return;
     if(idx+1>=list.length){done();return}
-    gapTimer=setTimeout(()=>speakList(list,idx+1,done),gapAfter(list[idx]));
-   });
+    gapTimer=setTimeout(()=>speakList(list,idx+1,done,reveal),gapAfter(list[idx]));
+   },idx===0&&reveal?()=>{if(alive())reveal()}:null);
   }
   function speakStep(list,cb,reveal){
    reveal=reveal||(()=>{});
@@ -697,9 +697,9 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
       tick();revT=setInterval(tick,120);
      };
      onPlay.end=idx=>{clearInterval(revT);D(live).textContent=chunks.orig.slice(0,idx+1).join(' ')};
-     playNatural(chunks,0,alive,()=>{clearInterval(revT);cb()},idx=>{if(!alive())return;clearInterval(revT);reveal();D(live).textContent='';speakList(chunks.orig.slice(idx).flatMap(x=>sentences(x)),0,cb)},onPlay);return}
+     playNatural(chunks,0,alive,()=>{clearInterval(revT);cb()},idx=>{if(!alive())return;clearInterval(revT);D(live).textContent='';speakList(chunks.orig.slice(idx).flatMap(x=>sentences(x)),0,cb,reveal)},onPlay);return}
    }
-   reveal();speakList(list,0,cb);
+   speakList(list,0,cb,reveal);
   }
   function prefetch(item,j){
    if(!item||!natOn||natBlocked||!window.fetch)return;
@@ -715,8 +715,10 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
    D(live).textContent='';
    const list=item.raw?sentences(String(item.speech||'')):sentences(spokenFor(item,idx,items.length,mode));
    if(items[i])prefetch(items[i],i);else if(closing&&natOn&&!natBlocked)chunksOf([closing]).forEach(c=>getAudio(c).catch(()=>{}));
+   const rv=()=>{if(!alive())return;renderMathLine(item,box);addLine('Tutor',item.speech)};
    speakStep(list.length?list:[item.speech||''],()=>{
     if(!alive())return;
+    if(!item.raw)rv();
     if(idx>=items.length-1&&!closing){finish();return}
     if(items.length===1&&mode==='plain'){finish();return}
     /* thinking pause */
@@ -725,7 +727,7 @@ function saveExit(){save();location.href='education.html'} $('answer').addEventL
     if(waitMode){state('Waiting for you. Press Continue Tutor when ready.');return}
     state('Take a moment to think...');
     gapTimer=setTimeout(()=>{if(autoWait===go)go()},stepPause(item));
-   },()=>{renderMathLine(item,box);addLine('Tutor',item.speech)});
+   },item.raw?rv:null);
   }
   state('Speaking...');next();
  };
