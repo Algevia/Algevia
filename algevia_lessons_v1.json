@@ -1,0 +1,3525 @@
+{
+ "Algebra vocabulary": {
+  "concept": "Algebra uses letters to stand for numbers. Knowing the words lets you read and answer questions correctly.",
+  "rules": [
+   "A term is one piece of an expression, such as 3x or -5.",
+   "An expression has no equals sign (3x + 2). An equation has one (3x + 2 = 11).",
+   "A formula links quantities (A = l × w). An identity is true for every value and uses ≡.",
+   "A coefficient is the number in front of a letter. A constant has no letter."
+  ],
+  "method": [
+   "Look for an equals sign to decide between an equation or formula and an expression.",
+   "Count the terms by splitting at each + or - sign.",
+   "Match the instruction word to the action: simplify, expand, factorise, solve, substitute."
+  ],
+  "mistakes": [
+   "Trying to solve an expression: an expression can only be simplified, expanded or factorised.",
+   "Forgetting the sign belongs to the term that follows it."
+  ]
+ },
+ "Algebraic fractions": {
+  "concept": "Algebraic fractions follow exactly the same rules as number fractions, with brackets or letters in the top and bottom.",
+  "rules": [
+   "Simplify by factorising top and bottom, then cancel common factors only.",
+   "Add or subtract: use a common denominator, then combine the numerators.",
+   "Multiply: multiply tops and multiply bottoms. Divide: flip the second fraction and multiply."
+  ],
+  "method": [
+   "Factorise every numerator and denominator fully.",
+   "Cancel factors that appear on both the top and the bottom.",
+   "For + or -, find a common denominator and put brackets round numerators when subtracting.",
+   "Simplify the final answer again."
+  ],
+  "mistakes": [
+   "Cancelling terms instead of factors, for example cancelling the x in (x + 3)/x.",
+   "Forgetting brackets when subtracting a numerator, which loses a sign."
+  ]
+ },
+ "Algebraic proof": {
+  "concept": "A proof uses algebra to show something is true for all numbers, not just a few examples.",
+  "rules": [
+   "An even number is 2n. An odd number is 2n + 1. Consecutive integers are n, n + 1, n + 2.",
+   "The sum, difference or product is shown to be a multiple of the required number.",
+   "Always finish with a statement that says what has been shown."
+  ],
+  "method": [
+   "Write each number using a letter, for example 2n and 2m for two even numbers.",
+   "Form the expression the question asks about and expand and simplify it.",
+   "Factorise to show a common factor, such as 2(...) for even or 3(...) for a multiple of 3.",
+   "Write a conclusion in words."
+  ],
+  "mistakes": [
+   "Using the same letter for two different numbers (use n and m).",
+   "Giving a number example as a proof: examples are not enough."
+  ]
+ },
+ "Changing the subject": {
+  "concept": "Changing the subject means rearranging a formula so a different letter is on its own, using the same steps as solving an equation.",
+  "rules": [
+   "Do the same thing to both sides.",
+   "Undo operations in the reverse order from BIDMAS.",
+   "Treat the letter you want as the unknown and everything else as numbers."
+  ],
+  "method": [
+   "Circle the letter that must be on its own.",
+   "Remove anything added or subtracted from its term.",
+   "Remove multiplication or division, then any powers or roots.",
+   "Check by substituting numbers into your final formula."
+  ],
+  "mistakes": [
+   "Doing the operations in the wrong order.",
+   "Dividing only part of one side instead of the whole side."
+  ]
+ },
+ "Changing the subject (harder)": {
+  "concept": "In harder rearranging the required letter appears more than once or inside a fraction, root or square.",
+  "rules": [
+   "If the letter appears twice, collect those terms on one side and factorise.",
+   "Remove fractions first by multiplying both sides by the denominator.",
+   "Square both sides to remove a square root, and take the square root to remove a square."
+  ],
+  "method": [
+   "Clear any fractions or roots first.",
+   "Expand brackets and gather all terms with the letter onto one side.",
+   "Factorise to take the letter out as a common factor.",
+   "Divide by the bracket to leave the letter alone."
+  ],
+  "mistakes": [
+   "Forgetting to multiply every term when clearing a fraction.",
+   "Square rooting only one term instead of the whole side."
+  ]
+ },
+ "Collecting like terms": {
+  "concept": "Like terms have exactly the same letters and powers. Only like terms can be added or subtracted.",
+  "rules": [
+   "3x + 5x = 8x.",
+   "x and x² are not like terms. xy and yx are like terms.",
+   "Keep the sign in front of each term with that term."
+  ],
+  "method": [
+   "Circle or underline each set of like terms with its sign.",
+   "Add or subtract the numbers in front of each set.",
+   "Write the answer with the letters unchanged, usually in alphabetical order or power order."
+  ],
+  "mistakes": [
+   "Combining unlike terms, such as 3x + 2y = 5xy.",
+   "Losing the minus sign in front of a term."
+  ]
+ },
+ "Completing the square": {
+  "concept": "Completing the square rewrites x² + bx + c as (x + b/2)² + k. It shows the turning point and helps solve some quadratics.",
+  "rules": [
+   "x² + bx + c = (x + b/2)² - (b/2)² + c.",
+   "The turning point of y = (x + p)² + q is (-p, q).",
+   "For ax² + bx + c, take out a from the first two terms first."
+  ],
+  "method": [
+   "Halve the number in front of x and put it in the bracket: (x + b/2)².",
+   "Square that number and subtract it to balance.",
+   "Add on the original constant c.",
+   "To solve, set equal to zero, rearrange and take the square root, remembering plus or minus."
+  ],
+  "mistakes": [
+   "Forgetting to subtract (b/2)² to balance.",
+   "Reading the turning point as (p, q) instead of (-p, q)."
+  ]
+ },
+ "Difference of two squares": {
+  "concept": "A difference of two squares is one square minus another square, and it factorises into two brackets.",
+  "rules": [
+   "a² - b² = (a + b)(a - b).",
+   "There is no middle term when the brackets are expanded.",
+   "It can also help with number calculations such as 101² - 99²."
+  ],
+  "method": [
+   "Check there are exactly two terms, both squares, with a minus between them.",
+   "Find the square root of each term.",
+   "Write one bracket with + and one with -.",
+   "Check by expanding the brackets."
+  ],
+  "mistakes": [
+   "Trying to factorise a sum of squares: a² + b² does not factorise.",
+   "Writing (a - b)² instead of (a + b)(a - b)."
+  ]
+ },
+ "Distance-time graphs": {
+  "concept": "A distance-time graph shows how far something has travelled from a start point over time.",
+  "rules": [
+   "Gradient = distance ÷ time = speed.",
+   "A horizontal line means stationary. A steeper line means faster.",
+   "A line going down means returning toward the start."
+  ],
+  "method": [
+   "Read the axis labels and units.",
+   "To find a speed pick two points on a straight section and divide the change in distance by the change in time.",
+   "For average speed use total distance ÷ total time."
+  ],
+  "mistakes": [
+   "Reading the graph as a picture of the path instead of distance against time.",
+   "Forgetting to convert minutes to hours."
+  ]
+ },
+ "Equation of a circle and tangents": {
+  "concept": "A circle with centre at the origin has equation x² + y² = r². A tangent touches the circle at one point and is perpendicular to the radius.",
+  "rules": [
+   "x² + y² = r² gives a circle with centre (0, 0) and radius r.",
+   "The tangent at a point is perpendicular to the radius at that point.",
+   "Perpendicular gradients multiply to give -1."
+  ],
+  "method": [
+   "Find the gradient of the radius from the centre to the point.",
+   "The tangent gradient is the negative reciprocal.",
+   "Use y - y₁ = m(x - x₁) with the point on the circle.",
+   "Tidy the equation to y = mx + c if asked."
+  ],
+  "mistakes": [
+   "Using r instead of r² in the equation.",
+   "Using the radius gradient as the tangent gradient."
+  ]
+ },
+ "Expanding double brackets": {
+  "concept": "Expanding double brackets multiplies every term in the first bracket by every term in the second.",
+  "rules": [
+   "(a + b)(c + d) = ac + ad + bc + bd.",
+   "(x + p)(x + q) = x² + (p + q)x + pq.",
+   "(a + b)² = a² + 2ab + b², not a² + b²."
+  ],
+  "method": [
+   "Multiply the first term in bracket 1 by both terms in bracket 2.",
+   "Multiply the second term in bracket 1 by both terms in bracket 2.",
+   "Collect like terms, especially the two x terms in the middle.",
+   "Check the signs."
+  ],
+  "mistakes": [
+   "Squaring a bracket as (a + b)² = a² + b².",
+   "Sign errors when a term is negative."
+  ]
+ },
+ "Expanding single brackets": {
+  "concept": "Expanding a single bracket multiplies every term inside by the term outside.",
+  "rules": [
+   "a(b + c) = ab + ac.",
+   "A minus sign outside changes the sign of every term inside.",
+   "Then simplify by collecting like terms."
+  ],
+  "method": [
+   "Multiply the outside term by the first term inside.",
+   "Multiply the outside term by each other term, keeping signs.",
+   "Collect like terms if there are two brackets."
+  ],
+  "mistakes": [
+   "Multiplying only the first term in the bracket.",
+   "Getting -2(x - 3) wrong: it is -2x + 6."
+  ]
+ },
+ "Factorising quadratics": {
+  "concept": "Factorising a quadratic writes it as two brackets multiplied together.",
+  "rules": [
+   "x² + bx + c = (x + p)(x + q) where p + q = b and p × q = c.",
+   "For ax² + bx + c multiply a × c, then split the middle term.",
+   "Check by expanding."
+  ],
+  "method": [
+   "Take out any common factor first.",
+   "Find two numbers that multiply to c and add to b.",
+   "Write the brackets. For a not 1, split the middle term and factorise in pairs.",
+   "Expand to check."
+  ],
+  "mistakes": [
+   "Choosing numbers with the right product but wrong sum.",
+   "Forgetting a common factor at the start."
+  ]
+ },
+ "Factorising single brackets": {
+  "concept": "Factorising is the reverse of expanding: take the highest common factor out of every term.",
+  "rules": [
+   "The highest common factor takes the biggest number and the highest power of each letter that is in every term.",
+   "ab + ac = a(b + c).",
+   "Expanding your answer should give back the original."
+  ],
+  "method": [
+   "Find the highest common factor of the numbers.",
+   "Find the highest power of each letter in all terms.",
+   "Write it outside the bracket and divide each term by it.",
+   "Expand to check."
+  ],
+  "mistakes": [
+   "Not taking the highest common factor, leaving a factor inside the bracket.",
+   "Leaving out a term, such as writing 1 as nothing."
+  ]
+ },
+ "Forming and solving equations": {
+  "concept": "Forming an equation means turning words or a diagram into algebra, then solving it.",
+  "rules": [
+   "Choose a letter for the unknown and write what it stands for.",
+   "Write the relationship as an equation using the facts in the question.",
+   "Solve, then check the answer fits the original words."
+  ],
+  "method": [
+   "Read the question and underline the unknown.",
+   "Write expressions for each quantity.",
+   "Set up an equation, such as a total or perimeter equal to a value.",
+   "Solve and write the answer with units, then check."
+  ],
+  "mistakes": [
+   "Forgetting to answer the question asked, for example giving x instead of the length.",
+   "Not checking the answer is sensible."
+  ]
+ },
+ "Function notation, composite and inverse functions": {
+  "concept": "A function takes an input and gives an output. f(x) means the output when x goes in.",
+  "rules": [
+   "f(3) means replace x with 3.",
+   "fg(x) means do g first, then f.",
+   "The inverse f⁻¹(x) undoes f: swap x and y, then rearrange."
+  ],
+  "method": [
+   "For f(a), substitute a for x and calculate.",
+   "For fg(x), write g(x) inside f in place of x, then simplify.",
+   "For the inverse, write y = f(x), swap x and y, and make y the subject."
+  ],
+  "mistakes": [
+   "Doing the functions in the wrong order in fg(x).",
+   "Confusing f⁻¹(x) with 1/f(x)."
+  ]
+ },
+ "Geometric sequences": {
+  "concept": "A geometric sequence is made by multiplying by the same number each time.",
+  "rules": [
+   "The common ratio r = next term ÷ previous term.",
+   "The nth term is a × rⁿ⁻¹ where a is the first term.",
+   "If r is bigger than 1 terms grow. If r is between 0 and 1 they shrink."
+  ],
+  "method": [
+   "Divide a term by the one before to find r.",
+   "Check with a second pair of terms.",
+   "Multiply by r to find the next terms or use the nth term rule."
+  ],
+  "mistakes": [
+   "Treating it as arithmetic and looking for a difference.",
+   "Using r instead of rⁿ⁻¹ in the formula."
+  ]
+ },
+ "Index laws with algebra": {
+  "concept": "Index laws let you simplify powers of the same letter.",
+  "rules": [
+   "aᵐ × aⁿ = aᵐ⁺ⁿ.",
+   "aᵐ ÷ aⁿ = aᵐ⁻ⁿ.",
+   "(aᵐ)ⁿ = aᵐⁿ.",
+   "Do numbers and each letter separately."
+  ],
+  "method": [
+   "Deal with the numbers first.",
+   "Then each letter on its own, adding, subtracting or multiplying powers.",
+   "Write the answer neatly with letters in order."
+  ],
+  "mistakes": [
+   "Multiplying the powers instead of adding them when multiplying.",
+   "Applying a power to only some terms in a bracket, such as (2x²)³."
+  ]
+ },
+ "Inequality regions": {
+  "concept": "An inequality on a graph is shown by shading a region bounded by a line.",
+  "rules": [
+   "A solid line includes the boundary (≤, ≥). A dashed line does not (<, >).",
+   "Pick a test point to decide which side to shade.",
+   "The required region is where all the shaded conditions overlap."
+  ],
+  "method": [
+   "Draw each boundary line as solid or dashed.",
+   "Test a point such as (0, 0) in the inequality.",
+   "Shade or label the side that works.",
+   "The answer region meets all inequalities."
+  ],
+  "mistakes": [
+   "Using a solid line for < or >.",
+   "Shading the wrong side without testing a point."
+  ]
+ },
+ "Iteration": {
+  "concept": "Iteration finds approximate solutions by repeating a formula, using each answer as the next input.",
+  "rules": [
+   "xₙ₊₁ = f(xₙ) means put the last answer into the formula to get the next.",
+   "Keep full calculator accuracy between steps.",
+   "The answers settle toward the solution."
+  ],
+  "method": [
+   "Write down the starting value x₀.",
+   "Substitute it into the formula to get x₁.",
+   "Repeat using the answer button each time.",
+   "Round only at the end, to the accuracy asked."
+  ],
+  "mistakes": [
+   "Rounding between steps, which spoils later answers.",
+   "Using the wrong subscript, such as stopping one step early."
+  ]
+ },
+ "Linear sequences and nth term": {
+  "concept": "A linear sequence goes up or down by the same amount each time. Its nth term is an + b.",
+  "rules": [
+   "The common difference d is the amount added each time.",
+   "The nth term is dn + (first term - d).",
+   "To test whether a number is in the sequence, solve dn + b = that number for a whole n."
+  ],
+  "method": [
+   "Find the difference between consecutive terms.",
+   "Write dn as the first part of the rule.",
+   "Subtract dn from the first term to find the number to add.",
+   "Check with the second term."
+  ],
+  "mistakes": [
+   "Writing the first term instead of working out the constant.",
+   "Using n + d instead of dn."
+  ]
+ },
+ "Midpoint and distance between points": {
+  "concept": "The midpoint is halfway between two points. The distance is the length of the line joining them.",
+  "rules": [
+   "Midpoint = ((x₁ + x₂)/2, (y₁ + y₂)/2).",
+   "Distance = √((x₂ - x₁)² + (y₂ - y₁)²).",
+   "The distance formula is Pythagoras on a right-angled triangle."
+  ],
+  "method": [
+   "Label the points (x₁, y₁) and (x₂, y₂).",
+   "For the midpoint, find the mean of the x values and of the y values.",
+   "For the distance, find the x difference and the y difference, square both, add and square root."
+  ],
+  "mistakes": [
+   "Subtracting for the midpoint instead of adding.",
+   "Forgetting to take the square root at the end."
+  ]
+ },
+ "Multiplying and dividing terms": {
+  "concept": "To multiply or divide algebraic terms, deal with the numbers and then each letter.",
+  "rules": [
+   "3x × 4y = 12xy.",
+   "x × x = x². x² × x³ = x⁵.",
+   "When dividing, cancel numbers and subtract powers."
+  ],
+  "method": [
+   "Multiply or divide the numbers first.",
+   "Combine each letter using the index laws.",
+   "Write letters in alphabetical order."
+  ],
+  "mistakes": [
+   "Adding the numbers instead of multiplying.",
+   "Writing x × x as 2x."
+  ]
+ },
+ "Parallel and perpendicular lines": {
+  "concept": "Lines are described with y = mx + c. The gradient m tells you how they relate.",
+  "rules": [
+   "Parallel lines have the same gradient.",
+   "Perpendicular gradients multiply to -1: m₂ = -1/m₁.",
+   "Use y - y₁ = m(x - x₁) to find an equation through a point."
+  ],
+  "method": [
+   "Rearrange the given line to y = mx + c to read m.",
+   "Use the same m for parallel or the negative reciprocal for perpendicular.",
+   "Substitute the given point to find c.",
+   "Write the equation."
+  ],
+  "mistakes": [
+   "Flipping the fraction but not changing the sign.",
+   "Reading m from an equation that is not in y = mx + c form."
+  ]
+ },
+ "Quadratic graphs": {
+  "concept": "A quadratic graph is a smooth U-shaped or n-shaped curve called a parabola.",
+  "rules": [
+   "y = ax² + bx + c has a positive U shape when a > 0.",
+   "The roots are where the curve meets the x-axis (y = 0).",
+   "The turning point lies on the line of symmetry, halfway between the roots."
+  ],
+  "method": [
+   "Make a table of values and plot points.",
+   "Join with a smooth curve, not straight lines.",
+   "Read roots where y = 0 and the turning point from the lowest or highest point.",
+   "Use symmetry to check."
+  ],
+  "mistakes": [
+   "Joining points with ruler lines.",
+   "Pointed bottoms instead of a smooth curve."
+  ]
+ },
+ "Quadratic inequalities": {
+  "concept": "A quadratic inequality is solved by finding where the quadratic crosses the axis and reading the correct region from a sketch.",
+  "rules": [
+   "Solve the matching equation to find the critical values.",
+   "Sketch the parabola and decide where it is above or below the axis.",
+   "The answer is written as one or two inequalities."
+  ],
+  "method": [
+   "Rearrange so one side is zero.",
+   "Factorise or use the formula to find the roots.",
+   "Sketch the curve and shade where it is greater than or less than zero.",
+   "Write the answer, using \"or\" for two outer regions."
+  ],
+  "mistakes": [
+   "Giving the answer for the equation only.",
+   "Writing outer regions as one inequality such as 3 < x < -2."
+  ]
+ },
+ "Quadratic sequences": {
+  "concept": "A quadratic sequence has second differences that are constant. Its nth term contains n².",
+  "rules": [
+   "The nth term is an² + bn + c with a = second difference ÷ 2.",
+   "Subtract an² from each term to leave a linear sequence.",
+   "Find the linear nth term bn + c."
+  ],
+  "method": [
+   "Find the first differences, then the second differences.",
+   "Halve the second difference to get a.",
+   "Subtract an² from each term, then find the linear rule for what is left.",
+   "Check with a term."
+  ],
+  "mistakes": [
+   "Using the second difference as a instead of halving it.",
+   "Forgetting to include the linear part."
+  ]
+ },
+ "Recognising graphs": {
+  "concept": "Different equations give graphs of recognisable shapes.",
+  "rules": [
+   "y = mx + c: straight line. y = ax² + bx + c: U-shaped or n-shaped parabola.",
+   "y = ax³ + ...: S-shaped cubic. y = k/x: two separate curves (reciprocal).",
+   "y = aˣ: curve that rises steeply and never reaches zero (exponential)."
+  ],
+  "method": [
+   "Look at the highest power of x and any x in the denominator or as an index.",
+   "Match to the shape.",
+   "Check the intercepts using x = 0 and y = 0."
+  ],
+  "mistakes": [
+   "Confusing reciprocal and exponential graphs.",
+   "Not noticing the sign of the x² term flips the parabola."
+  ]
+ },
+ "Simultaneous equations (one linear, one quadratic)": {
+  "concept": "Solving one linear and one quadratic equation finds the points where a line meets a curve.",
+  "rules": [
+   "Rearrange the linear equation to make x or y the subject.",
+   "Substitute into the quadratic to get a single quadratic equation.",
+   "Solving gives two values, and each needs its partner."
+  ],
+  "method": [
+   "Make y (or x) the subject of the linear equation.",
+   "Substitute into the other equation and expand.",
+   "Rearrange to zero and solve for x.",
+   "Put each x back into the linear equation to find y."
+  ],
+  "mistakes": [
+   "Forgetting to find the second variable for each solution.",
+   "Pairing values wrongly."
+  ]
+ },
+ "Simultaneous linear equations": {
+  "concept": "Simultaneous equations have two unknowns that must satisfy both equations at once.",
+  "rules": [
+   "Elimination: make the coefficients of one letter match, then add or subtract.",
+   "Add if the signs are different, subtract if the signs are the same.",
+   "Substitute back to find the second letter."
+  ],
+  "method": [
+   "Number the equations.",
+   "Multiply one or both equations so a letter has matching coefficients.",
+   "Add or subtract to eliminate it and solve.",
+   "Substitute into an original equation and check in the other."
+  ],
+  "mistakes": [
+   "Adding when you should subtract.",
+   "Multiplying only one term of an equation."
+  ]
+ },
+ "Solving linear equations": {
+  "concept": "Solving finds the value of the unknown. Whatever you do to one side you must do to the other.",
+  "rules": [
+   "Undo + with - and × with ÷.",
+   "Expand brackets and collect terms first.",
+   "Unknowns on both sides: move the smaller x-term across."
+  ],
+  "method": [
+   "Expand any brackets.",
+   "Collect x terms on one side and numbers on the other.",
+   "Divide by the number in front of x.",
+   "Substitute back to check."
+  ],
+  "mistakes": [
+   "Doing something to only one side.",
+   "Sign errors when moving terms across."
+  ]
+ },
+ "Solving linear inequalities": {
+  "concept": "Inequalities are solved like equations, but the answer is a range of values.",
+  "rules": [
+   "< means less than, ≤ means less than or equal to.",
+   "Multiplying or dividing by a negative reverses the inequality sign.",
+   "On a number line, an open circle excludes the end and a filled circle includes it."
+  ],
+  "method": [
+   "Solve as if it were an equation.",
+   "If you multiply or divide by a negative, flip the sign.",
+   "Write the answer as x < a or x ≥ a.",
+   "Mark it on a number line if asked."
+  ],
+  "mistakes": [
+   "Forgetting to flip the sign for a negative.",
+   "Using an open circle for ≤ or ≥."
+  ]
+ },
+ "Solving quadratic equations by factorising": {
+  "concept": "If two things multiply to give zero, one of them must be zero. This is how factorised quadratics are solved.",
+  "rules": [
+   "Write the quadratic as (x + p)(x + q) = 0.",
+   "Then x = -p or x = -q.",
+   "The equation must equal zero before factorising."
+  ],
+  "method": [
+   "Rearrange so one side is zero.",
+   "Factorise into two brackets.",
+   "Set each bracket equal to zero and solve.",
+   "Check by substituting."
+  ],
+  "mistakes": [
+   "Factorising before moving everything to one side.",
+   "Giving the bracket numbers without changing the sign."
+  ]
+ },
+ "Solving quadratics with the formula": {
+  "concept": "The quadratic formula solves any quadratic equation ax² + bx + c = 0.",
+  "rules": [
+   "x = (-b ± √(b² - 4ac)) / 2a.",
+   "b² - 4ac is the discriminant: positive gives two roots, zero gives one, negative gives none.",
+   "Use it when the quadratic does not factorise."
+  ],
+  "method": [
+   "Write down a, b and c with their signs.",
+   "Substitute carefully into the formula using brackets.",
+   "Work out the discriminant, then the square root.",
+   "Give two answers, rounded as asked."
+  ],
+  "mistakes": [
+   "Wrong sign for b or c.",
+   "Dividing only part of the top by 2a."
+  ]
+ },
+ "Special sequences": {
+  "concept": "Some sequences have names and rules you should recognise.",
+  "rules": [
+   "Square numbers: 1, 4, 9, 16, 25, … (n²). Cube numbers: 1, 8, 27, 64, … (n³).",
+   "Triangular numbers: 1, 3, 6, 10, … Fibonacci: add the two previous terms.",
+   "Powers of 2: 2, 4, 8, 16, …"
+  ],
+  "method": [
+   "Look at the differences or the ratio between terms.",
+   "Match the pattern to a known sequence.",
+   "Continue it by the rule."
+  ],
+  "mistakes": [
+   "Confusing squares with cubes.",
+   "Not checking the rule against more than one term."
+  ]
+ },
+ "Straight-line graphs": {
+  "concept": "The equation y = mx + c gives a straight line with gradient m and y-intercept c.",
+  "rules": [
+   "Gradient m = change in y ÷ change in x.",
+   "The line crosses the y-axis at (0, c).",
+   "A positive gradient goes up to the right; a negative gradient goes down."
+  ],
+  "method": [
+   "Rearrange to y = mx + c.",
+   "Read the gradient and intercept.",
+   "To find m from two points, divide the difference in y by the difference in x.",
+   "Use a point to find c."
+  ],
+  "mistakes": [
+   "Reading the gradient as the number of the x-term without rearranging first.",
+   "Subtracting the coordinates in different orders."
+  ]
+ },
+ "Substitution": {
+  "concept": "Substitution means replacing letters with given numbers and calculating, following BIDMAS.",
+  "rules": [
+   "Use brackets when substituting a negative number.",
+   "Powers come before multiplication: 3x² with x = 2 is 3 × 4.",
+   "(-3)² = 9 but -3² = -9."
+  ],
+  "method": [
+   "Write the expression, then put each number in brackets.",
+   "Work out powers first, then multiplication and division, then add and subtract.",
+   "Write the answer with units if there are any."
+  ],
+  "mistakes": [
+   "Squaring a negative without brackets.",
+   "Doing 3x² as (3x)²."
+  ]
+ },
+ "Transformations of graphs": {
+  "concept": "Changing the equation of y = f(x) moves or stretches the graph in a predictable way.",
+  "rules": [
+   "f(x) + a moves the graph up by a. f(x + a) moves it left by a.",
+   "-f(x) reflects in the x-axis. f(-x) reflects in the y-axis.",
+   "a f(x) stretches vertically. f(ax) squashes horizontally."
+  ],
+  "method": [
+   "Decide whether the change is inside the brackets (x direction) or outside (y direction).",
+   "Inside the brackets behaves in the opposite way to what you expect.",
+   "Apply the change to key points, such as the turning point."
+  ],
+  "mistakes": [
+   "Moving the graph the wrong way for f(x + a).",
+   "Applying changes in the wrong direction."
+  ]
+ },
+ "Velocity-time graphs": {
+  "concept": "A velocity-time graph shows how fast something is moving at each time.",
+  "rules": [
+   "Gradient = acceleration.",
+   "Area under the graph = distance travelled.",
+   "A horizontal line means constant velocity."
+  ],
+  "method": [
+   "Read the axes and units.",
+   "For acceleration find the change in velocity ÷ change in time.",
+   "For distance split the area under the line into triangles and rectangles.",
+   "Add the areas."
+  ],
+  "mistakes": [
+   "Confusing velocity-time with distance-time.",
+   "Using the height instead of the area for distance."
+  ]
+ },
+ "Discriminant": {
+  "concept": "The discriminant b² - 4ac tells you how many real solutions a quadratic ax² + bx + c = 0 has, without solving it.",
+  "rules": [
+   "b² - 4ac > 0: two different real roots (curve crosses the x-axis twice).",
+   "b² - 4ac = 0: one repeated root (curve touches the x-axis).",
+   "b² - 4ac < 0: no real roots (curve does not reach the x-axis)."
+  ],
+  "method": [
+   "Write down a, b and c with their signs.",
+   "Substitute into b² - 4ac using brackets.",
+   "Compare the value with zero and state the number of roots.",
+   "For a condition on k, form the inequality or equation in k and solve it."
+  ],
+  "mistakes": [
+   "Wrong sign for b² when b is negative: (-3)² = 9.",
+   "Forgetting the - 4ac, or the sign of c."
+  ]
+ },
+ "Quadratic Formula Discriminant": {
+  "concept": "The discriminant b² - 4ac tells you how many real solutions a quadratic ax² + bx + c = 0 has, without solving it.",
+  "rules": [
+   "b² - 4ac > 0: two different real roots (curve crosses the x-axis twice).",
+   "b² - 4ac = 0: one repeated root (curve touches the x-axis).",
+   "b² - 4ac < 0: no real roots (curve does not reach the x-axis)."
+  ],
+  "method": [
+   "Write down a, b and c with their signs.",
+   "Substitute into b² - 4ac using brackets.",
+   "Compare the value with zero and state the number of roots.",
+   "For a condition on k, form the inequality or equation in k and solve it."
+  ],
+  "mistakes": [
+   "Wrong sign for b² when b is negative: (-3)² = 9.",
+   "Forgetting the - 4ac, or the sign of c."
+  ]
+ },
+ "Quadratic discriminant": {
+  "concept": "The discriminant b² - 4ac tells you how many real solutions a quadratic ax² + bx + c = 0 has, without solving it.",
+  "rules": [
+   "b² - 4ac > 0: two different real roots (curve crosses the x-axis twice).",
+   "b² - 4ac = 0: one repeated root (curve touches the x-axis).",
+   "b² - 4ac < 0: no real roots (curve does not reach the x-axis)."
+  ],
+  "method": [
+   "Write down a, b and c with their signs.",
+   "Substitute into b² - 4ac using brackets.",
+   "Compare the value with zero and state the number of roots.",
+   "For a condition on k, form the inequality or equation in k and solve it."
+  ],
+  "mistakes": [
+   "Wrong sign for b² when b is negative: (-3)² = 9.",
+   "Forgetting the - 4ac, or the sign of c."
+  ]
+ },
+ "Quadratic formula discriminant": {
+  "concept": "The discriminant b² - 4ac tells you how many real solutions a quadratic ax² + bx + c = 0 has, without solving it.",
+  "rules": [
+   "b² - 4ac > 0: two different real roots (curve crosses the x-axis twice).",
+   "b² - 4ac = 0: one repeated root (curve touches the x-axis).",
+   "b² - 4ac < 0: no real roots (curve does not reach the x-axis)."
+  ],
+  "method": [
+   "Write down a, b and c with their signs.",
+   "Substitute into b² - 4ac using brackets.",
+   "Compare the value with zero and state the number of roots.",
+   "For a condition on k, form the inequality or equation in k and solve it."
+  ],
+  "mistakes": [
+   "Wrong sign for b² when b is negative: (-3)² = 9.",
+   "Forgetting the - 4ac, or the sign of c."
+  ]
+ },
+ "Quadratic Discriminant Reasoning": {
+  "concept": "The discriminant b² - 4ac tells you how many real solutions a quadratic ax² + bx + c = 0 has, without solving it.",
+  "rules": [
+   "b² - 4ac > 0: two different real roots (curve crosses the x-axis twice).",
+   "b² - 4ac = 0: one repeated root (curve touches the x-axis).",
+   "b² - 4ac < 0: no real roots (curve does not reach the x-axis)."
+  ],
+  "method": [
+   "Write down a, b and c with their signs.",
+   "Substitute into b² - 4ac using brackets.",
+   "Compare the value with zero and state the number of roots.",
+   "For a condition on k, form the inequality or equation in k and solve it."
+  ],
+  "mistakes": [
+   "Wrong sign for b² when b is negative: (-3)² = 9.",
+   "Forgetting the - 4ac, or the sign of c."
+  ]
+ },
+ "Quadratic roots": {
+  "concept": "The roots of a quadratic are the x values where y = 0. They can be found by factorising, completing the square or the formula.",
+  "rules": [
+   "Roots are where the graph crosses the x-axis.",
+   "If a quadratic factorises as (x - p)(x - q) the roots are p and q.",
+   "Sum of roots = -b/a and product of roots = c/a."
+  ],
+  "method": [
+   "Set the quadratic equal to zero.",
+   "Factorise if possible, otherwise use the formula.",
+   "Write both roots.",
+   "Check by substitution."
+  ],
+  "mistakes": [
+   "Giving the bracket numbers without reversing the sign.",
+   "Stopping after one root."
+  ]
+ },
+ "Composite functions": {
+  "concept": "A composite function applies one function after another. fg(x) means do g first, then f.",
+  "rules": [
+   "fg(x) = f(g(x)).",
+   "fg(x) is usually different from gf(x).",
+   "Substitute the inner function into every x of the outer function."
+  ],
+  "method": [
+   "Identify the inner function (the one closest to x).",
+   "Write it in place of x in the outer function.",
+   "Simplify, expanding brackets if needed."
+  ],
+  "mistakes": [
+   "Doing the functions in the wrong order.",
+   "Replacing only one x."
+  ]
+ },
+ "Absolute Value Equations": {
+  "concept": "The absolute value |x| is the distance of x from zero, so it is never negative.",
+  "rules": [
+   "|x| = a means x = a or x = -a (for a > 0).",
+   "|expression| = a splits into two equations.",
+   "Check each answer in the original."
+  ],
+  "method": [
+   "Isolate the absolute value on one side.",
+   "Write the two cases: expression = a and expression = -a.",
+   "Solve each one.",
+   "Check both in the original equation."
+  ],
+  "mistakes": [
+   "Giving only the positive case.",
+   "Accepting a negative value for |x|, which is impossible."
+  ]
+ },
+ "Angles in parallel lines": {
+  "concept": "A line crossing two parallel lines creates pairs of equal or supplementary angles.",
+  "rules": [
+   "Corresponding angles are equal (F shape).",
+   "Alternate angles are equal (Z shape).",
+   "Co-interior angles add to 180° (C or U shape).",
+   "Vertically opposite angles are equal."
+  ],
+  "method": [
+   "Spot the shape: F, Z or C.",
+   "Name the rule used.",
+   "Calculate the angle, using 180° for a straight line if needed.",
+   "Give reasons with the answer."
+  ],
+  "mistakes": [
+   "Saying alternate angles are supplementary.",
+   "Not stating the reason in the proof."
+  ]
+ },
+ "Angles in triangles": {
+  "concept": "The three angles inside any triangle always add up to 180°.",
+  "rules": [
+   "Angles in a triangle add to 180°.",
+   "Isosceles triangle: two equal sides and two equal base angles.",
+   "Equilateral: all angles 60°. Exterior angle = sum of the two opposite interior angles."
+  ],
+  "method": [
+   "Write down the angles you know.",
+   "Add them and subtract from 180°.",
+   "For algebra, form an equation = 180 and solve.",
+   "Check all angles add to 180°."
+  ],
+  "mistakes": [
+   "Forgetting that equal sides give equal angles.",
+   "Using 360° instead of 180°."
+  ]
+ },
+ "Angles on lines, at a point and vertically opposite": {
+  "concept": "Angles that meet at a point or on a line have fixed totals.",
+  "rules": [
+   "Angles on a straight line add to 180°.",
+   "Angles around a point add to 360°.",
+   "Vertically opposite angles are equal."
+  ],
+  "method": [
+   "Identify whether the angles lie on a line, at a point or are opposite.",
+   "Write an equation using the correct total.",
+   "Solve and state the reason."
+  ],
+  "mistakes": [
+   "Using 360° for a straight line.",
+   "Assuming angles are equal because they look equal."
+  ]
+ },
+ "Arc length and sector area": {
+  "concept": "An arc is part of the circumference and a sector is part of the area. Both are a fraction of the whole circle.",
+  "rules": [
+   "Fraction = angle/360.",
+   "Arc length = (angle/360) × 2πr.",
+   "Sector area = (angle/360) × πr²."
+  ],
+  "method": [
+   "Write the fraction angle/360.",
+   "Work out the full circumference or area.",
+   "Multiply by the fraction.",
+   "Add the radii for the perimeter of a sector."
+  ],
+  "mistakes": [
+   "Using diameter instead of radius.",
+   "Forgetting two radii in a sector perimeter."
+  ]
+ },
+ "Area and perimeter of 2D shapes": {
+  "concept": "Perimeter is the distance round the edge. Area is the space inside.",
+  "rules": [
+   "Rectangle: A = l × w. Triangle: A = ½ × b × h.",
+   "Parallelogram: A = b × h. Trapezium: A = ½(a + b)h.",
+   "Perimeter is the sum of all the sides. Area is in square units."
+  ],
+  "method": [
+   "Identify the shape or split a compound shape into simple ones.",
+   "Use the perpendicular height.",
+   "Substitute into the formula.",
+   "Write units: cm for length, cm² for area."
+  ],
+  "mistakes": [
+   "Using the slant height instead of the perpendicular height.",
+   "Mixing up area and perimeter units."
+  ]
+ },
+ "Bearings": {
+  "concept": "A bearing is an angle measured clockwise from north, always written with three figures.",
+  "rules": [
+   "Measure from north, clockwise.",
+   "Write three figures: 045°, 090°, 270°.",
+   "Back bearing = bearing ± 180°.",
+   "Co-interior (north lines are parallel) angles add to 180°."
+  ],
+  "method": [
+   "Draw a north line at the starting point.",
+   "Measure or calculate the angle clockwise.",
+   "For a return journey, add or subtract 180°.",
+   "Use trigonometry or Pythagoras for distances."
+  ],
+  "mistakes": [
+   "Measuring anticlockwise.",
+   "Writing a bearing with fewer than three figures."
+  ]
+ },
+ "Circle Theorems Angles": {
+  "concept": "Circle theorems link angles formed by chords, tangents and radii.",
+  "rules": [
+   "Angle at the centre is twice the angle at the circumference.",
+   "Angle in a semicircle is 90°.",
+   "Angles in the same segment are equal.",
+   "Opposite angles in a cyclic quadrilateral add to 180°.",
+   "A tangent is perpendicular to the radius."
+  ],
+  "method": [
+   "Mark the angles and identify the theorem.",
+   "Apply it to calculate the angle.",
+   "State the theorem as the reason."
+  ],
+  "mistakes": [
+   "Confusing angle at the centre with angle at the circumference.",
+   "Giving reasons that do not name the theorem."
+  ]
+ },
+ "Circle theorems": {
+  "concept": "Circle theorems link angles formed by chords, tangents and radii.",
+  "rules": [
+   "Angle at the centre is twice the angle at the circumference.",
+   "Angle in a semicircle is 90°.",
+   "Angles in the same segment are equal.",
+   "Opposite angles in a cyclic quadrilateral add to 180°.",
+   "A tangent is perpendicular to the radius."
+  ],
+  "method": [
+   "Mark the angles and identify the theorem.",
+   "Apply it to calculate the angle.",
+   "State the theorem as the reason."
+  ],
+  "mistakes": [
+   "Confusing angle at the centre with angle at the circumference.",
+   "Giving reasons that do not name the theorem."
+  ]
+ },
+ "Circle vocabulary": {
+  "concept": "The parts of a circle have precise names.",
+  "rules": [
+   "Radius: centre to the edge. Diameter: across through the centre (2 × radius).",
+   "Chord: a line joining two points on the circle. Tangent: touches at one point.",
+   "Arc: part of the circumference. Sector: pie slice. Segment: area cut off by a chord."
+  ],
+  "method": [
+   "Look at where the line starts and ends.",
+   "Match to the definition."
+  ],
+  "mistakes": [
+   "Calling a chord a diameter.",
+   "Mixing up sector and segment."
+  ]
+ },
+ "Circumference and area of a circle": {
+  "concept": "The circumference is the distance around a circle and the area is the space inside.",
+  "rules": [
+   "C = πd = 2πr.",
+   "A = πr².",
+   "Diameter = 2 × radius."
+  ],
+  "method": [
+   "Find the radius or diameter (halve or double if needed).",
+   "Choose the right formula.",
+   "Substitute and use the π button unless told otherwise.",
+   "Write units and round."
+  ],
+  "mistakes": [
+   "Using the diameter in A = πr².",
+   "Forgetting to square the radius."
+  ]
+ },
+ "Congruent triangles": {
+  "concept": "Congruent triangles are exactly the same shape and size.",
+  "rules": [
+   "SSS: three equal sides.",
+   "SAS: two sides and the angle between them.",
+   "ASA (or AAS): two angles and one side.",
+   "RHS: right angle, hypotenuse and one side."
+  ],
+  "method": [
+   "List the equal parts you know and why.",
+   "Match them to one of the four conditions.",
+   "State the condition and the conclusion."
+  ],
+  "mistakes": [
+   "Using AAA, which only shows similar triangles.",
+   "Using SSA where the angle is not between the two sides."
+  ]
+ },
+ "Constructions and loci": {
+  "concept": "A locus is the set of all points that follow a rule. Constructions use only a ruler and compasses.",
+  "rules": [
+   "Perpendicular bisector: equal distance from two points.",
+   "Angle bisector: equal distance from two lines.",
+   "Circle: points a fixed distance from a point.",
+   "Keep all construction arcs visible."
+  ],
+  "method": [
+   "Decide which locus matches each condition.",
+   "Construct each accurately.",
+   "Shade the region that meets all conditions."
+  ],
+  "mistakes": [
+   "Rubbing out construction lines.",
+   "Using a protractor when asked to construct."
+  ]
+ },
+ "Exact trigonometric values": {
+  "concept": "You need to know exact values of sin, cos and tan for key angles without a calculator.",
+  "rules": [
+   "sin 30° = ½, cos 60° = ½, sin 45° = √2/2, sin 60° = √3/2, cos 30° = √3/2.",
+   "tan 45° = 1, tan 30° = 1/√3 = √3/3, tan 60° = √3.",
+   "sin 0° = 0, cos 0° = 1, sin 90° = 1, cos 90° = 0."
+  ],
+  "method": [
+   "Recall or recreate the value with a 30-60-90 or 45-45-90 triangle.",
+   "Substitute into the expression.",
+   "Simplify, rationalising if needed."
+  ],
+  "mistakes": [
+   "Swapping sin and cos values.",
+   "Leaving a surd in the denominator."
+  ]
+ },
+ "Faces, edges and vertices of 3D shapes": {
+  "concept": "A 3D shape has flat faces, edges where faces meet and vertices (corners).",
+  "rules": [
+   "Cube: 6 faces, 12 edges, 8 vertices.",
+   "Euler: V - E + F = 2 for solids with flat faces.",
+   "Prisms have a constant cross-section."
+  ],
+  "method": [
+   "Identify the shape.",
+   "Count faces, edges and vertices.",
+   "Check using V - E + F = 2."
+  ],
+  "mistakes": [
+   "Counting hidden edges as missing.",
+   "Confusing face and vertex."
+  ]
+ },
+ "Geometric reasoning": {
+  "concept": "Geometric reasoning means giving clear reasons for every step with angle and shape rules.",
+  "rules": [
+   "Name each rule you use.",
+   "Use a step-by-step chain: known facts → rule → new fact.",
+   "Unknown angles can be called x and found with an equation."
+  ],
+  "method": [
+   "Write what is given.",
+   "Choose the rule and name it.",
+   "Show the working and state the result."
+  ],
+  "mistakes": [
+   "Assuming a fact from the diagram without a reason.",
+   "Skipping a step in the chain."
+  ]
+ },
+ "Geometry notation and terms": {
+  "concept": "Geometry uses standard notation to name points, lines and angles.",
+  "rules": [
+   "AB is the line from A to B. ABC with the angle at B is ∠ABC.",
+   "Parallel lines are marked with arrows and equal sides with dashes.",
+   "Perpendicular means at 90°."
+  ],
+  "method": [
+   "Read the letters in order; the middle letter is the vertex.",
+   "Mark the facts on the diagram."
+  ],
+  "mistakes": [
+   "Using the wrong vertex for the angle.",
+   "Ignoring markings on the diagram."
+  ]
+ },
+ "Plans and elevations": {
+  "concept": "Plans and elevations are 2D views of 3D shapes from different directions.",
+  "rules": [
+   "Plan: view from above. Front elevation: view from the front. Side elevation: view from the side.",
+   "Draw only what you can see, with hidden edges ignored."
+  ],
+  "method": [
+   "Imagine looking straight at the shape from the required direction.",
+   "Draw the outline and any visible lines.",
+   "Count squares for each view."
+  ],
+  "mistakes": [
+   "Drawing the 3D picture instead of the flat view.",
+   "Mixing up front and side."
+  ]
+ },
+ "Polygons: interior and exterior angles": {
+  "concept": "A polygon is a closed shape with straight sides. Its angles follow rules based on the number of sides n.",
+  "rules": [
+   "Sum of interior angles = (n - 2) × 180°.",
+   "Exterior angles add to 360°.",
+   "Regular polygon: exterior angle = 360 ÷ n; interior = 180 - exterior."
+  ],
+  "method": [
+   "Count the sides n.",
+   "Use (n - 2) × 180 for the total or 360 ÷ n for one exterior angle.",
+   "Subtract from 180 for the interior angle.",
+   "To find n from an angle, use 360 ÷ exterior."
+  ],
+  "mistakes": [
+   "Using 360 for interior angles.",
+   "Using n × 180 instead of (n - 2) × 180."
+  ]
+ },
+ "Pythagoras' theorem": {
+  "concept": "In a right-angled triangle the square of the longest side (hypotenuse) equals the sum of the squares of the other two.",
+  "rules": [
+   "a² + b² = c², where c is the hypotenuse.",
+   "The hypotenuse is opposite the right angle and is the longest side.",
+   "For a shorter side: a² = c² - b²."
+  ],
+  "method": [
+   "Label the hypotenuse c.",
+   "Square the two known sides and add (to find c) or subtract (to find a shorter side).",
+   "Square root and round with units."
+  ],
+  "mistakes": [
+   "Adding when you should subtract.",
+   "Forgetting to square root at the end."
+  ]
+ },
+ "Right-angled triangle trigonometry": {
+  "concept": "SOH CAH TOA links the angles and sides of right-angled triangles.",
+  "rules": [
+   "sin θ = opposite/hypotenuse.",
+   "cos θ = adjacent/hypotenuse.",
+   "tan θ = opposite/adjacent.",
+   "To find an angle use sin⁻¹, cos⁻¹ or tan⁻¹."
+  ],
+  "method": [
+   "Label the hypotenuse, opposite and adjacent relative to the angle.",
+   "Choose the ratio using the two sides involved.",
+   "Write the equation and solve.",
+   "Check the calculator is in degrees."
+  ],
+  "mistakes": [
+   "Labelling the sides from the wrong angle.",
+   "Calculator in radians mode."
+  ]
+ },
+ "Similar shapes": {
+  "concept": "Similar shapes have the same shape and equal angles, and their sides are in the same ratio.",
+  "rules": [
+   "Scale factor = new length ÷ old length.",
+   "Areas scale by (scale factor)².",
+   "Volumes scale by (scale factor)³."
+  ],
+  "method": [
+   "Match the corresponding sides.",
+   "Find the scale factor from a pair.",
+   "Multiply or divide the required length, or square or cube for area and volume."
+  ],
+  "mistakes": [
+   "Using the length scale factor for area.",
+   "Matching non-corresponding sides."
+  ]
+ },
+ "Sine rule, cosine rule and area of a triangle": {
+  "concept": "These rules work in any triangle, not just right-angled ones.",
+  "rules": [
+   "Sine rule: a/sin A = b/sin B.",
+   "Cosine rule: a² = b² + c² - 2bc cos A.",
+   "Area = ½ ab sin C.",
+   "Use sine rule with a side and its opposite angle; cosine rule with two sides and the included angle, or three sides."
+  ],
+  "method": [
+   "Label the sides a, b, c opposite angles A, B, C.",
+   "Pick the rule based on what you know.",
+   "Substitute carefully, then solve.",
+   "Use brackets for cos A on the calculator."
+  ],
+  "mistakes": [
+   "Using the wrong rule for the information given.",
+   "Subtracting before multiplying in the cosine rule."
+  ]
+ },
+ "Surface area of solids": {
+  "concept": "Surface area is the total area of all the faces of a 3D shape.",
+  "rules": [
+   "Cuboid: 2(lw + lh + wh).",
+   "Cylinder: 2πr² + 2πrh.",
+   "Sphere: 4πr². Cone: πr² + πrl (l is the slant height)."
+  ],
+  "method": [
+   "List each face and its area.",
+   "Use the formulas or add the pieces.",
+   "Write the answer in square units."
+  ],
+  "mistakes": [
+   "Leaving out the circular ends of a cylinder.",
+   "Using the vertical height instead of the slant height in a cone."
+  ]
+ },
+ "Symmetry and properties of shapes": {
+  "concept": "Shapes can be described by their sides, angles and symmetry.",
+  "rules": [
+   "Line symmetry: a mirror line. Rotational symmetry: the order is how many times it fits in a turn.",
+   "Square, rectangle, rhombus, parallelogram, kite, trapezium and their properties.",
+   "Diagonals of a rhombus cross at 90°."
+  ],
+  "method": [
+   "List the properties the question gives.",
+   "Match to the special quadrilateral or triangle.",
+   "Count symmetry lines or the order of rotation."
+  ],
+  "mistakes": [
+   "Saying a parallelogram has line symmetry.",
+   "Mixing up rhombus and kite."
+  ]
+ },
+ "Transformations of shapes": {
+  "concept": "A transformation changes the position or size of a shape.",
+  "rules": [
+   "Translation: move by a vector. Reflection: mirror line. Rotation: centre, angle, direction.",
+   "Enlargement: centre and scale factor.",
+   "Reflection, rotation and translation keep the shape congruent."
+  ],
+  "method": [
+   "Describe all required details for each type.",
+   "For a rotation, mark the centre and turn the points.",
+   "For an enlargement, multiply distances from the centre by the scale factor."
+  ],
+  "mistakes": [
+   "Missing a detail such as direction or centre.",
+   "Describing two transformations together."
+  ]
+ },
+ "Trigonometry in 3D": {
+  "concept": "In 3D, find the right-angled triangle that contains the angle or length you need.",
+  "rules": [
+   "Use Pythagoras to find a diagonal across a base or face.",
+   "Then use SOH CAH TOA in a vertical right-angled triangle.",
+   "The angle between a line and a plane uses the line and its projection."
+  ],
+  "method": [
+   "Draw the base triangle and the vertical triangle separately.",
+   "Find the missing length by Pythagoras.",
+   "Use trigonometry for the angle."
+  ],
+  "mistakes": [
+   "Using the 3D edge as a side of the wrong triangle.",
+   "Mixing up the angle between lines and planes."
+  ]
+ },
+ "Units of measure": {
+  "concept": "Units must match before you calculate. Convert metric and time units correctly.",
+  "rules": [
+   "1 km = 1000 m. 1 m = 100 cm. 1 cm = 10 mm.",
+   "Area: 1 m² = 10,000 cm². Volume: 1 m³ = 1,000,000 cm³.",
+   "1 litre = 1000 cm³. 1 hour = 60 min."
+  ],
+  "method": [
+   "Write the conversion factor.",
+   "Convert to the unit asked.",
+   "Square or cube the factor for area and volume."
+  ],
+  "mistakes": [
+   "Using 100 to change m² to cm².",
+   "Mixing units within a calculation."
+  ]
+ },
+ "Vectors": {
+  "concept": "A vector has size and direction and is written as a column or with letters.",
+  "rules": [
+   "Column vector (x, y) moves x across and y up.",
+   "AB = b - a.",
+   "Parallel vectors are multiples of each other.",
+   "Add vectors by adding their components."
+  ],
+  "method": [
+   "Write each route in terms of the given vectors.",
+   "Add vectors along the route, reversing the sign when going backwards.",
+   "Simplify."
+  ],
+  "mistakes": [
+   "Forgetting that BA = -AB.",
+   "Not changing the sign when travelling against the arrow."
+  ]
+ },
+ "Volume of solids": {
+  "concept": "Volume is the space inside a 3D shape, in cubic units.",
+  "rules": [
+   "Prism: area of cross-section × length.",
+   "Cylinder: πr²h. Cone: ⅓πr²h. Pyramid: ⅓ × base × h.",
+   "Sphere: (4/3)πr³."
+  ],
+  "method": [
+   "Identify the shape and the formula.",
+   "Find the cross-section area first for a prism.",
+   "Substitute and calculate.",
+   "Write units³."
+  ],
+  "mistakes": [
+   "Forgetting the ⅓ in cones and pyramids.",
+   "Using the radius where the diameter is given."
+  ]
+ },
+ "Adding and subtracting fractions": {
+  "concept": "Fractions can only be added or subtracted when they share the same denominator.",
+  "rules": [
+   "Find a common denominator (the LCM of the denominators).",
+   "Change each fraction, then add or subtract the numerators only.",
+   "Mixed numbers: change to improper fractions or deal with whole numbers separately."
+  ],
+  "method": [
+   "Find a common denominator.",
+   "Rewrite each fraction with it.",
+   "Add or subtract the numerators; the denominator stays the same.",
+   "Simplify and convert if needed."
+  ],
+  "mistakes": [
+   "Adding the denominators as well as the numerators.",
+   "Forgetting to multiply the numerator when changing the denominator."
+  ]
+ },
+ "BIDMAS": {
+  "concept": "BIDMAS gives the order for working out a calculation.",
+  "rules": [
+   "Brackets, Indices, Division and Multiplication (left to right), Addition and Subtraction (left to right).",
+   "Division and multiplication have equal priority.",
+   "Work along the line from left to right within each level."
+  ],
+  "method": [
+   "Do anything in brackets first.",
+   "Then powers and roots.",
+   "Then × and ÷ from left to right.",
+   "Finally + and - from left to right."
+  ],
+  "mistakes": [
+   "Adding before multiplying.",
+   "Doing multiplication before division when division comes first."
+  ]
+ },
+ "Calculating with negative numbers": {
+  "concept": "Negative numbers are below zero. The signs follow clear rules.",
+  "rules": [
+   "Adding a negative = subtracting. Subtracting a negative = adding.",
+   "Same signs multiplied or divided give positive. Different signs give negative.",
+   "On a number line, moving right is bigger."
+  ],
+  "method": [
+   "Rewrite double signs (- -) as +.",
+   "Apply the multiply or divide sign rule.",
+   "Use a number line for adding and subtracting."
+  ],
+  "mistakes": [
+   "Treating 5 - (-3) as 2.",
+   "Thinking -3 is bigger than -1."
+  ]
+ },
+ "Calculating with standard form": {
+  "concept": "Standard form is a number between 1 and 10 multiplied by a power of 10. It handles very big and very small numbers.",
+  "rules": [
+   "a × 10ⁿ with 1 ≤ a < 10.",
+   "Multiply: multiply the numbers and add the powers.",
+   "Divide: divide the numbers and subtract the powers.",
+   "Add or subtract: write with the same power first."
+  ],
+  "method": [
+   "Deal with the number parts and the powers separately.",
+   "Combine the results.",
+   "If the number is not between 1 and 10, adjust it and the power."
+  ],
+  "mistakes": [
+   "Forgetting to adjust when the front number is 10 or more.",
+   "Adding powers when dividing."
+  ]
+ },
+ "Converting between FDP": {
+  "concept": "Fractions, decimals and percentages are three ways of writing the same amount.",
+  "rules": [
+   "Fraction to decimal: top ÷ bottom.",
+   "Decimal to percentage: × 100. Percentage to decimal: ÷ 100.",
+   "Percentage to fraction: put over 100 and simplify."
+  ],
+  "method": [
+   "Decide which form you start with and need.",
+   "Use the matching conversion.",
+   "Simplify fractions."
+  ],
+  "mistakes": [
+   "Moving the decimal point the wrong way.",
+   "Forgetting to simplify."
+  ]
+ },
+ "Error intervals and bounds": {
+  "concept": "Rounded numbers hide a range of possible true values. The bounds show that range.",
+  "rules": [
+   "Lower bound: half a unit below. Upper bound: half a unit above (not included).",
+   "Error interval: lower ≤ x < upper.",
+   "Max of a + b uses upper + upper. Min of a - b uses lower - upper."
+  ],
+  "method": [
+   "Find the rounding unit and halve it.",
+   "Subtract it for the lower bound and add it for the upper bound.",
+   "Write the inequality with ≤ at the bottom and < at the top.",
+   "Choose bounds carefully for calculations."
+  ],
+  "mistakes": [
+   "Using ≤ at the upper end.",
+   "Using lower bounds for everything."
+  ]
+ },
+ "Estimation": {
+  "concept": "Estimating means rounding the numbers to simple values to get an approximate answer.",
+  "rules": [
+   "Round each number to 1 significant figure.",
+   "Then calculate with the rounded values.",
+   "Use ≈ to show it is approximate."
+  ],
+  "method": [
+   "Round every number to 1 s.f.",
+   "Work out the simpler calculation.",
+   "Compare with the real answer for a check."
+  ],
+  "mistakes": [
+   "Rounding the answer instead of the numbers.",
+   "Rounding 0.37 to 0.4 correctly but 0.037 to 0.4."
+  ]
+ },
+ "Factors, multiples and primes": {
+  "concept": "Factors divide exactly into a number, multiples are in its times table and primes have exactly two factors.",
+  "rules": [
+   "A factor pair multiplies to give the number.",
+   "A prime has only two factors: 1 and itself. 1 is not prime.",
+   "Primes: 2, 3, 5, 7, 11, 13, ..."
+  ],
+  "method": [
+   "List factors in pairs.",
+   "Test for divisibility.",
+   "Check primes by dividing by smaller primes."
+  ],
+  "mistakes": [
+   "Calling 1 prime.",
+   "Missing factor pairs."
+  ]
+ },
+ "Fraction problems in context": {
+  "concept": "Fraction problems need you to find the correct whole and apply fractions to it.",
+  "rules": [
+   "Fraction of an amount: divide by the denominator, multiply by the numerator.",
+   "What is left = 1 - the fractions used.",
+   "The whole is always 1 (100%)."
+  ],
+  "method": [
+   "Find what the fraction is of.",
+   "Work out the amounts step by step.",
+   "Subtract from the whole for the remainder.",
+   "Check amounts add to the total."
+  ],
+  "mistakes": [
+   "Using the wrong whole for the second fraction.",
+   "Not using the remaining amount."
+  ]
+ },
+ "Fractions of amounts": {
+  "concept": "To find a fraction of an amount, divide by the bottom and multiply by the top.",
+  "rules": [
+   "a/b of N = N ÷ b × a.",
+   "To find the whole from a fraction, divide by the numerator and multiply by the denominator."
+  ],
+  "method": [
+   "Divide the amount by the denominator.",
+   "Multiply by the numerator.",
+   "Check the answer is less than the whole for a proper fraction."
+  ],
+  "mistakes": [
+   "Multiplying by the denominator.",
+   "Dividing by the numerator."
+  ]
+ },
+ "HCF and LCM": {
+  "concept": "The HCF is the largest number that divides two numbers. The LCM is the smallest number both divide into.",
+  "rules": [
+   "Write numbers as products of primes.",
+   "HCF: multiply the primes common to both.",
+   "LCM: multiply all primes, using the highest power of each."
+  ],
+  "method": [
+   "Do prime factorisation, for example with a factor tree.",
+   "Put in a Venn diagram or list.",
+   "Multiply the right primes for HCF or LCM."
+  ],
+  "mistakes": [
+   "Mixing up HCF and LCM.",
+   "Forgetting repeated primes."
+  ]
+ },
+ "Index laws with numbers": {
+  "concept": "Index laws simplify powers with the same base.",
+  "rules": [
+   "aᵐ × aⁿ = aᵐ⁺ⁿ. aᵐ ÷ aⁿ = aᵐ⁻ⁿ. (aᵐ)ⁿ = aᵐⁿ.",
+   "a⁰ = 1. a¹ = a.",
+   "The base must be the same."
+  ],
+  "method": [
+   "Check the bases match.",
+   "Add, subtract or multiply the powers.",
+   "Evaluate if asked."
+  ],
+  "mistakes": [
+   "Multiplying powers when you should add.",
+   "Changing the base."
+  ]
+ },
+ "Money, time and measures": {
+  "concept": "Everyday problems need correct units and careful conversion.",
+  "rules": [
+   "60 seconds = 1 minute, 60 minutes = 1 hour, 24 hours = 1 day.",
+   "Money: work in pence or pounds consistently.",
+   "Time calculations use 60, not 100."
+  ],
+  "method": [
+   "Convert to the same units.",
+   "Calculate step by step.",
+   "Give the answer with units."
+  ],
+  "mistakes": [
+   "Treating time as decimal: 1.5 hours is 1 h 30 min, not 1 h 50.",
+   "Mixing pounds and pence."
+  ]
+ },
+ "Multiplication, division and remainders": {
+  "concept": "Written methods multiply and divide larger numbers. A remainder is what is left over.",
+  "rules": [
+   "Long multiplication or the grid method.",
+   "Long division: divide, multiply, subtract, bring down.",
+   "The remainder is less than the divisor."
+  ],
+  "method": [
+   "Set the calculation out clearly.",
+   "Work through each place value.",
+   "Interpret the remainder in context: round up if you need more."
+  ],
+  "mistakes": [
+   "Misaligned columns.",
+   "Rounding the remainder the wrong way in context."
+  ]
+ },
+ "Multiplying and dividing fractions": {
+  "concept": "Multiply fractions straight across. To divide, flip the second fraction and multiply.",
+  "rules": [
+   "a/b × c/d = ac/bd.",
+   "a/b ÷ c/d = a/b × d/c.",
+   "Convert mixed numbers to improper fractions first."
+  ],
+  "method": [
+   "Convert mixed numbers.",
+   "Flip the second fraction when dividing.",
+   "Cancel, then multiply.",
+   "Simplify."
+  ],
+  "mistakes": [
+   "Flipping the first fraction.",
+   "Finding a common denominator when multiplying (not needed)."
+  ]
+ },
+ "Negative and fractional indices": {
+  "concept": "Negative indices mean reciprocal. Fractional indices mean roots.",
+  "rules": [
+   "a⁻ⁿ = 1/aⁿ.",
+   "a^(1/n) = ⁿ√a.",
+   "a^(m/n) = (ⁿ√a)ᵐ."
+  ],
+  "method": [
+   "Deal with the negative sign by flipping to a reciprocal.",
+   "Take the root (the denominator), then the power (the numerator).",
+   "Evaluate."
+  ],
+  "mistakes": [
+   "Thinking a negative index makes the answer negative.",
+   "Doing the power before the root, which gives huge numbers."
+  ]
+ },
+ "Ordering numbers": {
+  "concept": "Ordering compares numbers using place value, or a common form.",
+  "rules": [
+   "Compare decimals digit by digit from the left.",
+   "Convert fractions to decimals or percentages to compare.",
+   "Ascending is smallest first."
+  ],
+  "method": [
+   "Convert all to the same form.",
+   "Compare and order.",
+   "Write them in the original form if asked."
+  ],
+  "mistakes": [
+   "Thinking 0.45 is greater than 0.5.",
+   "Ordering descending instead of ascending."
+  ]
+ },
+ "Percentages": {
+  "concept": "A percentage is an amount out of 100.",
+  "rules": [
+   "Percentage of an amount: divide by 100, multiply by the percentage.",
+   "Increase by p%: multiply by 1 + p/100. Decrease: 1 - p/100.",
+   "Percentage change = change ÷ original × 100."
+  ],
+  "method": [
+   "Identify whether you need a part, a change or the original.",
+   "Use the multiplier method.",
+   "Check the answer is sensible."
+  ],
+  "mistakes": [
+   "Using the new amount as the original.",
+   "Adding a percentage instead of multiplying for repeated change."
+  ]
+ },
+ "Product of prime factors": {
+  "concept": "Every number can be written as a product of primes in only one way.",
+  "rules": [
+   "A prime factor tree breaks a number down.",
+   "Write using powers: 72 = 2³ × 3².",
+   "Used for HCF, LCM and squares."
+  ],
+  "method": [
+   "Divide by the smallest prime repeatedly.",
+   "Stop when you reach 1.",
+   "Write the primes as a product with indices."
+  ],
+  "mistakes": [
+   "Leaving non-prime factors.",
+   "Forgetting a repeated prime."
+  ]
+ },
+ "Recurring decimals": {
+  "concept": "A recurring decimal repeats forever. Every recurring decimal can be written as a fraction.",
+  "rules": [
+   "Write 0.3̇ for 0.333...",
+   "Let x = the decimal; multiply by 10, 100 and so on to line up the repeating part.",
+   "Subtract to cancel the repeat."
+  ],
+  "method": [
+   "Let x = the recurring decimal.",
+   "Multiply by 10ⁿ where n is the length of the repeat.",
+   "Subtract and solve for x.",
+   "Simplify the fraction."
+  ],
+  "mistakes": [
+   "Multiplying by the wrong power of 10.",
+   "Not simplifying."
+  ]
+ },
+ "Rounding": {
+  "concept": "Rounding gives a simpler number to a chosen accuracy.",
+  "rules": [
+   "Look at the digit after the rounding position: 5 or more rounds up.",
+   "Decimal places count after the decimal point.",
+   "Significant figures count from the first non-zero digit."
+  ],
+  "method": [
+   "Find the rounding digit.",
+   "Look at the next digit.",
+   "Round up or keep, and fill with zeros if needed."
+  ],
+  "mistakes": [
+   "Counting zeros at the start as significant.",
+   "Dropping place-holder zeros."
+  ]
+ },
+ "Simplifying and equivalent fractions": {
+  "concept": "Equivalent fractions have the same value. A fraction is simplified when no number divides both top and bottom.",
+  "rules": [
+   "Multiply or divide top and bottom by the same number.",
+   "Divide by the HCF to simplify fully."
+  ],
+  "method": [
+   "Find the HCF of numerator and denominator.",
+   "Divide both by it.",
+   "Check nothing else divides both."
+  ],
+  "mistakes": [
+   "Dividing only the top or the bottom.",
+   "Not simplifying fully."
+  ]
+ },
+ "Simplifying and manipulating surds": {
+  "concept": "A surd is a root that cannot be written as a whole number, such as √2.",
+  "rules": [
+   "√a × √b = √(ab).",
+   "√(a/b) = √a / √b.",
+   "Simplify by taking out square factors: √12 = 2√3.",
+   "Rationalise: multiply top and bottom by the surd."
+  ],
+  "method": [
+   "Find the largest square factor.",
+   "Simplify each surd, then combine like surds.",
+   "To rationalise, multiply top and bottom by the surd (or the conjugate)."
+  ],
+  "mistakes": [
+   "Adding surds like √2 + √3 = √5.",
+   "Not simplifying fully."
+  ]
+ },
+ "Surds": {
+  "concept": "A surd is a root that cannot be written as a whole number, such as √2.",
+  "rules": [
+   "√a × √b = √(ab).",
+   "√(a/b) = √a / √b.",
+   "Simplify by taking out square factors: √12 = 2√3.",
+   "Rationalise: multiply top and bottom by the surd."
+  ],
+  "method": [
+   "Find the largest square factor.",
+   "Simplify each surd, then combine like surds.",
+   "To rationalise, multiply top and bottom by the surd (or the conjugate)."
+  ],
+  "mistakes": [
+   "Adding surds like √2 + √3 = √5.",
+   "Not simplifying fully."
+  ]
+ },
+ "Squares, cubes and roots": {
+  "concept": "Squares, cubes and roots are inverse operations.",
+  "rules": [
+   "Squares: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144.",
+   "Cubes: 1, 8, 27, 64, 125, 1000.",
+   "√ undoes squaring. ∛ undoes cubing."
+  ],
+  "method": [
+   "Recall or calculate the power.",
+   "Use the inverse for roots.",
+   "Check by squaring or cubing."
+  ],
+  "mistakes": [
+   "Confusing squaring with doubling.",
+   "Mixing up √ and ∛."
+  ]
+ },
+ "Systematic listing and the product rule": {
+  "concept": "Systematic listing finds every possible outcome without repeats. The product rule counts them quickly.",
+  "rules": [
+   "If there are m ways for one choice and n for another there are m × n outcomes.",
+   "List in a pattern, such as alphabetical or numerical order.",
+   "Check that nothing is missing or repeated."
+  ],
+  "method": [
+   "Decide whether order matters.",
+   "List methodically or multiply the number of choices.",
+   "Count the outcomes."
+  ],
+  "mistakes": [
+   "Adding instead of multiplying.",
+   "Missing or repeating combinations."
+  ]
+ },
+ "Writing numbers in standard form": {
+  "concept": "Standard form writes numbers as a × 10ⁿ with 1 ≤ a < 10.",
+  "rules": [
+   "Large numbers have a positive power. Small numbers have a negative power.",
+   "The power counts how many places the decimal point moves."
+  ],
+  "method": [
+   "Move the decimal point to make a number between 1 and 10.",
+   "Count the places moved.",
+   "Positive power if the number was large; negative if small."
+  ],
+  "mistakes": [
+   "Wrong sign on the power.",
+   "Writing 12 × 10³ (not standard form)."
+  ]
+ },
+ "Conditional probability and without replacement": {
+  "concept": "Without replacement, the probabilities change after each pick because the total and the numbers change.",
+  "rules": [
+   "P(A and B) = P(A) × P(B given A).",
+   "After one item is removed, reduce the total by 1.",
+   "The probabilities on the second set of branches depend on the first."
+  ],
+  "method": [
+   "Write the starting probabilities.",
+   "Update the numbers for the second pick.",
+   "Multiply along the branches.",
+   "Add the branches for \"or\"."
+  ],
+  "mistakes": [
+   "Keeping the same denominator for the second pick.",
+   "Forgetting to reduce the favourable count."
+  ]
+ },
+ "Frequency trees": {
+  "concept": "A frequency tree shows how a group of people or items splits into categories, using counts rather than probabilities.",
+  "rules": [
+   "Each split must add up to the amount before.",
+   "Use percentages or fractions of the group to find the numbers.",
+   "Probability = favourable ÷ total."
+  ],
+  "method": [
+   "Start with the total.",
+   "Calculate each branch.",
+   "Check each pair adds to the branch above.",
+   "Use the numbers to answer."
+  ],
+  "mistakes": [
+   "Branches that do not add up.",
+   "Using the wrong total for a fraction."
+  ]
+ },
+ "Independent and mutually exclusive events": {
+  "concept": "Independent events do not affect each other. Mutually exclusive events cannot happen together.",
+  "rules": [
+   "Independent: P(A and B) = P(A) × P(B).",
+   "Mutually exclusive: P(A or B) = P(A) + P(B).",
+   "P(not A) = 1 - P(A)."
+  ],
+  "method": [
+   "Decide whether the events are \"and\" or \"or\".",
+   "Use multiply for and, add for or.",
+   "Check the answer is between 0 and 1."
+  ],
+  "mistakes": [
+   "Adding when the events are \"and\".",
+   "Using add when events overlap."
+  ]
+ },
+ "Probability of a single event": {
+  "concept": "Probability measures how likely something is, from 0 (impossible) to 1 (certain).",
+  "rules": [
+   "P(event) = number of favourable outcomes ÷ total number of equally likely outcomes.",
+   "P(not A) = 1 - P(A).",
+   "Probabilities of all outcomes add to 1."
+  ],
+  "method": [
+   "Count the favourable outcomes.",
+   "Count all outcomes.",
+   "Write as a fraction and simplify.",
+   "Use 1 - p for the opposite."
+  ],
+  "mistakes": [
+   "Writing probability as a ratio (3:5).",
+   "Giving a value greater than 1."
+  ]
+ },
+ "Relative frequency and expected outcomes": {
+  "concept": "Relative frequency estimates probability from experiments. Expected outcomes predict how often something should happen.",
+  "rules": [
+   "Relative frequency = frequency ÷ number of trials.",
+   "Expected number = probability × number of trials.",
+   "More trials give a more reliable estimate."
+  ],
+  "method": [
+   "Divide the frequency by the total trials.",
+   "Multiply the probability by the number of trials for an expectation.",
+   "Comment on reliability if asked."
+  ],
+  "mistakes": [
+   "Thinking expected results must happen exactly.",
+   "Using the wrong total."
+  ]
+ },
+ "Sample spaces and combined events": {
+  "concept": "A sample space lists every possible outcome of one or more events.",
+  "rules": [
+   "Use a table or list for two events.",
+   "Count total outcomes and favourable outcomes.",
+   "The number of outcomes = product of the numbers for each event."
+  ],
+  "method": [
+   "Draw a table or list.",
+   "Mark favourable outcomes.",
+   "Write probability as favourable ÷ total."
+  ],
+  "mistakes": [
+   "Missing outcomes (for example 3, 4 and 4, 3).",
+   "Counting combinations twice."
+  ]
+ },
+ "Tree diagrams": {
+  "concept": "A tree diagram shows the probabilities of successive events along branches.",
+  "rules": [
+   "Multiply along the branches for \"and\".",
+   "Add the ends for \"or\".",
+   "Branches from one point add to 1."
+  ],
+  "method": [
+   "Draw the branches and label the probabilities.",
+   "Multiply along each route.",
+   "Add the routes that fit the question.",
+   "Check the total of all routes is 1."
+  ],
+  "mistakes": [
+   "Adding along branches.",
+   "Forgetting to include all matching routes."
+  ]
+ },
+ "Two-way tables": {
+  "concept": "A two-way table sorts data by two categories at once.",
+  "rules": [
+   "Rows and columns have totals.",
+   "Fill in missing values using the totals.",
+   "Probability = number in cell ÷ appropriate total."
+  ],
+  "method": [
+   "Complete the missing numbers by subtraction.",
+   "Pick the correct total (row, column or overall).",
+   "Write the answer."
+  ],
+  "mistakes": [
+   "Using the grand total instead of the row or column total.",
+   "Arithmetic slips in filling the gaps."
+  ]
+ },
+ "Venn diagrams and set notation": {
+  "concept": "A Venn diagram shows how groups overlap, using sets.",
+  "rules": [
+   "A ∩ B: in both. A ∪ B: in A or B or both. A′: not in A.",
+   "ξ is the universal set.",
+   "Fill the overlap first, then the rest of each set."
+  ],
+  "method": [
+   "Fill in the intersection first.",
+   "Subtract it from each set total.",
+   "Put the remainder outside.",
+   "Read off the probability."
+  ],
+  "mistakes": [
+   "Putting the full set total in the non-overlapping area.",
+   "Forgetting people in neither set."
+  ]
+ },
+ "Best buys": {
+  "concept": "A best buy is the option that gives the most for your money, found with a fair comparison.",
+  "rules": [
+   "Find the unit price (price per 1 unit) or the amount per £1.",
+   "Compare using the same units.",
+   "The best buy has the lowest cost per unit (or the most per £)."
+  ],
+  "method": [
+   "Convert to the same units.",
+   "Divide to get the cost per unit for each option.",
+   "Compare and state the best buy with a reason."
+  ],
+  "mistakes": [
+   "Comparing totals without finding the unit price.",
+   "Not making units match."
+  ]
+ },
+ "Converting units": {
+  "concept": "Converting units changes a measurement to another unit using a conversion factor.",
+  "rules": [
+   "Smaller unit: multiply. Larger unit: divide.",
+   "Area and volume conversions use the squared or cubed factor.",
+   "Speed: km/h to m/s divide by 3.6."
+  ],
+  "method": [
+   "Write the conversion fact.",
+   "Decide whether to multiply or divide.",
+   "Calculate and write the unit."
+  ],
+  "mistakes": [
+   "Multiplying when you should divide.",
+   "Using linear factors for area and volume."
+  ]
+ },
+ "Direct and inverse proportion with formulae": {
+  "concept": "In direct proportion two quantities rise together; in inverse proportion one rises as the other falls.",
+  "rules": [
+   "Direct: y = kx. Inverse: y = k/x.",
+   "Square versions: y = kx², y = k/x².",
+   "Find k from a pair of values first."
+  ],
+  "method": [
+   "Write the proportion as an equation with k.",
+   "Substitute the known pair to find k.",
+   "Write the formula, then substitute the new value."
+  ],
+  "mistakes": [
+   "Forgetting to find k first.",
+   "Using direct instead of inverse."
+  ]
+ },
+ "Direct proportion problems (unitary method)": {
+  "concept": "The unitary method finds the value of one item first, then scales up.",
+  "rules": [
+   "Divide by the number given to find one unit.",
+   "Multiply by the number you need.",
+   "Ratio of quantities stays constant in direct proportion."
+  ],
+  "method": [
+   "Find the value for 1.",
+   "Multiply by the new number.",
+   "Check the answer is sensible."
+  ],
+  "mistakes": [
+   "Multiplying instead of dividing to find one unit.",
+   "Not keeping units consistent."
+  ]
+ },
+ "Exchange rates": {
+  "concept": "An exchange rate tells you how much one currency is worth in another.",
+  "rules": [
+   "Multiply to change to the currency with the bigger numbers; divide to go back.",
+   "Use the given rate: 1 pound = 1.15 euros."
+  ],
+  "method": [
+   "Write the rate.",
+   "Multiply or divide.",
+   "Round money to 2 decimal places."
+  ],
+  "mistakes": [
+   "Multiplying when you should divide.",
+   "Not rounding sensibly."
+  ]
+ },
+ "Exponential growth and decay": {
+  "concept": "Exponential change multiplies by the same factor each period.",
+  "rules": [
+   "Final amount = start × (multiplier)ⁿ.",
+   "Growth multiplier = 1 + rate. Decay multiplier = 1 - rate.",
+   "n is the number of periods."
+  ],
+  "method": [
+   "Write the multiplier as a decimal.",
+   "Raise it to the power of the number of periods.",
+   "Multiply by the starting amount."
+  ],
+  "mistakes": [
+   "Multiplying the rate by the number of years.",
+   "Using 1.5 instead of 1.05 for 5%."
+  ]
+ },
+ "Inverse proportion in context": {
+  "concept": "In inverse proportion, more of one means less of the other and the product stays the same.",
+  "rules": [
+   "x × y = constant.",
+   "Doubling one halves the other.",
+   "Typical: workers and days, speed and time."
+  ],
+  "method": [
+   "Find the constant (for example total work).",
+   "Divide by the new quantity.",
+   "Check that more workers means fewer days."
+  ],
+  "mistakes": [
+   "Treating it as direct proportion.",
+   "Arithmetic with the wrong total."
+  ]
+ },
+ "Money problems: VAT, wages and tax": {
+  "concept": "Money problems use percentages for VAT, tax and pay.",
+  "rules": [
+   "VAT: add 20% by multiplying by 1.2.",
+   "Wages: rate × hours. Overtime has a higher rate.",
+   "Tax: percentage of the taxable amount."
+  ],
+  "method": [
+   "Decide whether to add or find a percentage.",
+   "Use a multiplier.",
+   "Show the amounts in £."
+  ],
+  "mistakes": [
+   "Adding only 2 and 0 instead of 20%.",
+   "Applying tax to the full amount."
+  ]
+ },
+ "Rates of change and tangents": {
+  "concept": "The rate of change is the gradient of a graph. For a curve use the gradient of a tangent.",
+  "rules": [
+   "Gradient = change in y ÷ change in x.",
+   "A tangent touches the curve at one point.",
+   "Units of the gradient = unit of y per unit of x."
+  ],
+  "method": [
+   "Draw a tangent at the point carefully.",
+   "Choose two points on the tangent far apart.",
+   "Divide the change in y by the change in x."
+  ],
+  "mistakes": [
+   "Using points on the curve rather than the tangent.",
+   "Forgetting the units."
+  ]
+ },
+ "Ratio and algebra": {
+  "concept": "Ratios can be written with letters and solved like equations.",
+  "rules": [
+   "If a : b = 2 : 3 then a/b = 2/3.",
+   "Use parts: a = 2k and b = 3k.",
+   "Form an equation from the given information."
+  ],
+  "method": [
+   "Write the ratio as multiples of k.",
+   "Use the extra information to find k.",
+   "Calculate the quantities."
+  ],
+  "mistakes": [
+   "Mixing up which quantity is which.",
+   "Dividing by the wrong total."
+  ]
+ },
+ "Ratio problems with changing amounts": {
+  "concept": "When amounts change, work out the new quantities and form a new ratio.",
+  "rules": [
+   "Find the original amounts from the ratio.",
+   "Apply the change.",
+   "Write the new ratio and simplify."
+  ],
+  "method": [
+   "Share the original total.",
+   "Add or subtract the change from the correct part.",
+   "Write the ratio in order and simplify."
+  ],
+  "mistakes": [
+   "Changing the wrong part.",
+   "Writing the ratio in the wrong order."
+  ]
+ },
+ "Ratio, fractions and percentages": {
+  "concept": "Ratios, fractions and percentages are linked ways to compare parts of a whole.",
+  "rules": [
+   "a : b means a/(a + b) and b/(a + b) of the whole.",
+   "Fractions can be changed into percentages by multiplying by 100."
+  ],
+  "method": [
+   "Add the ratio parts to get the total.",
+   "Write each as a fraction of the total.",
+   "Convert to a percentage if asked."
+  ],
+  "mistakes": [
+   "Using a/b instead of a/(a + b).",
+   "Forgetting to add the parts."
+  ]
+ },
+ "Ratios in the form 1 : n": {
+  "concept": "A ratio in the form 1 : n has 1 on the left, which makes comparison easy.",
+  "rules": [
+   "Divide both sides by the left number.",
+   "Do not round until the end."
+  ],
+  "method": [
+   "Divide both parts by the left-hand value.",
+   "Write as 1 : n."
+  ],
+  "mistakes": [
+   "Dividing only one part.",
+   "Not leaving 1 on the left."
+  ]
+ },
+ "Reverse percentage problems": {
+  "concept": "A reverse percentage finds the original amount before a percentage change.",
+  "rules": [
+   "Original × multiplier = new amount.",
+   "Original = new ÷ multiplier.",
+   "The new amount is the percentage of the original, not 100%."
+  ],
+  "method": [
+   "Write the multiplier for the change.",
+   "Divide the new amount by it.",
+   "Check by applying the percentage."
+  ],
+  "mistakes": [
+   "Taking the percentage of the new amount.",
+   "Using the wrong multiplier."
+  ]
+ },
+ "Reverse percentages": {
+  "concept": "A reverse percentage finds the original amount before a percentage change.",
+  "rules": [
+   "Original × multiplier = new amount.",
+   "Original = new ÷ multiplier.",
+   "The new amount is the percentage of the original, not 100%."
+  ],
+  "method": [
+   "Write the multiplier for the change.",
+   "Divide the new amount by it.",
+   "Check by applying the percentage."
+  ],
+  "mistakes": [
+   "Taking the percentage of the new amount.",
+   "Using the wrong multiplier."
+  ]
+ },
+ "Scale drawings and maps": {
+  "concept": "A scale shows how a drawing relates to real life.",
+  "rules": [
+   "1 : 50 000 means 1 cm on the map is 50 000 cm in real life.",
+   "Convert 100 000 cm = 1 km.",
+   "Multiply to find real lengths and divide for map lengths."
+  ],
+  "method": [
+   "Write the scale.",
+   "Multiply or divide by the scale number.",
+   "Convert units to metres or kilometres."
+  ],
+  "mistakes": [
+   "Multiplying when going from real to map.",
+   "Not converting units."
+  ]
+ },
+ "Sharing in a ratio": {
+  "concept": "Sharing in a ratio divides an amount into parts in proportion.",
+  "rules": [
+   "Add the ratio parts to find the total number of parts.",
+   "One part = total ÷ number of parts.",
+   "Multiply by each ratio number."
+  ],
+  "method": [
+   "Add the ratio numbers.",
+   "Divide the amount by that total.",
+   "Multiply to find each share.",
+   "Check the shares add up to the amount."
+  ],
+  "mistakes": [
+   "Dividing by one of the ratio numbers instead of the total.",
+   "Shares that do not add up."
+  ]
+ },
+ "Simple and compound interest": {
+  "concept": "Interest is extra money paid on a sum. Simple interest uses the original sum each year; compound interest uses the growing balance.",
+  "rules": [
+   "Simple: interest = P × r × n.",
+   "Compound: final = P × (1 + r)ⁿ.",
+   "r is the rate as a decimal."
+  ],
+  "method": [
+   "Identify simple or compound.",
+   "Use the right formula.",
+   "Subtract the original to find the interest."
+  ],
+  "mistakes": [
+   "Using simple interest for compound questions.",
+   "Forgetting to subtract P to find the interest."
+  ]
+ },
+ "Simplifying ratios": {
+  "concept": "A ratio is simplified by dividing all parts by the same number.",
+  "rules": [
+   "Divide by the HCF.",
+   "Convert decimals or units first.",
+   "The order must stay the same."
+  ],
+  "method": [
+   "Make the units the same.",
+   "Divide by the highest common factor.",
+   "Check no further simplification."
+  ],
+  "mistakes": [
+   "Not changing units first.",
+   "Writing the ratio in the wrong order."
+  ]
+ },
+ "Speed and unit conversions in context": {
+  "concept": "Speed links distance and time and often needs unit conversion.",
+  "rules": [
+   "Speed = distance ÷ time. Distance = speed × time. Time = distance ÷ speed.",
+   "km/h to m/s: divide by 3.6.",
+   "Convert minutes into hours by ÷ 60."
+  ],
+  "method": [
+   "Write the correct formula triangle.",
+   "Convert units first.",
+   "Calculate and give the unit."
+  ],
+  "mistakes": [
+   "Using minutes with km/h.",
+   "Writing 1.5 hours as 1 h 50 min."
+  ]
+ },
+ "Speed, density and pressure": {
+  "concept": "Compound measures combine two units: speed, density and pressure.",
+  "rules": [
+   "Speed = distance ÷ time.",
+   "Density = mass ÷ volume.",
+   "Pressure = force ÷ area."
+  ],
+  "method": [
+   "Write the formula and rearrange for what you need.",
+   "Check the units match.",
+   "Calculate and state the units (such as g/cm³ or N/m²)."
+  ],
+  "mistakes": [
+   "Using the formula upside down.",
+   "Mixing up units, for example m² and cm²."
+  ]
+ },
+ "Averages from frequency tables": {
+  "concept": "A frequency table groups data. You can find the mean, median and mode directly from it.",
+  "rules": [
+   "Mean = Σ(f × x) ÷ Σf.",
+   "Median is the value at position (n + 1) ÷ 2.",
+   "Mode is the value with the highest frequency.",
+   "For grouped data use midpoints for an estimated mean."
+  ],
+  "method": [
+   "Add a column f × x (or f × midpoint).",
+   "Total f and total f × x.",
+   "Divide to find the mean.",
+   "Use the cumulative frequency for the median."
+  ],
+  "mistakes": [
+   "Dividing by the number of rows instead of Σf.",
+   "Giving the frequency as the mode instead of the value."
+  ]
+ },
+ "Box plots": {
+  "concept": "A box plot shows the spread of data using five key values.",
+  "rules": [
+   "Minimum, lower quartile Q1, median Q2, upper quartile Q3, maximum.",
+   "Interquartile range = Q3 - Q1.",
+   "Range = maximum - minimum."
+  ],
+  "method": [
+   "Read the five values from the plot.",
+   "Calculate the range or IQR.",
+   "Compare using one average and one spread."
+  ],
+  "mistakes": [
+   "Giving only a comparison of the medians.",
+   "Using the whole box length as the range."
+  ]
+ },
+ "Charts and graphs for data": {
+  "concept": "Different charts suit different types of data.",
+  "rules": [
+   "Bar charts are for categories. Histograms are for continuous grouped data.",
+   "Line graphs show change over time.",
+   "Always read the axes and the scale."
+  ],
+  "method": [
+   "Read the title and axes.",
+   "Find the needed values.",
+   "Use the key or scale."
+  ],
+  "mistakes": [
+   "Misreading a scale.",
+   "Leaving gaps in a histogram or using bar charts for continuous data."
+  ]
+ },
+ "Comparing distributions": {
+  "concept": "To compare two sets of data, use an average and a measure of spread, and give a conclusion in context.",
+  "rules": [
+   "Average: mean or median. Spread: range or IQR.",
+   "A smaller spread means more consistent.",
+   "Write the comparison in words for the context."
+  ],
+  "method": [
+   "Calculate or read the averages.",
+   "Calculate or read the spreads.",
+   "Write one sentence about each, in context."
+  ],
+  "mistakes": [
+   "Comparing numbers without a sentence.",
+   "Not saying which is larger."
+  ]
+ },
+ "Cumulative frequency graphs": {
+  "concept": "A cumulative frequency graph is a running total, which lets you read the median and quartiles.",
+  "rules": [
+   "Plot cumulative frequency at the upper class boundary.",
+   "Median at n/2, Q1 at n/4, Q3 at 3n/4.",
+   "Join with a smooth curve."
+  ],
+  "method": [
+   "Complete the cumulative frequency column.",
+   "Plot the points and draw the curve.",
+   "Read across from the position and then down."
+  ],
+  "mistakes": [
+   "Plotting at the midpoint.",
+   "Reading the frequency instead of the value."
+  ]
+ },
+ "Histograms": {
+  "concept": "In a histogram the area of each bar shows the frequency, so bar heights are frequency densities.",
+  "rules": [
+   "Frequency density = frequency ÷ class width.",
+   "Frequency = frequency density × class width.",
+   "The vertical axis is frequency density."
+  ],
+  "method": [
+   "Find class widths.",
+   "Calculate frequency density to draw, or multiply height by width to read frequency.",
+   "Add areas for totals."
+  ],
+  "mistakes": [
+   "Reading the height as frequency.",
+   "Using equal bars for unequal classes."
+  ]
+ },
+ "Mean, median, mode and range": {
+  "concept": "Averages summarise a set of data with one value. The range shows the spread.",
+  "rules": [
+   "Mean = total ÷ number of values.",
+   "Median = middle value in order.",
+   "Mode = most common. Range = highest - lowest."
+  ],
+  "method": [
+   "Order the data.",
+   "Calculate each measure.",
+   "Use the best average for the situation."
+  ],
+  "mistakes": [
+   "Not ordering the data for the median.",
+   "Giving the range as two numbers."
+  ]
+ },
+ "Moving averages": {
+  "concept": "A moving average smooths out short-term changes to show the trend.",
+  "rules": [
+   "Add the values in each group and divide by the group size.",
+   "Move forward one value each time.",
+   "Place the average at the middle of the group."
+  ],
+  "method": [
+   "Choose the group size.",
+   "Calculate the means one at a time.",
+   "Plot at the centre and describe the trend."
+  ],
+  "mistakes": [
+   "Moving on by the group size instead of one.",
+   "Plotting at the wrong time."
+  ]
+ },
+ "Pie charts": {
+  "concept": "A pie chart shows how a whole splits into parts using angles.",
+  "rules": [
+   "Angle = frequency ÷ total × 360.",
+   "Frequency = angle ÷ 360 × total.",
+   "Angles add to 360°."
+  ],
+  "method": [
+   "Add to find the total.",
+   "Find 360 ÷ total for one item.",
+   "Multiply for each angle.",
+   "Check the angles add to 360°."
+  ],
+  "mistakes": [
+   "Using 100 instead of 360.",
+   "Not finding the total first."
+  ]
+ },
+ "Sampling methods": {
+  "concept": "A sample is a smaller group chosen to represent a population.",
+  "rules": [
+   "Random: everyone has an equal chance.",
+   "Stratified: proportional to group sizes, sample = group ÷ population × sample size.",
+   "Systematic: every kth item.",
+   "Bias happens when the sample is not representative."
+  ],
+  "method": [
+   "Identify the population and sample size.",
+   "Choose the method.",
+   "Calculate the numbers from each group."
+  ],
+  "mistakes": [
+   "Rounding stratified numbers so the total is wrong.",
+   "Calling a convenient group random."
+  ]
+ },
+ "Scatter graphs and correlation": {
+  "concept": "A scatter graph shows the relationship between two variables.",
+  "rules": [
+   "Positive correlation: both rise. Negative: one rises as the other falls. None: no pattern.",
+   "A line of best fit passes through the middle of the points.",
+   "Only predict within the range of the data."
+  ],
+  "method": [
+   "Plot the points.",
+   "Describe the correlation.",
+   "Draw a line of best fit through (x̄, ȳ).",
+   "Read estimates from the line."
+  ],
+  "mistakes": [
+   "Predicting far outside the data.",
+   "Saying correlation proves one thing causes the other."
+  ]
+ },
+ "Stem-and-leaf diagrams": {
+  "concept": "A stem-and-leaf diagram shows the data values in order, keeping the original numbers.",
+  "rules": [
+   "The stem is the first digit(s) and the leaf is the last digit.",
+   "Include a key.",
+   "The leaves are in ascending order."
+  ],
+  "method": [
+   "Order the data.",
+   "Split each value into stem and leaf.",
+   "Write the key.",
+   "Read the median by counting."
+  ],
+  "mistakes": [
+   "Leaving out a key.",
+   "Not ordering leaves."
+  ]
+ },
+ "Algebraic fractions simplification": {
+  "concept": "Algebraic fractions follow exactly the same rules as number fractions, with brackets or letters in the top and bottom.",
+  "rules": [
+   "Simplify by factorising top and bottom, then cancel common factors only.",
+   "Add or subtract: use a common denominator, then combine the numerators.",
+   "Multiply: multiply tops and multiply bottoms. Divide: flip the second fraction and multiply."
+  ],
+  "method": [
+   "Factorise every numerator and denominator fully.",
+   "Cancel factors that appear on both the top and the bottom.",
+   "For + or -, find a common denominator and put brackets round numerators when subtracting.",
+   "Simplify the final answer again."
+  ],
+  "mistakes": [
+   "Cancelling terms instead of factors, for example cancelling the x in (x + 3)/x.",
+   "Forgetting brackets when subtracting a numerator, which loses a sign."
+  ]
+ },
+ "Algebraic inequalities with fractions": {
+  "concept": "Inequalities are solved like equations, but the answer is a range of values.",
+  "rules": [
+   "< means less than, ≤ means less than or equal to.",
+   "Multiplying or dividing by a negative reverses the inequality sign.",
+   "On a number line, an open circle excludes the end and a filled circle includes it."
+  ],
+  "method": [
+   "Solve as if it were an equation.",
+   "If you multiply or divide by a negative, flip the sign.",
+   "Write the answer as x < a or x ≥ a.",
+   "Mark it on a number line if asked."
+  ],
+  "mistakes": [
+   "Forgetting to flip the sign for a negative.",
+   "Using an open circle for ≤ or ≥."
+  ]
+ },
+ "Arithmetic sequences": {
+  "concept": "A linear sequence goes up or down by the same amount each time. Its nth term is an + b.",
+  "rules": [
+   "The common difference d is the amount added each time.",
+   "The nth term is dn + (first term - d).",
+   "To test whether a number is in the sequence, solve dn + b = that number for a whole n."
+  ],
+  "method": [
+   "Find the difference between consecutive terms.",
+   "Write dn as the first part of the rule.",
+   "Subtract dn from the first term to find the number to add.",
+   "Check with the second term."
+  ],
+  "mistakes": [
+   "Writing the first term instead of working out the constant.",
+   "Using n + d instead of dn."
+  ]
+ },
+ "Sequences": {
+  "concept": "A linear sequence goes up or down by the same amount each time. Its nth term is an + b.",
+  "rules": [
+   "The common difference d is the amount added each time.",
+   "The nth term is dn + (first term - d).",
+   "To test whether a number is in the sequence, solve dn + b = that number for a whole n."
+  ],
+  "method": [
+   "Find the difference between consecutive terms.",
+   "Write dn as the first part of the rule.",
+   "Subtract dn from the first term to find the number to add.",
+   "Check with the second term."
+  ],
+  "mistakes": [
+   "Writing the first term instead of working out the constant.",
+   "Using n + d instead of dn."
+  ]
+ },
+ "Averages": {
+  "concept": "Averages summarise a set of data with one value. The range shows the spread.",
+  "rules": [
+   "Mean = total ÷ number of values.",
+   "Median = middle value in order.",
+   "Mode = most common. Range = highest - lowest."
+  ],
+  "method": [
+   "Order the data.",
+   "Calculate each measure.",
+   "Use the best average for the situation."
+  ],
+  "mistakes": [
+   "Not ordering the data for the median.",
+   "Giving the range as two numbers."
+  ]
+ },
+ "Bounds": {
+  "concept": "Rounded numbers hide a range of possible true values. The bounds show that range.",
+  "rules": [
+   "Lower bound: half a unit below. Upper bound: half a unit above (not included).",
+   "Error interval: lower ≤ x < upper.",
+   "Max of a + b uses upper + upper. Min of a - b uses lower - upper."
+  ],
+  "method": [
+   "Find the rounding unit and halve it.",
+   "Subtract it for the lower bound and add it for the upper bound.",
+   "Write the inequality with ≤ at the bottom and < at the top.",
+   "Choose bounds carefully for calculations."
+  ],
+  "mistakes": [
+   "Using ≤ at the upper end.",
+   "Using lower bounds for everything."
+  ]
+ },
+ "Upper and lower bounds": {
+  "concept": "Rounded numbers hide a range of possible true values. The bounds show that range.",
+  "rules": [
+   "Lower bound: half a unit below. Upper bound: half a unit above (not included).",
+   "Error interval: lower ≤ x < upper.",
+   "Max of a + b uses upper + upper. Min of a - b uses lower - upper."
+  ],
+  "method": [
+   "Find the rounding unit and halve it.",
+   "Subtract it for the lower bound and add it for the upper bound.",
+   "Write the inequality with ≤ at the bottom and < at the top.",
+   "Choose bounds carefully for calculations."
+  ],
+  "mistakes": [
+   "Using ≤ at the upper end.",
+   "Using lower bounds for everything."
+  ]
+ },
+ "Circle theorem: angle at centre": {
+  "concept": "Circle theorems link angles formed by chords, tangents and radii.",
+  "rules": [
+   "Angle at the centre is twice the angle at the circumference.",
+   "Angle in a semicircle is 90°.",
+   "Angles in the same segment are equal.",
+   "Opposite angles in a cyclic quadrilateral add to 180°.",
+   "A tangent is perpendicular to the radius."
+  ],
+  "method": [
+   "Mark the angles and identify the theorem.",
+   "Apply it to calculate the angle.",
+   "State the theorem as the reason."
+  ],
+  "mistakes": [
+   "Confusing angle at the centre with angle at the circumference.",
+   "Giving reasons that do not name the theorem."
+  ]
+ },
+ "Combined events": {
+  "concept": "A sample space lists every possible outcome of one or more events.",
+  "rules": [
+   "Use a table or list for two events.",
+   "Count total outcomes and favourable outcomes.",
+   "The number of outcomes = product of the numbers for each event."
+  ],
+  "method": [
+   "Draw a table or list.",
+   "Mark favourable outcomes.",
+   "Write probability as favourable ÷ total."
+  ],
+  "mistakes": [
+   "Missing outcomes (for example 3, 4 and 4, 3).",
+   "Counting combinations twice."
+  ]
+ },
+ "Compound depreciation": {
+  "concept": "Exponential change multiplies by the same factor each period.",
+  "rules": [
+   "Final amount = start × (multiplier)ⁿ.",
+   "Growth multiplier = 1 + rate. Decay multiplier = 1 - rate.",
+   "n is the number of periods."
+  ],
+  "method": [
+   "Write the multiplier as a decimal.",
+   "Raise it to the power of the number of periods.",
+   "Multiply by the starting amount."
+  ],
+  "mistakes": [
+   "Multiplying the rate by the number of years.",
+   "Using 1.5 instead of 1.05 for 5%."
+  ]
+ },
+ "Conditional probability from counts": {
+  "concept": "Without replacement, the probabilities change after each pick because the total and the numbers change.",
+  "rules": [
+   "P(A and B) = P(A) × P(B given A).",
+   "After one item is removed, reduce the total by 1.",
+   "The probabilities on the second set of branches depend on the first."
+  ],
+  "method": [
+   "Write the starting probabilities.",
+   "Update the numbers for the second pick.",
+   "Multiply along the branches.",
+   "Add the branches for \"or\"."
+  ],
+  "mistakes": [
+   "Keeping the same denominator for the second pick.",
+   "Forgetting to reduce the favourable count."
+  ]
+ },
+ "Cosine rule": {
+  "concept": "These rules work in any triangle, not just right-angled ones.",
+  "rules": [
+   "Sine rule: a/sin A = b/sin B.",
+   "Cosine rule: a² = b² + c² - 2bc cos A.",
+   "Area = ½ ab sin C.",
+   "Use sine rule with a side and its opposite angle; cosine rule with two sides and the included angle, or three sides."
+  ],
+  "method": [
+   "Label the sides a, b, c opposite angles A, B, C.",
+   "Pick the rule based on what you know.",
+   "Substitute carefully, then solve.",
+   "Use brackets for cos A on the calculator."
+  ],
+  "mistakes": [
+   "Using the wrong rule for the information given.",
+   "Subtracting before multiplying in the cosine rule."
+  ]
+ },
+ "Sine rule": {
+  "concept": "These rules work in any triangle, not just right-angled ones.",
+  "rules": [
+   "Sine rule: a/sin A = b/sin B.",
+   "Cosine rule: a² = b² + c² - 2bc cos A.",
+   "Area = ½ ab sin C.",
+   "Use sine rule with a side and its opposite angle; cosine rule with two sides and the included angle, or three sides."
+  ],
+  "method": [
+   "Label the sides a, b, c opposite angles A, B, C.",
+   "Pick the rule based on what you know.",
+   "Substitute carefully, then solve.",
+   "Use brackets for cos A on the calculator."
+  ],
+  "mistakes": [
+   "Using the wrong rule for the information given.",
+   "Subtracting before multiplying in the cosine rule."
+  ]
+ },
+ "Cumulative frequency median estimate": {
+  "concept": "A cumulative frequency graph is a running total, which lets you read the median and quartiles.",
+  "rules": [
+   "Plot cumulative frequency at the upper class boundary.",
+   "Median at n/2, Q1 at n/4, Q3 at 3n/4.",
+   "Join with a smooth curve."
+  ],
+  "method": [
+   "Complete the cumulative frequency column.",
+   "Plot the points and draw the curve.",
+   "Read across from the position and then down."
+  ],
+  "mistakes": [
+   "Plotting at the midpoint.",
+   "Reading the frequency instead of the value."
+  ]
+ },
+ "Estimated mean from grouped data": {
+  "concept": "A frequency table groups data. You can find the mean, median and mode directly from it.",
+  "rules": [
+   "Mean = Σ(f × x) ÷ Σf.",
+   "Median is the value at position (n + 1) ÷ 2.",
+   "Mode is the value with the highest frequency.",
+   "For grouped data use midpoints for an estimated mean."
+  ],
+  "method": [
+   "Add a column f × x (or f × midpoint).",
+   "Total f and total f × x.",
+   "Divide to find the mean.",
+   "Use the cumulative frequency for the median."
+  ],
+  "mistakes": [
+   "Dividing by the number of rows instead of Σf.",
+   "Giving the frequency as the mode instead of the value."
+  ]
+ },
+ "Mean from frequency table": {
+  "concept": "A frequency table groups data. You can find the mean, median and mode directly from it.",
+  "rules": [
+   "Mean = Σ(f × x) ÷ Σf.",
+   "Median is the value at position (n + 1) ÷ 2.",
+   "Mode is the value with the highest frequency.",
+   "For grouped data use midpoints for an estimated mean."
+  ],
+  "method": [
+   "Add a column f × x (or f × midpoint).",
+   "Total f and total f × x.",
+   "Divide to find the mean.",
+   "Use the cumulative frequency for the median."
+  ],
+  "mistakes": [
+   "Dividing by the number of rows instead of Σf.",
+   "Giving the frequency as the mode instead of the value."
+  ]
+ },
+ "Expanding brackets": {
+  "concept": "Expanding a single bracket multiplies every term inside by the term outside.",
+  "rules": [
+   "a(b + c) = ab + ac.",
+   "A minus sign outside changes the sign of every term inside.",
+   "Then simplify by collecting like terms."
+  ],
+  "method": [
+   "Multiply the outside term by the first term inside.",
+   "Multiply the outside term by each other term, keeping signs.",
+   "Collect like terms if there are two brackets."
+  ],
+  "mistakes": [
+   "Multiplying only the first term in the bracket.",
+   "Getting -2(x - 3) wrong: it is -2x + 6."
+  ]
+ },
+ "Factorising monic quadratics": {
+  "concept": "Factorising a quadratic writes it as two brackets multiplied together.",
+  "rules": [
+   "x² + bx + c = (x + p)(x + q) where p + q = b and p × q = c.",
+   "For ax² + bx + c multiply a × c, then split the middle term.",
+   "Check by expanding."
+  ],
+  "method": [
+   "Take out any common factor first.",
+   "Find two numbers that multiply to c and add to b.",
+   "Write the brackets. For a not 1, split the middle term and factorise in pairs.",
+   "Expand to check."
+  ],
+  "mistakes": [
+   "Choosing numbers with the right product but wrong sum.",
+   "Forgetting a common factor at the start."
+  ]
+ },
+ "Factorising quadratic expressions": {
+  "concept": "Factorising a quadratic writes it as two brackets multiplied together.",
+  "rules": [
+   "x² + bx + c = (x + p)(x + q) where p + q = b and p × q = c.",
+   "For ax² + bx + c multiply a × c, then split the middle term.",
+   "Check by expanding."
+  ],
+  "method": [
+   "Take out any common factor first.",
+   "Find two numbers that multiply to c and add to b.",
+   "Write the brackets. For a not 1, split the middle term and factorise in pairs.",
+   "Expand to check."
+  ],
+  "mistakes": [
+   "Choosing numbers with the right product but wrong sum.",
+   "Forgetting a common factor at the start."
+  ]
+ },
+ "Factors and multiples": {
+  "concept": "Factors divide exactly into a number, multiples are in its times table and primes have exactly two factors.",
+  "rules": [
+   "A factor pair multiplies to give the number.",
+   "A prime has only two factors: 1 and itself. 1 is not prime.",
+   "Primes: 2, 3, 5, 7, 11, 13, ..."
+  ],
+  "method": [
+   "List factors in pairs.",
+   "Test for divisibility.",
+   "Check primes by dividing by smaller primes."
+  ],
+  "mistakes": [
+   "Calling 1 prime.",
+   "Missing factor pairs."
+  ]
+ },
+ "Fractions": {
+  "concept": "Fractions can only be added or subtracted when they share the same denominator.",
+  "rules": [
+   "Find a common denominator (the LCM of the denominators).",
+   "Change each fraction, then add or subtract the numerators only.",
+   "Mixed numbers: change to improper fractions or deal with whole numbers separately."
+  ],
+  "method": [
+   "Find a common denominator.",
+   "Rewrite each fraction with it.",
+   "Add or subtract the numerators; the denominator stays the same.",
+   "Simplify and convert if needed."
+  ],
+  "mistakes": [
+   "Adding the denominators as well as the numerators.",
+   "Forgetting to multiply the numerator when changing the denominator."
+  ]
+ },
+ "Frequency density from histograms": {
+  "concept": "In a histogram the area of each bar shows the frequency, so bar heights are frequency densities.",
+  "rules": [
+   "Frequency density = frequency ÷ class width.",
+   "Frequency = frequency density × class width.",
+   "The vertical axis is frequency density."
+  ],
+  "method": [
+   "Find class widths.",
+   "Calculate frequency density to draw, or multiply height by width to read frequency.",
+   "Add areas for totals."
+  ],
+  "mistakes": [
+   "Reading the height as frequency.",
+   "Using equal bars for unequal classes."
+  ]
+ },
+ "Histograms with unequal class widths": {
+  "concept": "In a histogram the area of each bar shows the frequency, so bar heights are frequency densities.",
+  "rules": [
+   "Frequency density = frequency ÷ class width.",
+   "Frequency = frequency density × class width.",
+   "The vertical axis is frequency density."
+  ],
+  "method": [
+   "Find class widths.",
+   "Calculate frequency density to draw, or multiply height by width to read frequency.",
+   "Add areas for totals."
+  ],
+  "mistakes": [
+   "Reading the height as frequency.",
+   "Using equal bars for unequal classes."
+  ]
+ },
+ "Functions and inverse functions": {
+  "concept": "A function takes an input and gives an output. f(x) means the output when x goes in.",
+  "rules": [
+   "f(3) means replace x with 3.",
+   "fg(x) means do g first, then f.",
+   "The inverse f⁻¹(x) undoes f: swap x and y, then rearrange."
+  ],
+  "method": [
+   "For f(a), substitute a for x and calculate.",
+   "For fg(x), write g(x) inside f in place of x, then simplify.",
+   "For the inverse, write y = f(x), swap x and y, and make y the subject."
+  ],
+  "mistakes": [
+   "Doing the functions in the wrong order in fg(x).",
+   "Confusing f⁻¹(x) with 1/f(x)."
+  ]
+ },
+ "Geometry and measures": {
+  "concept": "Geometric reasoning means giving clear reasons for every step with angle and shape rules.",
+  "rules": [
+   "Name each rule you use.",
+   "Use a step-by-step chain: known facts → rule → new fact.",
+   "Unknown angles can be called x and found with an equation."
+  ],
+  "method": [
+   "Write what is given.",
+   "Choose the rule and name it.",
+   "Show the working and state the result."
+  ],
+  "mistakes": [
+   "Assuming a fact from the diagram without a reason.",
+   "Skipping a step in the chain."
+  ]
+ },
+ "HCF using prime factors": {
+  "concept": "The HCF is the largest number that divides two numbers. The LCM is the smallest number both divide into.",
+  "rules": [
+   "Write numbers as products of primes.",
+   "HCF: multiply the primes common to both.",
+   "LCM: multiply all primes, using the highest power of each."
+  ],
+  "method": [
+   "Do prime factorisation, for example with a factor tree.",
+   "Put in a Venn diagram or list.",
+   "Multiply the right primes for HCF or LCM."
+  ],
+  "mistakes": [
+   "Mixing up HCF and LCM.",
+   "Forgetting repeated primes."
+  ]
+ },
+ "LCM using prime factors": {
+  "concept": "The HCF is the largest number that divides two numbers. The LCM is the smallest number both divide into.",
+  "rules": [
+   "Write numbers as products of primes.",
+   "HCF: multiply the primes common to both.",
+   "LCM: multiply all primes, using the highest power of each."
+  ],
+  "method": [
+   "Do prime factorisation, for example with a factor tree.",
+   "Put in a Venn diagram or list.",
+   "Multiply the right primes for HCF or LCM."
+  ],
+  "mistakes": [
+   "Mixing up HCF and LCM.",
+   "Forgetting repeated primes."
+  ]
+ },
+ "Independent events": {
+  "concept": "Independent events do not affect each other. Mutually exclusive events cannot happen together.",
+  "rules": [
+   "Independent: P(A and B) = P(A) × P(B).",
+   "Mutually exclusive: P(A or B) = P(A) + P(B).",
+   "P(not A) = 1 - P(A)."
+  ],
+  "method": [
+   "Decide whether the events are \"and\" or \"or\".",
+   "Use multiply for and, add for or.",
+   "Check the answer is between 0 and 1."
+  ],
+  "mistakes": [
+   "Adding when the events are \"and\".",
+   "Using add when events overlap."
+  ]
+ },
+ "Interquartile range": {
+  "concept": "A box plot shows the spread of data using five key values.",
+  "rules": [
+   "Minimum, lower quartile Q1, median Q2, upper quartile Q3, maximum.",
+   "Interquartile range = Q3 - Q1.",
+   "Range = maximum - minimum."
+  ],
+  "method": [
+   "Read the five values from the plot.",
+   "Calculate the range or IQR.",
+   "Compare using one average and one spread."
+  ],
+  "mistakes": [
+   "Giving only a comparison of the medians.",
+   "Using the whole box length as the range."
+  ]
+ },
+ "Linear inequalities": {
+  "concept": "Inequalities are solved like equations, but the answer is a range of values.",
+  "rules": [
+   "< means less than, ≤ means less than or equal to.",
+   "Multiplying or dividing by a negative reverses the inequality sign.",
+   "On a number line, an open circle excludes the end and a filled circle includes it."
+  ],
+  "method": [
+   "Solve as if it were an equation.",
+   "If you multiply or divide by a negative, flip the sign.",
+   "Write the answer as x < a or x ≥ a.",
+   "Mark it on a number line if asked."
+  ],
+  "mistakes": [
+   "Forgetting to flip the sign for a negative.",
+   "Using an open circle for ≤ or ≥."
+  ]
+ },
+ "Multiplying fractions": {
+  "concept": "Multiply fractions straight across. To divide, flip the second fraction and multiply.",
+  "rules": [
+   "a/b × c/d = ac/bd.",
+   "a/b ÷ c/d = a/b × d/c.",
+   "Convert mixed numbers to improper fractions first."
+  ],
+  "method": [
+   "Convert mixed numbers.",
+   "Flip the second fraction when dividing.",
+   "Cancel, then multiply.",
+   "Simplify."
+  ],
+  "mistakes": [
+   "Flipping the first fraction.",
+   "Finding a common denominator when multiplying (not needed)."
+  ]
+ },
+ "Polygon Diagonals": {
+  "concept": "A polygon is a closed shape with straight sides. Its angles follow rules based on the number of sides n.",
+  "rules": [
+   "Sum of interior angles = (n - 2) × 180°.",
+   "Exterior angles add to 360°.",
+   "Regular polygon: exterior angle = 360 ÷ n; interior = 180 - exterior."
+  ],
+  "method": [
+   "Count the sides n.",
+   "Use (n - 2) × 180 for the total or 360 ÷ n for one exterior angle.",
+   "Subtract from 180 for the interior angle.",
+   "To find n from an angle, use 360 ÷ exterior."
+  ],
+  "mistakes": [
+   "Using 360 for interior angles.",
+   "Using n × 180 instead of (n - 2) × 180."
+  ]
+ },
+ "Probability": {
+  "concept": "Probability measures how likely something is, from 0 (impossible) to 1 (certain).",
+  "rules": [
+   "P(event) = number of favourable outcomes ÷ total number of equally likely outcomes.",
+   "P(not A) = 1 - P(A).",
+   "Probabilities of all outcomes add to 1."
+  ],
+  "method": [
+   "Count the favourable outcomes.",
+   "Count all outcomes.",
+   "Write as a fraction and simplify.",
+   "Use 1 - p for the opposite."
+  ],
+  "mistakes": [
+   "Writing probability as a ratio (3:5).",
+   "Giving a value greater than 1."
+  ]
+ },
+ "Proportion": {
+  "concept": "The unitary method finds the value of one item first, then scales up.",
+  "rules": [
+   "Divide by the number given to find one unit.",
+   "Multiply by the number you need.",
+   "Ratio of quantities stays constant in direct proportion."
+  ],
+  "method": [
+   "Find the value for 1.",
+   "Multiply by the new number.",
+   "Check the answer is sensible."
+  ],
+  "mistakes": [
+   "Multiplying instead of dividing to find one unit.",
+   "Not keeping units consistent."
+  ]
+ },
+ "Pythagoras in three dimensions": {
+  "concept": "In 3D, find the right-angled triangle that contains the angle or length you need.",
+  "rules": [
+   "Use Pythagoras to find a diagonal across a base or face.",
+   "Then use SOH CAH TOA in a vertical right-angled triangle.",
+   "The angle between a line and a plane uses the line and its projection."
+  ],
+  "method": [
+   "Draw the base triangle and the vertical triangle separately.",
+   "Find the missing length by Pythagoras.",
+   "Use trigonometry for the angle."
+  ],
+  "mistakes": [
+   "Using the 3D edge as a side of the wrong triangle.",
+   "Mixing up the angle between lines and planes."
+  ]
+ },
+ "Quadratic equations": {
+  "concept": "If two things multiply to give zero, one of them must be zero. This is how factorised quadratics are solved.",
+  "rules": [
+   "Write the quadratic as (x + p)(x + q) = 0.",
+   "Then x = -p or x = -q.",
+   "The equation must equal zero before factorising."
+  ],
+  "method": [
+   "Rearrange so one side is zero.",
+   "Factorise into two brackets.",
+   "Set each bracket equal to zero and solve.",
+   "Check by substituting."
+  ],
+  "mistakes": [
+   "Factorising before moving everything to one side.",
+   "Giving the bracket numbers without changing the sign."
+  ]
+ },
+ "Quadratic simultaneous equations": {
+  "concept": "Solving one linear and one quadratic equation finds the points where a line meets a curve.",
+  "rules": [
+   "Rearrange the linear equation to make x or y the subject.",
+   "Substitute into the quadratic to get a single quadratic equation.",
+   "Solving gives two values, and each needs its partner."
+  ],
+  "method": [
+   "Make y (or x) the subject of the linear equation.",
+   "Substitute into the other equation and expand.",
+   "Rearrange to zero and solve for x.",
+   "Put each x back into the linear equation to find y."
+  ],
+  "mistakes": [
+   "Forgetting to find the second variable for each solution.",
+   "Pairing values wrongly."
+  ]
+ },
+ "Quadratic turning point": {
+  "concept": "Completing the square rewrites x² + bx + c as (x + b/2)² + k. It shows the turning point and helps solve some quadratics.",
+  "rules": [
+   "x² + bx + c = (x + b/2)² - (b/2)² + c.",
+   "The turning point of y = (x + p)² + q is (-p, q).",
+   "For ax² + bx + c, take out a from the first two terms first."
+  ],
+  "method": [
+   "Halve the number in front of x and put it in the bracket: (x + b/2)².",
+   "Square that number and subtract it to balance.",
+   "Add on the original constant c.",
+   "To solve, set equal to zero, rearrange and take the square root, remembering plus or minus."
+  ],
+  "mistakes": [
+   "Forgetting to subtract (b/2)² to balance.",
+   "Reading the turning point as (p, q) instead of (-p, q)."
+  ]
+ },
+ "Ratio Reasoning": {
+  "concept": "Ratios can be written with letters and solved like equations.",
+  "rules": [
+   "If a : b = 2 : 3 then a/b = 2/3.",
+   "Use parts: a = 2k and b = 3k.",
+   "Form an equation from the given information."
+  ],
+  "method": [
+   "Write the ratio as multiples of k.",
+   "Use the extra information to find k.",
+   "Calculate the quantities."
+  ],
+  "mistakes": [
+   "Mixing up which quantity is which.",
+   "Dividing by the wrong total."
+  ]
+ },
+ "Ratio and proportion": {
+  "concept": "Sharing in a ratio divides an amount into parts in proportion.",
+  "rules": [
+   "Add the ratio parts to find the total number of parts.",
+   "One part = total ÷ number of parts.",
+   "Multiply by each ratio number."
+  ],
+  "method": [
+   "Add the ratio numbers.",
+   "Divide the amount by that total.",
+   "Multiply to find each share.",
+   "Check the shares add up to the amount."
+  ],
+  "mistakes": [
+   "Dividing by one of the ratio numbers instead of the total.",
+   "Shares that do not add up."
+  ]
+ },
+ "Recurring decimals to fractions": {
+  "concept": "A recurring decimal repeats forever. Every recurring decimal can be written as a fraction.",
+  "rules": [
+   "Write 0.3̇ for 0.333...",
+   "Let x = the decimal; multiply by 10, 100 and so on to line up the repeating part.",
+   "Subtract to cancel the repeat."
+  ],
+  "method": [
+   "Let x = the recurring decimal.",
+   "Multiply by 10ⁿ where n is the length of the repeat.",
+   "Subtract and solve for x.",
+   "Simplify the fraction."
+  ],
+  "mistakes": [
+   "Multiplying by the wrong power of 10.",
+   "Not simplifying."
+  ]
+ },
+ "Rounding and estimation": {
+  "concept": "Rounding gives a simpler number to a chosen accuracy.",
+  "rules": [
+   "Look at the digit after the rounding position: 5 or more rounds up.",
+   "Decimal places count after the decimal point.",
+   "Significant figures count from the first non-zero digit."
+  ],
+  "method": [
+   "Find the rounding digit.",
+   "Look at the next digit.",
+   "Round up or keep, and fill with zeros if needed."
+  ],
+  "mistakes": [
+   "Counting zeros at the start as significant.",
+   "Dropping place-holder zeros."
+  ]
+ },
+ "Similar shapes area scale": {
+  "concept": "Similar shapes have the same shape and equal angles, and their sides are in the same ratio.",
+  "rules": [
+   "Scale factor = new length ÷ old length.",
+   "Areas scale by (scale factor)².",
+   "Volumes scale by (scale factor)³."
+  ],
+  "method": [
+   "Match the corresponding sides.",
+   "Find the scale factor from a pair.",
+   "Multiply or divide the required length, or square or cube for area and volume."
+  ],
+  "mistakes": [
+   "Using the length scale factor for area.",
+   "Matching non-corresponding sides."
+  ]
+ },
+ "Similarity and scale factors": {
+  "concept": "Similar shapes have the same shape and equal angles, and their sides are in the same ratio.",
+  "rules": [
+   "Scale factor = new length ÷ old length.",
+   "Areas scale by (scale factor)².",
+   "Volumes scale by (scale factor)³."
+  ],
+  "method": [
+   "Match the corresponding sides.",
+   "Find the scale factor from a pair.",
+   "Multiply or divide the required length, or square or cube for area and volume."
+  ],
+  "mistakes": [
+   "Using the length scale factor for area.",
+   "Matching non-corresponding sides."
+  ]
+ },
+ "Simultaneous equations": {
+  "concept": "Simultaneous equations have two unknowns that must satisfy both equations at once.",
+  "rules": [
+   "Elimination: make the coefficients of one letter match, then add or subtract.",
+   "Add if the signs are different, subtract if the signs are the same.",
+   "Substitute back to find the second letter."
+  ],
+  "method": [
+   "Number the equations.",
+   "Multiply one or both equations so a letter has matching coefficients.",
+   "Add or subtract to eliminate it and solve.",
+   "Substitute into an original equation and check in the other."
+  ],
+  "mistakes": [
+   "Adding when you should subtract.",
+   "Multiplying only one term of an equation."
+  ]
+ },
+ "Simultaneous equations in context": {
+  "concept": "Simultaneous equations have two unknowns that must satisfy both equations at once.",
+  "rules": [
+   "Elimination: make the coefficients of one letter match, then add or subtract.",
+   "Add if the signs are different, subtract if the signs are the same.",
+   "Substitute back to find the second letter."
+  ],
+  "method": [
+   "Number the equations.",
+   "Multiply one or both equations so a letter has matching coefficients.",
+   "Add or subtract to eliminate it and solve.",
+   "Substitute into an original equation and check in the other."
+  ],
+  "mistakes": [
+   "Adding when you should subtract.",
+   "Multiplying only one term of an equation."
+  ]
+ },
+ "Solving simultaneous equations by elimination": {
+  "concept": "Simultaneous equations have two unknowns that must satisfy both equations at once.",
+  "rules": [
+   "Elimination: make the coefficients of one letter match, then add or subtract.",
+   "Add if the signs are different, subtract if the signs are the same.",
+   "Substitute back to find the second letter."
+  ],
+  "method": [
+   "Number the equations.",
+   "Multiply one or both equations so a letter has matching coefficients.",
+   "Add or subtract to eliminate it and solve.",
+   "Substitute into an original equation and check in the other."
+  ],
+  "mistakes": [
+   "Adding when you should subtract.",
+   "Multiplying only one term of an equation."
+  ]
+ },
+ "Standard form": {
+  "concept": "Standard form writes numbers as a × 10ⁿ with 1 ≤ a < 10.",
+  "rules": [
+   "Large numbers have a positive power. Small numbers have a negative power.",
+   "The power counts how many places the decimal point moves."
+  ],
+  "method": [
+   "Move the decimal point to make a number between 1 and 10.",
+   "Count the places moved.",
+   "Positive power if the number was large; negative if small."
+  ],
+  "mistakes": [
+   "Wrong sign on the power.",
+   "Writing 12 × 10³ (not standard form)."
+  ]
+ },
+ "Surds and rationalising denominators": {
+  "concept": "A surd is a root that cannot be written as a whole number, such as √2.",
+  "rules": [
+   "√a × √b = √(ab).",
+   "√(a/b) = √a / √b.",
+   "Simplify by taking out square factors: √12 = 2√3.",
+   "Rationalise: multiply top and bottom by the surd."
+  ],
+  "method": [
+   "Find the largest square factor.",
+   "Simplify each surd, then combine like surds.",
+   "To rationalise, multiply top and bottom by the surd (or the conjugate)."
+  ],
+  "mistakes": [
+   "Adding surds like √2 + √3 = √5.",
+   "Not simplifying fully."
+  ]
+ },
+ "Surface area of a cylinder": {
+  "concept": "Surface area is the total area of all the faces of a 3D shape.",
+  "rules": [
+   "Cuboid: 2(lw + lh + wh).",
+   "Cylinder: 2πr² + 2πrh.",
+   "Sphere: 4πr². Cone: πr² + πrl (l is the slant height)."
+  ],
+  "method": [
+   "List each face and its area.",
+   "Use the formulas or add the pieces.",
+   "Write the answer in square units."
+  ],
+  "mistakes": [
+   "Leaving out the circular ends of a cylinder.",
+   "Using the vertical height instead of the slant height in a cone."
+  ]
+ },
+ "Translation by a vector": {
+  "concept": "A vector has size and direction and is written as a column or with letters.",
+  "rules": [
+   "Column vector (x, y) moves x across and y up.",
+   "AB = b - a.",
+   "Parallel vectors are multiples of each other.",
+   "Add vectors by adding their components."
+  ],
+  "method": [
+   "Write each route in terms of the given vectors.",
+   "Add vectors along the route, reversing the sign when going backwards.",
+   "Simplify."
+  ],
+  "mistakes": [
+   "Forgetting that BA = -AB.",
+   "Not changing the sign when travelling against the arrow."
+  ]
+ },
+ "Vector addition": {
+  "concept": "A vector has size and direction and is written as a column or with letters.",
+  "rules": [
+   "Column vector (x, y) moves x across and y up.",
+   "AB = b - a.",
+   "Parallel vectors are multiples of each other.",
+   "Add vectors by adding their components."
+  ],
+  "method": [
+   "Write each route in terms of the given vectors.",
+   "Add vectors along the route, reversing the sign when going backwards.",
+   "Simplify."
+  ],
+  "mistakes": [
+   "Forgetting that BA = -AB.",
+   "Not changing the sign when travelling against the arrow."
+  ]
+ },
+ "Tree diagrams without replacement": {
+  "concept": "Without replacement, the probabilities change after each pick because the total and the numbers change.",
+  "rules": [
+   "P(A and B) = P(A) × P(B given A).",
+   "After one item is removed, reduce the total by 1.",
+   "The probabilities on the second set of branches depend on the first."
+  ],
+  "method": [
+   "Write the starting probabilities.",
+   "Update the numbers for the second pick.",
+   "Multiply along the branches.",
+   "Add the branches for \"or\"."
+  ],
+  "mistakes": [
+   "Keeping the same denominator for the second pick.",
+   "Forgetting to reduce the favourable count."
+  ]
+ },
+ "Without replacement": {
+  "concept": "Without replacement, the probabilities change after each pick because the total and the numbers change.",
+  "rules": [
+   "P(A and B) = P(A) × P(B given A).",
+   "After one item is removed, reduce the total by 1.",
+   "The probabilities on the second set of branches depend on the first."
+  ],
+  "method": [
+   "Write the starting probabilities.",
+   "Update the numbers for the second pick.",
+   "Multiply along the branches.",
+   "Add the branches for \"or\"."
+  ],
+  "mistakes": [
+   "Keeping the same denominator for the second pick.",
+   "Forgetting to reduce the favourable count."
+  ]
+ },
+ "Without replacement probability": {
+  "concept": "Without replacement, the probabilities change after each pick because the total and the numbers change.",
+  "rules": [
+   "P(A and B) = P(A) × P(B given A).",
+   "After one item is removed, reduce the total by 1.",
+   "The probabilities on the second set of branches depend on the first."
+  ],
+  "method": [
+   "Write the starting probabilities.",
+   "Update the numbers for the second pick.",
+   "Multiply along the branches.",
+   "Add the branches for \"or\"."
+  ],
+  "mistakes": [
+   "Keeping the same denominator for the second pick.",
+   "Forgetting to reduce the favourable count."
+  ]
+ },
+ "Trigonometry": {
+  "concept": "SOH CAH TOA links the angles and sides of right-angled triangles.",
+  "rules": [
+   "sin θ = opposite/hypotenuse.",
+   "cos θ = adjacent/hypotenuse.",
+   "tan θ = opposite/adjacent.",
+   "To find an angle use sin⁻¹, cos⁻¹ or tan⁻¹."
+  ],
+  "method": [
+   "Label the hypotenuse, opposite and adjacent relative to the angle.",
+   "Choose the ratio using the two sides involved.",
+   "Write the equation and solve.",
+   "Check the calculator is in degrees."
+  ],
+  "mistakes": [
+   "Labelling the sides from the wrong angle.",
+   "Calculator in radians mode."
+  ]
+ }
+}
