@@ -13,9 +13,9 @@ import json, re, sys, csv
 from fractions import Fraction
 
 COLW = 'red|blue|green|yellow|white|black|pink|purple|orange|grey|brown'
-OBJW = 'counter|marble|bead|ball|token|button|sweet'
+OBJW = 'counter|marble|bead|ball|token|sweet'
 FN = 'Aisha Grace Sofia Joy Ruth Maya Priya Chloe Zara Leah Nina Tara Hannah Olivia Amelia Isla Lily Mia Ella Freya Layla Esme Anika Fatima Amina Dina Rosa Daisy Keira Jade Nia Hana Anya Amara Imani Xena Kira Elsie Poppy Ivy Yasmin Bella Holly Naomi Sana Emily Ayesha Lucy Megan'.split()
-MN = 'Idris Isaac Gabriel Arjun Jamal Noah Elijah Kofi Ibrahim Mohammed Yusuf Harry Theo Finn Kwame Felix Ali Callum Carlos Owen Qasim Dev Kai Jamie Sam Leo Max Omar Ravi Tom Ben Luca Hugo Zane Danny Ethan Adam Jacob Samir Tariq Casey Morgan Robin Charlie'.split()
+MN = 'Idris Isaac Gabriel Arjun Jamal Noah Elijah Kofi Ibrahim Mohammed Yusuf Harry Theo Finn Kwame Felix Ali Callum Carlos Owen Qasim Dev Kai Jamie Sam Leo Omar Ravi Tom Ben Luca Hugo Zane Danny Ethan Adam Jacob Samir Tariq Casey Morgan Robin Charlie'.split()
 WORDS = re.compile(r'\b(%s|%s)s?\b' % (COLW, OBJW), re.I)
 NAMES = re.compile(r'\b(%s)\b' % '|'.join(FN + MN))
 
@@ -25,43 +25,89 @@ def source_text(q):
     parts += [str(x) for x in (q.get('accept') or [])]
     return ' '.join(parts)
 
+DIV = '\u00a7'
 def clean(t):
-    t = t.replace('\\times', '*').replace('\\div', '/').replace('\u00d7', '*').replace('\u00f7', '/').replace('\u2212', '-')
+    t = re.sub(r'\s*(?:\\div|\u00f7)\s*', DIV, t)
+    t = t.replace('\\times', '*').replace('\u00d7', '*').replace('\u2212', '-')
     t = t.replace('\\cdot', '*').replace('^', '**')
     t = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}', r'(\1)/(\2)', t)
     return t.replace(',', '')
 
 TOK = re.compile(r'^[0-9.+\-*/() ]+$')
-def val(expr):
+def val1(expr):
     expr = expr.strip()
-    if not expr or not TOK.match(expr) or '**' in expr and len(expr) > 12: return None
-    if not re.search(r'\d', expr): return None
+    if not expr or not TOK.match(expr) or not re.search(r'\d', expr): return None
+    if '**' in expr and len(expr) > 12: return None
     try:
-        expr = re.sub(r'(\d+\.\d+|\d+)', lambda m: 'F("%s")' % m.group(1), expr)
-        return eval(expr, {'F': Fraction, '__builtins__': {}})
+        e = re.sub(r'(\d+\.\d+|\d+)', lambda m: 'F("%s")' % m.group(1), expr)
+        return eval(e, {'F': Fraction, '__builtins__': {}})
     except Exception:
         return None
 
+def val(expr):
+    if DIV in expr:
+        if '(' in expr: return val1(expr.replace(DIV, '/'))
+        parts = expr.split(DIV)
+        vs = [val1(p) for p in parts]
+        if any(v is None for v in vs): return None
+        r = vs[0]
+        for v in vs[1:]:
+            if v == 0: return None
+            r = r / v
+        return r
+    # long mixed chains like 16*16/14*16 are ambiguous written flat: skip
+    if ' / ' in expr and '*' in expr and expr.count('*') + expr.count('/') >= 3 and '(' not in expr: return None
+    return val1(expr)
+
+def dp(t):
+    m = re.search(r'\.(\d+)\s*$', t.strip())
+    return len(m.group(1)) if m else 0
+
+def same(a, b, rhs_text='', lhs_text=''):
+    if a is None or b is None: return True
+    if a == b: return True
+    fa, fb = float(a), float(b)
+    if abs(fa - fb) <= 1e-9 * max(1, abs(fa)): return True
+    # standard form: same digits, different power of ten (e.g. 0.00073 = 7.3 x 10^-4)
+    if fa != 0 and fb != 0:
+        import math
+        r = abs(fa / fb); l = math.log10(r)
+        if abs(l - round(l)) < 1e-9 and ('10' in rhs_text or '10' in lhs_text or True) and re.fullmatch(r'[\d.]+', rhs_text.strip() or 'x'):
+            if abs(round(l)) >= 1: return True
+    if '.' in rhs_text or '.' in lhs_text or abs(fa) >= 1000:
+        tol = 0.75 * 10 ** (-dp(rhs_text)) + 0.002 * abs(fb)
+        if abs(fa - fb) <= tol: return True
+    return False
+
+def eq_ok(parts):
+    if len(parts) == 2: return same(val(parts[0]), val(parts[1]), parts[1], parts[0])
+    # chain a = b = c ... or several equations written on one line
+    vs = [val(p) for p in parts]
+    if all(same(vs[0], v, p, parts[0]) for v, p in zip(vs[1:], parts[1:])): return True
+    mid = parts[1]
+    for m in re.finditer(r'\s+', mid):
+        r, l = mid[:m.start()], mid[m.end():]
+        if same(val(parts[0]), val(r), r, parts[0]) and eq_ok([l] + parts[2:]): return True
+    return False
+
+SEP = re.compile(r'\\quad|\\\\|;|\n|\\Rightarrow|=>|\band\b|\bor\b|\s{2,}')
 def arith_errors(board):
     bad = []
-    for line in re.split(r'[;\n]', board):
-        line = clean(line)
-        if line.count('=') < 1: continue
-        sides = [s.strip() for s in line.split('=')]
-        vals = [val(s) for s in sides]
-        known = [(s, v) for s, v in zip(sides, vals) if v is not None]
-        if len(known) < 2: continue
-        # a number-only side with decimals means it may be rounded
-        base = known[0][1]
-        for s, v in known[1:]:
-            if v == base: continue
-            tol = max(abs(float(base)) * 0.006, 0.006)
-            if abs(float(v) - float(base)) <= tol and ('.' in s): continue
-            bad.append(line.strip()); break
+    for seg in SEP.split(clean(board)):
+        if '=' not in seg: continue
+        parts = [p.strip() for p in seg.split('=')]
+        if len(parts) < 2 or any(p == '' for p in parts): continue
+        if re.fullmatch(r'[a-zA-Z](?:_\d)?', parts[0]): parts = parts[1:]   # 'x = 515/900 = ...' -> check the numbers
+        if len(parts) < 2 or any(re.search(r'[A-Za-z_\\?]', p) for p in parts): continue   # algebra, labels, blanks
+        if re.fullmatch(r'\(\d+\)', parts[0]): continue                                  # table labels like (11)=2
+        try:
+            if not eq_ok(parts): bad.append(seg.strip())
+        except Exception:
+            pass
     return bad
 
 def nums(t):
-    return [float(x) for x in re.findall(r'-?\d+(?:\.\d+)?', t.replace(',', ''))]
+    return [abs(float(x)) for x in re.findall(r'-?\d+(?:\.\d+)?', t.replace(',', '').replace('\u2212', '-'))]
 
 def check(q):
     why = []
@@ -82,7 +128,8 @@ def check(q):
     ans = str(q.get('answer', ''))
     tail = ' '.join(x.get('say', '') + ' ' + x.get('board', '') for x in sp[-2:])
     an = nums(ans)
-    if an and not all(any(abs(v - a) <= 1e-6 * max(1, abs(a)) for v in nums(tail)) for a in an):
+    plain = re.fullmatch(r'[-\u2212\s\d.,%£$]+(?:\s*[a-zA-Z²³/]{0,6})?', ans.strip()) is not None and '/' not in ans
+    if an and plain and not all(any(abs(v - a) <= 1e-6 * max(1, abs(a)) for v in nums(tail)) for a in an):
         # allow fractions / words written differently
         if ans.replace(' ', '').lower() not in tail.replace(' ', '').lower():
             why.append('final answer not in last two steps')
