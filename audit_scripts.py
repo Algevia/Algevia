@@ -45,8 +45,14 @@ def val1(expr):
         return None
 
 def val(expr):
+    if DIV in expr and ' / ' in expr and '(' not in expr:
+        vs = [val(p) for p in expr.split(' / ')]
+        if any(v is None for v in vs) or any(v == 0 for v in vs[1:]): return None
+        r = vs[0]
+        for v in vs[1:]: r = r / v
+        return r
     if DIV in expr:
-        if '(' in expr: return val1(expr.replace(DIV, '/'))
+        if '(' in expr: return val1(re.sub(r'(\([^()]*\)/\([^()]*\))', r'(\1)', expr).replace(DIV, '/'))
         parts = expr.split(DIV)
         vs = [val1(p) for p in parts]
         if any(v is None for v in vs): return None
@@ -90,10 +96,15 @@ def eq_ok(parts):
         if same(val(parts[0]), val(r), r, parts[0]) and eq_ok([l] + parts[2:]): return True
     return False
 
-SEP = re.compile(r'\\quad|\\\\|;|\n|\\Rightarrow|=>|\band\b|\bor\b|\s{2,}')
+SEP = re.compile(r'\\quad|\\\\|;|\n|\\Rightarrow|=>|\s{2,}')
+ANDOR = re.compile(r'\b(?:and|or)\b')
 def arith_errors(board):
     bad = []
-    for seg in SEP.split(clean(board)):
+    segs = []
+    for sg in SEP.split(clean(board)):
+        if re.search(r'=.*\b(?:and|or)\b.*=', sg): segs += ANDOR.split(sg)
+        else: segs.append(sg)
+    for seg in segs:
         if '=' not in seg: continue
         parts = [p.strip() for p in seg.split('=')]
         if len(parts) < 2 or any(p == '' for p in parts): continue
