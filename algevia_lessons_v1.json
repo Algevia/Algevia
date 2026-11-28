@@ -1053,12 +1053,13 @@
  "Exact trigonometric values": {
   "concept": "You need to know exact values of sin, cos and tan for key angles without a calculator.",
   "rules": [
-   "sin 30° = ½, cos 60° = ½, sin 45° = √2/2, sin 60° = √3/2, cos 30° = √3/2.",
+   "sin θ = opposite ÷ hypotenuse, cos θ = adjacent ÷ hypotenuse, tan θ = opposite ÷ adjacent (SOH CAH TOA). Also tan θ = sin θ ÷ cos θ.",
+   "sin 30° = ½, cos 60° = ½, sin 45° = √2/2, cos 45° = √2/2, sin 60° = √3/2, cos 30° = √3/2.",
    "tan 45° = 1, tan 30° = 1/√3 = √3/3, tan 60° = √3.",
-   "sin 0° = 0, cos 0° = 1, sin 90° = 1, cos 90° = 0."
+   "sin 0° = 0, cos 0° = 1, tan 0° = 0, sin 90° = 1, cos 90° = 0."
   ],
   "method": [
-   "Recall or recreate the value with a 30-60-90 or 45-45-90 triangle.",
+   "Recall or recreate the value: a 45-45-90 triangle (sides 1, 1, √2) gives the 45° values, and half an equilateral triangle (sides 1, 2, √3) gives the 30° and 60° values.",
    "Substitute into the expression.",
    "Simplify, rationalising if needed."
   ],
