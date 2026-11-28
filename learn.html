@@ -902,6 +902,16 @@ function setAdapt(){const r=gradeRange();el('adaptMsg').textContent='Working at 
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 /* wording variation: same maths, different names, objects and colours (only when the wording is plain text) */
+function texClean(t,speech){
+ if(typeof t!=='string')return t;
+ t=t.replace(/\\text\{([^{}]*)\}/g,'$1').replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g,'$1/$2').replace(/\\sqrt\{([^{}]*)\}/g,'√($1)')
+  .replace(/\\left|\\right/g,'').replace(/\\[()\[\]]/g,'').replace(/\\circ/g,'°').replace(/\\theta/g,'θ').replace(/\\pi/g,'π')
+  .replace(/\\leq?\b/g,'≤').replace(/\\geq?\b/g,'≥').replace(/\\neq\b/g,'≠').replace(/\\pm\b/g,'±').replace(/\\cdot\b/g,'×');
+ t=speech?t.replace(/\\times\b/g,' times ').replace(/\\div\b/g,' divided by ').replace(/\s{2,}/g,' ')
+         :t.replace(/\\times\b/g,'×').replace(/\\div\b/g,'÷');
+ return t.replace(/\\([a-zA-Z]+)/g,'$1');
+}
+function cleanSpoken(a){return (a||[]).map(x=>({say:texClean(String(x.say||''),true),board:texClean(String(x.board||''),false)}));}
 function vary(q){
  if(q.diagram_svg)return q;
  const ans=[q.answer].concat(q.accept||[]).join(' ');
@@ -931,6 +941,7 @@ function vary(q){
  const o=Object.assign({},q);
  fields.forEach(f=>{if(typeof o[f]==='string')o[f]=fin(tag(o[f]));});
  arrs.forEach(f=>{if(Array.isArray(o[f]))o[f]=o[f].map(x=>fin(tag(x)));});
+ if(Array.isArray(o.spoken))o.spoken=o.spoken.map(x=>({say:fin(tag(x.say)),board:fin(tag(x.board))}));
  if(Array.isArray(o.mark_scheme))o.mark_scheme=o.mark_scheme.map(m=>Object.assign({},m,{for:fin(tag(m.for))}));
  return o;
 }
@@ -1119,7 +1130,7 @@ window.check=function(){
 window.teachQuestion=function(){
  if(!active)return;
  if(active.spoken&&active.spoken.length){
-  const sp=active.spoken.map(x=>({speech:String(x.say||''),math:String(x.board||''),why:'',raw:true}));
+  const sp=cleanSpoken(active.spoken).map(x=>({speech:x.say,math:x.board,why:'',raw:true}));
   if(active.common_mistake)sp.push({speech:'One thing to watch out for. '+active.common_mistake,math:'',why:'',raw:true});
   runStructuredSteps(sp,'Explaining this practice question',false);return;
  }
@@ -1189,7 +1200,7 @@ window.workedExample=function(){
  el('workedQuestion').style.whiteSpace='pre-line';
  el('workedQuestion').textContent=q.prompt;setVisual(el('workedVisual'),q);
  if(q.spoken&&q.spoken.length){
-  const sp=q.spoken.map(x=>({speech:String(x.say||''),math:String(x.board||''),why:'',raw:true}));
+  const sp=cleanSpoken(q.spoken).map(x=>({speech:x.say,math:x.board,why:'',raw:true}));
   if(q.key_idea)sp.unshift({speech:q.key_idea,math:'',why:'',raw:true});
   if(q.common_mistake)sp.push({speech:'One thing to watch out for. '+q.common_mistake,math:'',why:'',raw:true});
   sp.push({speech:'Now try your own question above. Use the same steps.',math:'',why:'',raw:true});
